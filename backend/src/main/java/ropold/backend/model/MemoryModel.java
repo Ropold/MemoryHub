@@ -1,5 +1,8 @@
 package ropold.backend.model;
 
+import org.springframework.data.mongodb.core.mapping.Document;
+
+@Document("memoryModel")
 public record MemoryModel(
         String id,
         String name,
