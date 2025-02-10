@@ -19,6 +19,19 @@ public class GlobalExceptionHandler {
         return new MemoryError(e.getMessage());
     }
 
+    @ExceptionHandler(RuntimeException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public MemoryError handleRuntimeException(RuntimeException e) {
+        e.printStackTrace();
+        return new MemoryError(e.getMessage());
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public AccessDeniedError handleAccessDeniedException(AccessDeniedException e) {
+        return new AccessDeniedError(e.getMessage());
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
@@ -34,8 +47,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ImageDeletionException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public MemoryError handleImageDeletionException(ImageDeletionException e) {
-        return new MemoryError(e.getMessage());
+    public ImageDeletionError handleImageDeletionException(ImageDeletionException e) {
+        return new ImageDeletionError(e.getMessage());
     }
 
 }
