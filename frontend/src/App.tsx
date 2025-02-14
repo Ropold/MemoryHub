@@ -26,7 +26,7 @@ export default function App() {
             });
     }
 
-    const getActiveMemorys = () => {
+    const getActiveMemories = () => {
         axios
             .get("/api/memory-hub/active")
             .then((response) => {
@@ -39,7 +39,7 @@ export default function App() {
 
     useEffect(() => {
         getUser();
-        getActiveMemorys();
+        getActiveMemories();
     }, []);
 
   return (
