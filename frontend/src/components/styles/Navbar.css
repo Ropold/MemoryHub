@@ -1,0 +1,25 @@
+
+.navbar {
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 10px 20px;
+    width: 100%;
+    box-sizing: border-box;
+    top: 0;
+    left: 0;
+}
+
+.clickable-header {
+    align-items: center;
+    cursor: pointer;
+    background-color: #f9f9f9;
+    border-radius: 1px;
+    border: 1px solid transparent;
+}
+
+.clickable-header:hover {
+    border-color: #007BFF;
+    background-color: #f0f0f0;
+}
