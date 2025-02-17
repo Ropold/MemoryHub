@@ -1,35 +1,61 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import Footer from "./components/Footer.tsx";
+import Navbar from "./components/Navbar.tsx";
+import {useEffect, useState} from "react";
+import axios from "axios";
+import {Route, Routes} from "react-router-dom";
+import Home from "./components/Home.tsx";
+import NotFound from "./components/NotFound.tsx";
+import {MemoryModel} from "./components/model/MemoryModel.ts";
+import Play from "./components/Play.tsx";
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+
+    const [user, setUser] = useState<string>("anonymousUser");
+    const [activeMemories, setActiveMemories] = useState<MemoryModel[]>([]);
+
+
+    function getUser() {
+        axios.get("/api/users/me")
+            .then((response) => {
+                setUser(response.data.toString());
+            })
+            .catch((error) => {
+                console.error(error);
+                setUser("anonymousUser");
+            });
+    }
+
+    const getActiveMemories = () => {
+        axios
+            .get("/api/memory-hub/active")
+            .then((response) => {
+                setActiveMemories(response.data);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }
+
+    useEffect(() => {
+        getUser();
+        getActiveMemories();
+    }, []);
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>MemoryHub</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <Navbar
+        user={user}
+        getUser={getUser}
+      />
+      <Routes>
+        <Route path="*" element={<NotFound />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/play" element={<Play activeMemories={activeMemories} />} />
+      </Routes>
+      <Footer />
     </>
   )
 }
 
-export default App
+
