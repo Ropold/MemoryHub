@@ -30,18 +30,27 @@ export default function Navbar(props: Readonly<NavbarProps>) {
 
     return (
         <nav className="navbar">
-            <div>
-                <h2>Navbar</h2>
-                <p>User: {props.user}</p>
-
-                <div>
-                    <button className="clickable-header" onClick={()=>navigate("/")}>Home</button>
-                    <button onClick={()=>navigate("/play")}>Play</button>
-                    <button onClick={loginWithGithub}>LoginWithGithub</button>
-                    <button onClick={logoutFromGithub}>Logout</button>
-                </div>
-
+            <p>User: {props.user}</p>
+            <div
+                className="clickable-header"
+                onClick={() => {
+                    navigate("/");
+                }}
+            >
+                <h2 className="header-title">MemoryHub</h2>
+                <img src="/MemoryHub-logo-single.jpg" alt="MemoryHub Logo" className="logo-image" />
             </div>
+
+            <button onClick={() => navigate("/play")}>Play</button>
+
+            {props.user !== "anonymousUser" ? (
+                <>
+                    <button onClick={logoutFromGithub}>Logout</button>
+                </>
+            ) : (
+                <button onClick={loginWithGithub}>Login with GitHub</button>
+            )}
         </nav>
     );
+
 }
