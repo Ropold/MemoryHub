@@ -8,6 +8,10 @@ import Home from "./components/Home.tsx";
 import NotFound from "./components/NotFound.tsx";
 import {MemoryModel} from "./components/model/MemoryModel.ts";
 import Play from "./components/Play.tsx";
+import Profile from "./components/Profile.tsx";
+import ProtectedRoute from "./components/ProtectedRoute.tsx";
+import AddMemoryCard from "./components/AddMemoryCard.tsx";
+import MyMemories from "./components/MyMemories.tsx";
 
 export default function App() {
 
@@ -52,6 +56,12 @@ export default function App() {
         <Route path="*" element={<NotFound />} />
         <Route path="/" element={<Home />} />
         <Route path="/play" element={<Play activeMemories={activeMemories} />} />
+
+        <Route element={<ProtectedRoute user={user} />}>
+            <Route path="/my-memories" element={<MyMemories />} />
+            <Route path="/add" element={<AddMemoryCard />} />
+            <Route path="/profile" element={<Profile user={user} />} />
+        </Route>
       </Routes>
       <Footer />
     </>

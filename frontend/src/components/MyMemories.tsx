@@ -1,5 +1,5 @@
 
-export default function MyMemoriesCards(){
+export default function MyMemories(){
     return (
         <div>
             <h2>My Memories Cards</h2>
