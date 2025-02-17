@@ -13,12 +13,14 @@ import ProtectedRoute from "./components/ProtectedRoute.tsx";
 import AddMemoryCard from "./components/AddMemoryCard.tsx";
 import MyMemories from "./components/MyMemories.tsx";
 import {UserDetails} from "./components/model/UserDetailsModel.ts";
+import Details from "./components/Details.tsx";
 
 export default function App() {
 
     const [user, setUser] = useState<string>("anonymousUser");
     const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
     const [activeMemories, setActiveMemories] = useState<MemoryModel[]>([]);
+    const [allMemories, setAllMemories] = useState<MemoryModel[]>([]);
 
 
     function getUser() {
@@ -54,6 +56,17 @@ export default function App() {
             });
     }
 
+    const getAllMemories = () => {
+        axios
+            .get("/api/memory-hub")
+            .then((response) => {
+                setAllMemories(response.data);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }
+
     useEffect(() => {
         getUser();
         getActiveMemories();
@@ -62,6 +75,7 @@ export default function App() {
     useEffect(() => {
         if (user !== "anonymousUser") {
             getUserDetails();
+            getAllMemories();
         }
     }, [user]);
 
@@ -75,6 +89,7 @@ export default function App() {
         <Route path="*" element={<NotFound />} />
         <Route path="/" element={<Home />} />
         <Route path="/play" element={<Play activeMemories={activeMemories} />} />
+        <Route path="/memory/:id" element={<Details allMemories={allMemories} />} />
 
         <Route element={<ProtectedRoute user={user} />}>
             <Route path="/my-memories" element={<MyMemories />} />

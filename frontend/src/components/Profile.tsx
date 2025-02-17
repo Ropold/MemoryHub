@@ -14,7 +14,7 @@ export default function Profile(props: Readonly<ProfileProps>) {
                 <div>
                     <p>Username: {props.userDetails.login}</p>
                     <p>Name: {props.userDetails.name || "No name provided"}</p>
-                    <p>Location: {props.userDetails.location || "No location provided"}</p>
+                    <p>Location: {props.userDetails.location ?? "No location provided"}</p>
                     {props.userDetails.bio && <p>Bio: {props.userDetails.bio}</p>}
                     <p>Followers: {props.userDetails.followers}</p>
                     <p>Following: {props.userDetails.following}</p>
