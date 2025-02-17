@@ -1,15 +1,17 @@
 import { MemoryModel } from "./model/MemoryModel.ts";
 import { useParams } from "react-router-dom";
+import {DefaultMemory} from "./model/DefaultMemory.ts";
 
 type DetailsProps = {
     allMemories: MemoryModel[];
 };
 
+
 export default function Details(props: Readonly<DetailsProps>) {
     const { id } = useParams<{ id: string }>();
 
     // Suche das Memory-Objekt mit der passenden ID
-    const memory = props.allMemories.find(mem => mem.id === id);
+    const memory = props.allMemories.find(mem => mem.id === id) || DefaultMemory;
 
     return (
         <div>
