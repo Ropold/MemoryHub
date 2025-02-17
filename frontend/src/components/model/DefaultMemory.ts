@@ -2,7 +2,7 @@ import { MemoryModel } from "./MemoryModel.ts";
 
 export const DefaultMemory: MemoryModel = {
     id: "",
-    name: "",
+    name: "Loading....",
     matchId: "",
     category: "CLOUDINARY_IMAGE",
     description: "",
