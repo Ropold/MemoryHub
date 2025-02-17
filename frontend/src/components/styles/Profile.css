@@ -1,0 +1,46 @@
+/* Profile.css */
+
+/* Stil für das gesamte Profil */
+.profile-container {
+    width: 800px; /* Behalte die Breite bei */
+    margin: 0 auto; /* Horizontal zentrieren */
+}
+
+/* Überschrift */
+.profile-container h2 {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Allgemeine Stile für Textabsätze */
+.profile-container p {
+    font-size: 1.2rem;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+
+/* Stil für den Avatar */
+.profile-container img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin-bottom: 20px;
+}
+
+/* Link zum GitHub-Profil */
+.profile-container a {
+    color: #0366d6;
+    text-decoration: none;
+}
+
+.profile-container a:hover {
+    text-decoration: underline;
+}
+
+/* Stil für das Lade-Text */
+.loading {
+    font-size: 1.5rem;
+    color: #888;
+}

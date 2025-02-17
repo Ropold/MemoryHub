@@ -12,10 +12,12 @@ import Profile from "./components/Profile.tsx";
 import ProtectedRoute from "./components/ProtectedRoute.tsx";
 import AddMemoryCard from "./components/AddMemoryCard.tsx";
 import MyMemories from "./components/MyMemories.tsx";
+import {UserDetails} from "./components/model/UserDetailsModel.ts";
 
 export default function App() {
 
     const [user, setUser] = useState<string>("anonymousUser");
+    const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
     const [activeMemories, setActiveMemories] = useState<MemoryModel[]>([]);
 
 
@@ -27,6 +29,17 @@ export default function App() {
             .catch((error) => {
                 console.error(error);
                 setUser("anonymousUser");
+            });
+    }
+
+    function getUserDetails() {
+        axios.get("/api/users/me/details")
+            .then((response) => {
+                setUserDetails(response.data as UserDetails);
+            })
+            .catch((error) => {
+                console.error(error);
+                setUserDetails(null);
             });
     }
 
@@ -46,6 +59,12 @@ export default function App() {
         getActiveMemories();
     }, []);
 
+    useEffect(() => {
+        if (user !== "anonymousUser") {
+            getUserDetails();
+        }
+    }, [user]);
+
   return (
     <>
       <Navbar
@@ -60,7 +79,7 @@ export default function App() {
         <Route element={<ProtectedRoute user={user} />}>
             <Route path="/my-memories" element={<MyMemories />} />
             <Route path="/add" element={<AddMemoryCard />} />
-            <Route path="/profile" element={<Profile user={user} />} />
+            <Route path="/profile" element={<Profile userDetails={userDetails} />} />
         </Route>
       </Routes>
       <Footer />
