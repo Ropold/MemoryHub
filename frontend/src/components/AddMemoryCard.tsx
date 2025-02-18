@@ -19,6 +19,7 @@ export default function AddMemoryCard(props: Readonly<MemoryCardProps>) {
 
         const memoryData = {
             name,
+            matchId: "1",
             category: category,
             description,
             isActive: true,
