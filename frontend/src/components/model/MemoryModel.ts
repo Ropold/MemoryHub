@@ -3,7 +3,7 @@ import { Category } from "./Category.ts";
 export type MemoryModel = {
     id: string;
     name: string;
-    matchId: string;
+    matchId: number;
     category: Category;
     description: string;
     isActive: boolean;

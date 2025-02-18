@@ -2,7 +2,7 @@ package ropold.backend.model;
 
 public record MemoryModelDto(
         String name,
-        String matchId,
+        int matchId,
         Category category,
         String description,
         boolean isActive,
