@@ -16,6 +16,7 @@ public record MemoryModelDto(
         String appUserUsername,
         String appUserAvatarUrl,
         String appUserGithubUrl,
+        @NotBlank(message = "Image can't be empty")
         String imageUrl
 ) {
 }

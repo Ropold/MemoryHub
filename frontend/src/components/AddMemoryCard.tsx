@@ -95,14 +95,6 @@ export default function AddMemoryCard(props: Readonly<MemoryCardProps>) {
         setErrorMessages([]);
     };
 
-    // onChange für den matchId-Input
-    const onMatchIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = parseInt(e.target.value); // Umwandlung von String in Zahl
-        if (!isNaN(value)) {
-            setMatchId(Math.min(20, Math.max(1, value))); // Stellen sicher, dass der Wert im Bereich 1 bis 20 liegt
-        }
-    };
-
     return (
         <div className="edit-form">
             <h2>Add Memory Card</h2>
@@ -118,7 +110,7 @@ export default function AddMemoryCard(props: Readonly<MemoryCardProps>) {
                 </label>
 
                 <label>
-                    Category:
+                    Bildquelle:
                     <select
                         className="input-small"
                         value={category}
@@ -140,16 +132,21 @@ export default function AddMemoryCard(props: Readonly<MemoryCardProps>) {
                 </label>
 
                 <label>
-                    Match ID (default 1, max 20):
-                    <input
+                    Match ID:
+                    <select
                         className="input-small"
-                        type="number"
                         value={matchId}
-                        onChange={onMatchIdChange} // Verwendung der angepassten Methode
-                        min="1"
-                        max="20"
-                    />
+                        onChange={(e) => setMatchId(Number(e.target.value))}
+                        required
+                    >
+                        {[...Array(20).keys()].map((n) => n + 1).map((n) => (
+                            <option key={n} value={n}>
+                                {n}
+                            </option>
+                        ))}
+                    </select>
                 </label>
+
 
                 <label>
                     Image:
