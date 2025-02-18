@@ -2,6 +2,9 @@ import { UserDetails } from "./model/UserDetailsModel.ts";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import "./styles/AddMemoryCard.css";
+import "./styles/Buttons.css";
+import "./styles/Popup.css";
 
 type MemoryCardProps = {
     userDetails: UserDetails | null;
