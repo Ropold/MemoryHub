@@ -93,7 +93,7 @@ export default function App() {
 
         <Route element={<ProtectedRoute user={user} />}>
             <Route path="/my-memories" element={<MyMemories />} />
-            <Route path="/add" element={<AddMemoryCard />} />
+            <Route path="/add" element={<AddMemoryCard userDetails={userDetails}/>} />
             <Route path="/profile" element={<Profile userDetails={userDetails} />} />
         </Route>
       </Routes>

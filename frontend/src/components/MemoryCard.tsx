@@ -16,6 +16,7 @@ export default function MemoryCard(props: Readonly<MemoryCardProps>) {
     return (
         <div className="memory-card" onClick={handleCardClick}>
             <h3>{props.memory.name}</h3>
+            <img src={props.memory.imageUrl} alt={props.memory.name} className="memory-card-image" />
         </div>
     );
 }
