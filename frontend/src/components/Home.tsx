@@ -1,8 +1,19 @@
+import {MemoryModel} from "./model/MemoryModel.ts";
+import MemoryCard from "./MemoryCard";
 
-export default function Home(){
-    return(
+
+type HomeProps = {
+    activeMemories: MemoryModel[];
+}
+
+export default function Home(props: Readonly<HomeProps>) {
+    return (
         <div>
-            <h2>MemoryHub - Home</h2>
+            <div>
+                {props.activeMemories.map(memory => (
+                    <MemoryCard key={memory.id} memory={memory} />
+                ))}
+            </div>
         </div>
-    )
+    );
 }

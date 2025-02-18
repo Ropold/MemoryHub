@@ -1,8 +1,21 @@
+import {useNavigate} from "react-router-dom";
+import {MemoryModel} from "./model/MemoryModel.ts";
 
-export default function MemoryCard() {
+type MemoryCardProps = {
+    memory: MemoryModel
+}
+
+export default function MemoryCard(props: Readonly<MemoryCardProps>) {
+
+    const navigate = useNavigate();
+
+    const handleCardClick = () => {
+        navigate(`/memory/${props.memory.id}`);
+    }
+
     return (
-        <div>
-            <h2>Memory Card</h2>
+        <div className="memory-card" onClick={handleCardClick}>
+            <h3>{props.memory.name}</h3>
         </div>
     );
 }
