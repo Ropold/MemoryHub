@@ -9,7 +9,7 @@ type HomeProps = {
 export default function Home(props: Readonly<HomeProps>) {
     return (
         <div>
-            <div>
+            <div className="memory-card-container-home">
                 {props.activeMemories.map(memory => (
                     <MemoryCard key={memory.id} memory={memory} />
                 ))}

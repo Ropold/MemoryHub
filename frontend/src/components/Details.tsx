@@ -15,7 +15,6 @@ export default function Details(props: Readonly<DetailsProps>) {
 
     return (
         <div>
-            <h2>Memory Details</h2>
             {memory ? (
                 <div>
                     <h3>{memory.name}</h3>

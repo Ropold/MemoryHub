@@ -1,5 +1,6 @@
 import {useNavigate} from "react-router-dom";
 import {MemoryModel} from "./model/MemoryModel.ts";
+import "./styles/MemoryCard.css";
 
 type MemoryCardProps = {
     memory: MemoryModel
