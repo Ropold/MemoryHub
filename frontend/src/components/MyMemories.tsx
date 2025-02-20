@@ -115,34 +115,66 @@ export default function MyMemories(props: Readonly<MyMemoriesProps>) {
                 <div className="edit-form">
                     <h2>Edit Memory</h2>
                     <form onSubmit={handleSaveEdit}>
-                        <label>Name:
-                            <input type="text" value={editedMemory?.name || ""} onChange={e => setEditedMemory({ ...editedMemory!, name: e.target.value })} />
+                        <label>
+                            Name:
+                            <input
+                                className="input-small"
+                                type="text"
+                                value={editedMemory?.name || ""}
+                                onChange={(e) =>
+                                    setEditedMemory({ ...editedMemory!, name: e.target.value })
+                                }
+                            />
                         </label>
-                        <label>Category:
-                            <select value={category} onChange={handleCategoryChange}>
-                                <option value={"GITHUB_AVATAR"}>GitHub Avatar</option>
-                                <option value={"CLOUDINARY_IMAGE"}>Cloudinary Image</option>
+
+                        <label>
+                            Category:
+                            <select
+                                className="input-small"
+                                value={category}
+                                onChange={handleCategoryChange}
+                            >
+                                <option value="GITHUB_AVATAR">GitHub Avatar</option>
+                                <option value="CLOUDINARY_IMAGE">Cloudinary Image</option>
                             </select>
                         </label>
-                        <label>Image:
+
+                        <label>
+                            Image:
                             <input type="file" onChange={onFileChange} />
-                            {image && <img src={URL.createObjectURL(image)} alt="Memory" className="memory-card-image" />}
+                            {image && (
+                                <img
+                                    src={URL.createObjectURL(image)}
+                                    alt="Memory"
+                                    className="memory-card-image"
+                                />
+                            )}
                         </label>
+
                         <div className="button-group">
                             <button type="submit">Save Changes</button>
-                            <button type="button" onClick={() => setIsEditing(false)}>Cancel</button>
+                            <button type="button" onClick={() => setIsEditing(false)}>
+                                Cancel
+                            </button>
                         </div>
                     </form>
                 </div>
             ) : (
                 <div className="memory-card-container">
                     {userMemories.length > 0 ? (
-                        userMemories.map(memory => (
+                        userMemories.map((memory) => (
                             <div key={memory.id}>
-                                <MemoryCard memory={memory} favorites={props.favorites} user={props.user} toggleFavorite={props.toggleFavorite} />
+                                <MemoryCard
+                                    memory={memory}
+                                    favorites={props.favorites}
+                                    user={props.user}
+                                    toggleFavorite={props.toggleFavorite}
+                                />
                                 <div className="button-group">
                                     <button onClick={() => handleEditToggle(memory.id)}>Edit</button>
-                                    <button id="button-delete" onClick={() => handleDeleteClick(memory.id)}>Delete</button>
+                                    <button id="button-delete" onClick={() => handleDeleteClick(memory.id)}>
+                                        Delete
+                                    </button>
                                 </div>
                             </div>
                         ))
@@ -158,8 +190,12 @@ export default function MyMemories(props: Readonly<MyMemoriesProps>) {
                         <h3>Confirm Deletion</h3>
                         <p>Are you sure you want to delete this memory?</p>
                         <div className="popup-actions">
-                            <button onClick={handleConfirmDelete} className="popup-confirm">Yes, Delete</button>
-                            <button onClick={handleCancel} className="popup-cancel">Cancel</button>
+                            <button onClick={handleConfirmDelete} className="popup-confirm">
+                                Yes, Delete
+                            </button>
+                            <button onClick={handleCancel} className="popup-cancel">
+                                Cancel
+                            </button>
                         </div>
                     </div>
                 </div>
