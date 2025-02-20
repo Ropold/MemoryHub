@@ -3,9 +3,11 @@ import { useEffect, useState } from "react";
 import { Category } from "./model/Category.ts";
 import * as React from "react";
 import axios from "axios";
-import "./styles/MemoryCard.css";
 import MemoryCard from "./MemoryCard.tsx";
+import "./styles/MemoryCard.css";
 import "./styles/AddMemoryCard.css";
+import "./styles/Buttons.css";
+import "./styles/Popup.css";
 
 type MyMemoriesProps = {
     user: string;
@@ -113,7 +115,7 @@ export default function MyMemories(props: Readonly<MyMemoriesProps>) {
                 <div className="edit-form">
                     <h2>Edit Memory</h2>
                     <form onSubmit={handleSaveEdit}>
-                        <label>Title:
+                        <label>Name:
                             <input type="text" value={editedMemory?.name || ""} onChange={e => setEditedMemory({ ...editedMemory!, name: e.target.value })} />
                         </label>
                         <label>Category:
