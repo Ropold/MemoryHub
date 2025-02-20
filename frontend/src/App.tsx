@@ -129,7 +129,7 @@ export default function App() {
         <Route path="/memory/:id" element={<Details allMemories={allMemories} />} />
 
         <Route element={<ProtectedRoute user={user} />}>
-            <Route path="/my-memories" element={<MyMemories user={user} allMemories={allMemories} toggleFavorite={toggleFavorite} favorites={favorites}/>} />
+            <Route path="/my-memories" element={<MyMemories user={user} favorites={favorites} toggleFavorite={toggleFavorite} allMemories={allMemories} setAllMemories={setAllMemories}/>} />
             <Route path="/add" element={<AddMemoryCard userDetails={userDetails} handleSubmit={handleNewMemorySubmit} />} />
             <Route path="/profile" element={<Profile userDetails={userDetails} />} />
         </Route>
