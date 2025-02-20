@@ -26,6 +26,38 @@ public class MemoryController {
     private final CloudinaryService cloudinaryService;
     private final AppUserService appUserService;
 
+    @GetMapping("/favorites")
+    public List<MemoryModel> getUserFavorites(@AuthenticationPrincipal OAuth2User authentication) {
+        List<String> favoriteMemoryIds = appUserService.getUserFavorites(authentication.getName());
+        return memoryService.getMemoriesByIds(favoriteMemoryIds);
+    }
+
+    @PostMapping("/favorites/{memoryId}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void addMemoryToFavorites(@PathVariable String memoryId , @AuthenticationPrincipal OAuth2User authentication) {
+        String authenticatedUserId = authentication.getName();
+        appUserService.addMemoryToFavorites(authenticatedUserId, memoryId);
+    }
+
+    @DeleteMapping("/favorites/{memoryId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removeMemoryFromFavorites(@PathVariable String memoryId, @AuthenticationPrincipal OAuth2User authentication) {
+        String authenticatedUserId = authentication.getName();
+        appUserService.removeMemoryFromFavorites(authenticatedUserId, memoryId);
+    }
+
+    @PutMapping("/{id}/toggle-active")
+    public MemoryModel toggleMemoryActive(@PathVariable String id, @AuthenticationPrincipal OAuth2User authentication) {
+        String authenticatedUserId = authentication.getName();
+        MemoryModel memoryModel = memoryService.getMemoryById(id);
+
+        if (!authenticatedUserId.equals(memoryModel.appUserGithubId())) {
+            throw new AccessDeniedException("You are not allowed to update memories for other users");
+        }
+
+        return memoryService.toggleMemoryActive(id);
+    }
+
     @GetMapping()
     public List<MemoryModel> getAllMemories() {
         return memoryService.getAllMemories();
