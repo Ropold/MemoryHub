@@ -5,9 +5,11 @@ import axios from "axios";
 import "./styles/AddMemoryCard.css";
 import "./styles/Buttons.css";
 import "./styles/Popup.css";
+import {MemoryModel} from "./model/MemoryModel.ts";
 
 type MemoryCardProps = {
     userDetails: UserDetails | null;
+    handleSubmit: (memory: MemoryModel) => void;
 }
 
 export default function AddMemoryCard(props: Readonly<MemoryCardProps>) {

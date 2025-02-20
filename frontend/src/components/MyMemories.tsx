@@ -5,6 +5,8 @@ import {Category} from "./model/Category.ts";
 type MyMemoriesProps = {
     user: string;
     allMemories: MemoryModel[];
+    toggleFavorite: (memoryId: string) => void;
+    favorites: string[];
 }
 
 export default function MyMemories(props: Readonly<MyMemoriesProps>) {
@@ -21,8 +23,6 @@ export default function MyMemories(props: Readonly<MyMemoriesProps>) {
         setUserMemories(props.allMemories.filter(memory => memory.appUserGithubId === props.user));
     }, [props.allMemories, props.user]);
 
-
-    const handleEditToggle = ()
 
 
     return (

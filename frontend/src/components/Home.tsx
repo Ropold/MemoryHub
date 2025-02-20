@@ -4,6 +4,8 @@ import MemoryCard from "./MemoryCard";
 
 type HomeProps = {
     activeMemories: MemoryModel[];
+    toggleFavorite: (memoryId: string) => void;
+    favorites: string[];
 }
 
 export default function Home(props: Readonly<HomeProps>) {
