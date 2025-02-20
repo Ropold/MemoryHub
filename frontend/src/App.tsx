@@ -124,7 +124,7 @@ export default function App() {
       />
       <Routes>
         <Route path="*" element={<NotFound />} />
-        <Route path="/" element={<Home activeMemories={activeMemories} toggleFavorite={toggleFavorite} favorites={favorites}/>} />
+        <Route path="/" element={<Home activeMemories={activeMemories} toggleFavorite={toggleFavorite} favorites={favorites} user={user}/>} />
         <Route path="/play" element={<Play activeMemories={activeMemories} />} />
         <Route path="/memory/:id" element={<Details allMemories={allMemories} />} />
 
