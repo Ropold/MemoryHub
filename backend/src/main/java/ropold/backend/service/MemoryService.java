@@ -78,4 +78,37 @@ public class MemoryService {
         }
         memoryRepository.deleteById(id);
     }
+
+    public List<MemoryModel> getMemoriesByIds(List<String> memoryIds) {
+        return memoryRepository.findAllById(memoryIds);
+    }
+
+
+    public MemoryModel toggleMemoryActive(String id) {
+        MemoryModel memory = memoryRepository.findById(id)
+                .orElseThrow(() -> new MemoryNotFoundException("No Memory found with id: " + id));
+
+        MemoryModel updatedMemoryModel = new MemoryModel(
+                id,
+                memory.name(),
+                memory.matchId(),
+                memory.category(),
+                memory.description(),
+                !memory.isActive(),
+                memory.appUserGithubId(),
+                memory.appUserUsername(),
+                memory.appUserAvatarUrl(),
+                memory.appUserGithubUrl(),
+                memory.imageUrl()
+        );
+        return memoryRepository.save(updatedMemoryModel);
+    }
+
+    public List<MemoryModel> getMemoriesByMatchId(int matchId) {
+        return memoryRepository.findAll().stream()
+                .filter(memory -> memory.matchId() == matchId)
+                .toList();
+    }
+
+
 }
