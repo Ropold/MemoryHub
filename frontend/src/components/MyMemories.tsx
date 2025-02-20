@@ -1,5 +1,6 @@
 import {MemoryModel} from "./model/MemoryModel.ts";
 import {useEffect, useState} from "react";
+import {Category} from "./model/Category.ts";
 
 type MyMemoriesProps = {
     user: string;
@@ -9,10 +10,20 @@ type MyMemoriesProps = {
 export default function MyMemories(props: Readonly<MyMemoriesProps>) {
 
     const [userMemories, setUserMemories] = useState<MemoryModel[]>([]);
+    const [isEditing, setIsEditing] = useState<boolean>(false);
+    const [editedMemory, setEditedMemory] = useState<MemoryModel | null>(null);
+    const [image, setImage] = useState<File | null>(null);
+    const [category, setCategory] = useState<Category>("CLOUDINARY_IMAGE");
+    const [showPopup, setShowPopup] = useState(false);
+    const [memoryToDelete, setMemoryToDelete] = useState<string | null>(null);
 
     useEffect(() => {
         setUserMemories(props.allMemories.filter(memory => memory.appUserGithubId === props.user));
     }, [props.allMemories, props.user]);
+
+
+    const handleEditToggle = ()
+
 
     return (
         <div>
