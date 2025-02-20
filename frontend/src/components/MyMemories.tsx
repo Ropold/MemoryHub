@@ -8,8 +8,10 @@ import "./styles/MemoryCard.css";
 import "./styles/AddMemoryCard.css";
 import "./styles/Buttons.css";
 import "./styles/Popup.css";
+import {UserDetails} from "./model/UserDetailsModel.ts";
 
 type MyMemoriesProps = {
+    userDetails: UserDetails | null;
     user: string;
     favorites: string[];
     toggleFavorite: (memoryId: string) => void;
@@ -29,6 +31,7 @@ export default function MyMemories(props: Readonly<MyMemoriesProps>) {
     useEffect(() => {
         setUserMemories(props.allMemories.filter(memory => memory.appUserGithubId === props.user));
     }, [props.allMemories, props.user]);
+
 
     const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setCategory(e.target.value as Category);
@@ -53,16 +56,19 @@ export default function MyMemories(props: Readonly<MyMemoriesProps>) {
         }
     };
 
-    const handleSaveEdit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSaveEdit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!editedMemory) return;
 
         const data = new FormData();
+
         if (image) {
             data.append("image", image);
+            setEditedMemory(prev => prev ? { ...prev, imageUrl: "temp-image" } : null);
         }
 
-        const updatedMemoryData = { ...editedMemory, imageUrl: "" };
+        const updatedMemoryData = { ...editedMemory };
+
         data.append("memoryModelDto", new Blob([JSON.stringify(updatedMemoryData)], { type: "application/json" }));
 
         axios.put(`/api/memory-hub/${editedMemory.id}`, data, { headers: { "Content-Type": "multipart/form-data" } })
@@ -77,6 +83,7 @@ export default function MyMemories(props: Readonly<MyMemoriesProps>) {
                 alert("An unexpected error occurred. Please try again.");
             });
     };
+
 
     const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
