@@ -1,4 +1,4 @@
-.memory-card-container-home{
+.memory-card-container {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;

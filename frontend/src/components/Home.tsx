@@ -15,7 +15,7 @@ type HomeProps = {
 export default function Home(props: Readonly<HomeProps>) {
     return (
         <div>
-            <div className="memory-card-container-home">
+            <div className="memory-card-container">
                 {props.activeMemories.map(memory => (
                     <MemoryCard key={memory.id} memory={memory} favorites={props.favorites} user={props.user} toggleFavorite={props.toggleFavorite} />
                 ))}
