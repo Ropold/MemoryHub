@@ -34,11 +34,15 @@
 }
 
 .logo-image {
-    height: 40px;
+    height: 20px;
     width: auto;
     margin-left: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
     transition: all 0.3s ease;
     cursor: pointer;
+}
+
+.header-title {
+    margin: 2px;
 }

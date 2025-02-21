@@ -5,6 +5,11 @@ import "./styles/Navbar.css";
 type NavbarProps = {
     user: string
     getUser: () => void
+    getActiveMemories: () => void
+    getAllMemories: () => void
+    toggleSearchBar: () => void
+    showSearch: boolean
+    resetCurrentPage: () => void
 }
 
 export default function Navbar(props: Readonly<NavbarProps>) {
@@ -34,6 +39,9 @@ export default function Navbar(props: Readonly<NavbarProps>) {
             <div
                 className="clickable-header"
                 onClick={() => {
+                    props.getActiveMemories();
+                    props.getAllMemories();
+                    props.resetCurrentPage();
                     navigate("/");
                 }}
             >
@@ -43,8 +51,19 @@ export default function Navbar(props: Readonly<NavbarProps>) {
 
             <button onClick={() => navigate("/play")}>Play</button>
 
+            <button
+                onClick={() => {
+                    props.toggleSearchBar();
+                    navigate("/");
+                }}
+                className={props.showSearch ? "toggle-search-on" : "toggle-search-off"}
+            >
+                {props.showSearch ? "Hide Search" : "Search"} {/* Dynamischer Text */}
+            </button>
+
             {props.user !== "anonymousUser" ? (
                 <>
+                    <button onClick={() => navigate(`/favorites`)}>Favorites</button>
                     <button onClick={() => navigate("/add")}>Add Memory</button>
                     <button onClick={() => navigate("/my-memories")}>My Memories</button>
                     <button onClick={() => navigate("/profile")}>Profile</button>

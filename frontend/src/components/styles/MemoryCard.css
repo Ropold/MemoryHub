@@ -1,0 +1,29 @@
+.memory-card-container-home{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    margin: 0 auto; /* Horizontal zentrieren */
+}
+
+.memory-card {
+    cursor: pointer;
+    height: 400px;
+    width: 400px;
+    border: 1px solid #ddd; /* Dünne graue Grenze */
+    border-radius: 12px; /* Abgerundete Ecken */
+    padding: 20px;
+    margin: 20px; /* Abstand zwischen den Karten */
+    display: flex;
+    flex-direction: column; /* Vertikales Layout für den Inhalt */
+    justify-content: flex-start;
+    align-items: center;
+    position: relative;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Leichter Schatten */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Animationen für Hover */
+}
+
+.memory-card:hover {
+    transform: translateY(-5px) scale(1.03); /* Kleine Erhöhung und Vergrößerung */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Stärkerer Schatten bei Hover */
+}

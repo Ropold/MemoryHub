@@ -2,9 +2,14 @@ import { UserDetails } from "./model/UserDetailsModel.ts";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import "./styles/AddMemoryCard.css";
+import "./styles/Buttons.css";
+import "./styles/Popup.css";
+import {MemoryModel} from "./model/MemoryModel.ts";
 
 type MemoryCardProps = {
     userDetails: UserDetails | null;
+    handleSubmit: (memory: MemoryModel) => void;
 }
 
 export default function AddMemoryCard(props: Readonly<MemoryCardProps>) {
@@ -83,21 +88,15 @@ export default function AddMemoryCard(props: Readonly<MemoryCardProps>) {
 
     const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
-            setImage(e.target.files[0]);
+            const file = e.target.files[0];
+            setImage(file);
+            setImageUrl("temp-image"); // Temporärer Wert, um die Validierung zu bestehen
         }
     }
 
     const handleClosePopup = () => {
         setShowPopup(false);
         setErrorMessages([]);
-    };
-
-    // onChange für den matchId-Input
-    const onMatchIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = parseInt(e.target.value); // Umwandlung von String in Zahl
-        if (!isNaN(value)) {
-            setMatchId(Math.min(20, Math.max(1, value))); // Stellen sicher, dass der Wert im Bereich 1 bis 20 liegt
-        }
     };
 
     return (
@@ -115,7 +114,7 @@ export default function AddMemoryCard(props: Readonly<MemoryCardProps>) {
                 </label>
 
                 <label>
-                    Category:
+                    Bildquelle:
                     <select
                         className="input-small"
                         value={category}
@@ -137,16 +136,21 @@ export default function AddMemoryCard(props: Readonly<MemoryCardProps>) {
                 </label>
 
                 <label>
-                    Match ID (default 1, max 20):
-                    <input
+                    Match ID:
+                    <select
                         className="input-small"
-                        type="number"
                         value={matchId}
-                        onChange={onMatchIdChange} // Verwendung der angepassten Methode
-                        min="1"
-                        max="20"
-                    />
+                        onChange={(e) => setMatchId(Number(e.target.value))}
+                        required
+                    >
+                        {[...Array(20).keys()].map((n) => n + 1).map((n) => (
+                            <option key={n} value={n}>
+                                {n}
+                            </option>
+                        ))}
+                    </select>
                 </label>
+
 
                 <label>
                     Image:

@@ -1,8 +1,12 @@
 import {useNavigate} from "react-router-dom";
 import {MemoryModel} from "./model/MemoryModel.ts";
+import "./styles/MemoryCard.css";
 
 type MemoryCardProps = {
     memory: MemoryModel
+    favorites: string[];
+    user: string;
+    toggleFavorite: (memoryId: string) => void;
 }
 
 export default function MemoryCard(props: Readonly<MemoryCardProps>) {

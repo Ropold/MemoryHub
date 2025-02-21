@@ -1,0 +1,41 @@
+.edit-form {
+    width: 800px; /* Behalte die Breite bei */
+    margin: 0 auto; /* Horizontal zentrieren */
+}
+
+.input-small, select {
+    width: 100%;
+    height: 40px;
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    background-color: #fff;
+    transition: border 0.3s ease;
+    margin-bottom: 15px;
+}
+
+.input-small:focus, select:focus {
+    border-color: #007BFF;
+    outline: none;
+}
+
+.textarea-large {
+    width: 100%;
+    height: 150px;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    resize: vertical;
+    margin-bottom: 15px;
+}
+
+.memory-card-image{
+    width: 280px; /* Bild passt sich der Breite an */
+    height: 200px; /* Feste Höhe */
+    object-fit: cover; /* Bild wird vollständig angezeigt */
+    border-bottom: 1px solid #ccc;
+}
