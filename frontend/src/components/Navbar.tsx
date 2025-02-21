@@ -5,6 +5,11 @@ import "./styles/Navbar.css";
 type NavbarProps = {
     user: string
     getUser: () => void
+    getActiveMemories: () => void
+    getAllMemories: () => void
+    toggleSearchBar: () => void
+    showSearch: boolean
+    resetCurrentPage: () => void
 }
 
 export default function Navbar(props: Readonly<NavbarProps>) {

@@ -7,6 +7,9 @@ type HomeProps = {
     activeMemories: MemoryModel[];
     toggleFavorite: (memoryId: string) => void;
     favorites: string[];
+    showSearch: boolean;
+    currentPage: number;
+    paginate: (pageNumber: number) => void;
 }
 
 export default function Home(props: Readonly<HomeProps>) {
