@@ -24,12 +24,21 @@ export default function MyMemories(props: Readonly<MyMemoriesProps>) {
     const [editedMemory, setEditedMemory] = useState<MemoryModel | null>(null);
     const [image, setImage] = useState<File | null>(null);
     const [category, setCategory] = useState<Category>("CLOUDINARY_IMAGE");
+    const [imageUrl, setImageUrl] = useState<string | null>(null);
     const [showPopup, setShowPopup] = useState(false);
     const [memoryToDelete, setMemoryToDelete] = useState<string | null>(null);
 
     useEffect(() => {
         setUserMemories(props.allMemories.filter(memory => memory.appUserGithubId === props.user));
     }, [props.allMemories, props.user]);
+
+    useEffect(() => {
+        if (category === "GITHUB_AVATAR" && props.userDetails?.avatar_url) {
+            setImageUrl(props.userDetails.avatar_url);
+        } else {
+            setImage(null);
+        }
+    }, [category, props.userDetails?.avatar_url]);
 
     const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setCategory(e.target.value as Category);
@@ -40,46 +49,80 @@ export default function MyMemories(props: Readonly<MyMemoriesProps>) {
         if (memoryToEdit) {
             setEditedMemory(memoryToEdit);
             setIsEditing(true);
-            if (memoryToEdit.imageUrl) {
+
+            if (memoryToEdit.imageUrl === memoryToEdit.appUserAvatarUrl) {
+                setCategory("GITHUB_AVATAR");
+            } else {
+                setCategory(memoryToEdit.category);
+            }
+
+            if (memoryToEdit.category === "GITHUB_AVATAR" && props.userDetails?.avatar_url) {
+                setImageUrl(props.userDetails.avatar_url);
+            } else {
+                setImageUrl("");
+            }
+
+            if (memoryToEdit.category === "CLOUDINARY_IMAGE" && memoryToEdit.imageUrl) {
                 fetch(memoryToEdit.imageUrl)
                     .then(response => response.blob())
                     .then(blob => {
                         const file = new File([blob], "current-image.jpg", { type: blob.type });
-                        setImage(file);
+                        setImage(file); // Setze das Bild als File
                     })
                     .catch(error => console.error("Error loading current image:", error));
             } else {
-                setImage(null);
+                setImage(null); // Falls kein Bild vorhanden, setze das Bild auf null
             }
         }
     };
+
 
     const handleSaveEdit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!editedMemory) return;
 
-        const data = new FormData();
+        if (category === "GITHUB_AVATAR") {
+            // JSON-Request für GitHub Avatar
+            const updatedMemoryData = { ...editedMemory, imageUrl: imageUrl || "" }; // Nutze das imageUrl direkt
 
-        if (image) {
-            data.append("image", image);
-            setEditedMemory(prev => prev ? { ...prev, imageUrl: "temp-image" } : null);
-        }
-
-        const updatedMemoryData = { ...editedMemory };
-
-        data.append("memoryModelDto", new Blob([JSON.stringify(updatedMemoryData)], { type: "application/json" }));
-
-        axios.put(`/api/memory-hub/${editedMemory.id}`, data, { headers: { "Content-Type": "multipart/form-data" } })
-            .then(response => {
-                props.setAllMemories(prevMemories =>
-                    prevMemories.map(memory => memory.id === editedMemory.id ? { ...memory, ...response.data } : memory)
-                );
-                setIsEditing(false);
+            axios.put(`/api/memory-hub/avatar/${editedMemory.id}`, updatedMemoryData, {
+                headers: { "Content-Type": "application/json" }
             })
-            .catch(error => {
-                console.error("Error saving changes:", error);
-                alert("An unexpected error occurred. Please try again later.");
-            });
+                .then(response => {
+                    props.setAllMemories(prevMemories =>
+                        prevMemories.map(memory => memory.id === editedMemory.id ? { ...memory, ...response.data } : memory)
+                    );
+                    setIsEditing(false);
+                })
+                .catch(error => {
+                    console.error("Error saving changes:", error);
+                    alert("An unexpected error occurred. Please try again later.");
+                });
+
+        } else {
+            // Multipart-Request für andere Kategorien
+            const data = new FormData();
+
+            if (image) {
+                data.append("image", image);
+                setEditedMemory(prev => prev ? { ...prev, imageUrl: "temp-image" } : null);
+            }
+
+            const updatedMemoryData = { ...editedMemory };
+            data.append("memoryModelDto", new Blob([JSON.stringify(updatedMemoryData)], { type: "application/json" }));
+
+            axios.put(`/api/memory-hub/${editedMemory.id}`, data, { headers: { "Content-Type": "multipart/form-data" } })
+                .then(response => {
+                    props.setAllMemories(prevMemories =>
+                        prevMemories.map(memory => memory.id === editedMemory.id ? { ...memory, ...response.data } : memory)
+                    );
+                    setIsEditing(false);
+                })
+                .catch(error => {
+                    console.error("Error saving changes:", error);
+                    alert("An unexpected error occurred. Please try again later.");
+                });
+        }
     };
 
     const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -119,7 +162,7 @@ export default function MyMemories(props: Readonly<MyMemoriesProps>) {
             .then(() => {
                 props.setAllMemories((prevMemories) =>
                     prevMemories.map((memory) =>
-                        memory.id === memoryId ? {...memory, isActive: !memory.isActive} : memory
+                        memory.id === memoryId ? { ...memory, isActive: !memory.isActive } : memory
                     )
                 );
             })
@@ -127,7 +170,7 @@ export default function MyMemories(props: Readonly<MyMemoriesProps>) {
                 console.error("Error during Toggle Offline/Active", error);
                 alert("An Error while changing the status of Active/Offline.");
             });
-    }
+    };
 
     return (
         <div>
@@ -172,9 +215,9 @@ export default function MyMemories(props: Readonly<MyMemoriesProps>) {
 
                         <label>
                             Image:
-                            {category === "GITHUB_AVATAR" && props.userDetails?.avatar_url ? (
+                            {category === "GITHUB_AVATAR" && imageUrl ? (
                                 <img
-                                    src={props.userDetails.avatar_url}
+                                    src={imageUrl}
                                     alt="GitHub Avatar"
                                     className="memory-card-image"
                                 />
