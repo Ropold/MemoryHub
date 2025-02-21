@@ -39,6 +39,9 @@ export default function Navbar(props: Readonly<NavbarProps>) {
             <div
                 className="clickable-header"
                 onClick={() => {
+                    props.getActiveMemories();
+                    props.getAllMemories();
+                    props.resetCurrentPage();
                     navigate("/");
                 }}
             >
@@ -47,6 +50,16 @@ export default function Navbar(props: Readonly<NavbarProps>) {
             </div>
 
             <button onClick={() => navigate("/play")}>Play</button>
+
+            <button
+                onClick={() => {
+                    props.toggleSearchBar();
+                    navigate("/");
+                }}
+                className={props.showSearch ? "toggle-search-on" : "toggle-search-off"}
+            >
+                {props.showSearch ? "Hide Search" : "Search"} {/* Dynamischer Text */}
+            </button>
 
             {props.user !== "anonymousUser" ? (
                 <>
