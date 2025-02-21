@@ -1,14 +1,13 @@
-import { MemoryModel } from "./model/MemoryModel.ts";
 import { useEffect, useState } from "react";
 import { Category } from "./model/Category.ts";
-import * as React from "react";
 import axios from "axios";
 import MemoryCard from "./MemoryCard.tsx";
 import "./styles/MemoryCard.css";
 import "./styles/AddMemoryCard.css";
 import "./styles/Buttons.css";
 import "./styles/Popup.css";
-import {UserDetails} from "./model/UserDetailsModel.ts";
+import { UserDetails } from "./model/UserDetailsModel.ts";
+import { MemoryModel } from "./model/MemoryModel.ts";
 
 type MyMemoriesProps = {
     userDetails: UserDetails | null;
@@ -31,7 +30,6 @@ export default function MyMemories(props: Readonly<MyMemoriesProps>) {
     useEffect(() => {
         setUserMemories(props.allMemories.filter(memory => memory.appUserGithubId === props.user));
     }, [props.allMemories, props.user]);
-
 
     const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setCategory(e.target.value as Category);
@@ -79,11 +77,10 @@ export default function MyMemories(props: Readonly<MyMemoriesProps>) {
                 setIsEditing(false);
             })
             .catch(error => {
-                console.error("Error saving memory edits:", error);
-                alert("An unexpected error occurred. Please try again.");
+                console.error("Error saving changes:", error);
+                alert("An unexpected error occurred. Please try again later.");
             });
     };
-
 
     const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
@@ -148,13 +145,23 @@ export default function MyMemories(props: Readonly<MyMemoriesProps>) {
 
                         <label>
                             Image:
-                            <input type="file" onChange={onFileChange} />
-                            {image && (
+                            {category === "GITHUB_AVATAR" && props.userDetails?.avatar_url ? (
                                 <img
-                                    src={URL.createObjectURL(image)}
-                                    alt="Memory"
+                                    src={props.userDetails.avatar_url}
+                                    alt="GitHub Avatar"
                                     className="memory-card-image"
                                 />
+                            ) : (
+                                <>
+                                    <input type="file" onChange={onFileChange} />
+                                    {image && (
+                                        <img
+                                            src={URL.createObjectURL(image)}
+                                            alt="Memory"
+                                            className="memory-card-image"
+                                        />
+                                    )}
+                                </>
                             )}
                         </label>
 
