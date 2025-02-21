@@ -113,6 +113,22 @@ export default function MyMemories(props: Readonly<MyMemoriesProps>) {
         setMemoryToDelete(null);
     };
 
+    const handleToggleActiveStatus = (memoryId: string) => {
+        axios
+            .put(`/api/memory-hub/${memoryId}/toggle-active`)
+            .then(() => {
+                props.setAllMemories((prevMemories) =>
+                    prevMemories.map((memory) =>
+                        memory.id === memoryId ? {...memory, isActive: !memory.isActive} : memory
+                    )
+                );
+            })
+            .catch((error) => {
+                console.error("Error during Toggle Offline/Active", error);
+                alert("An Error while changing the status of Active/Offline.");
+            });
+    }
+
     return (
         <div>
             {isEditing ? (
@@ -141,6 +157,17 @@ export default function MyMemories(props: Readonly<MyMemoriesProps>) {
                                 <option value="GITHUB_AVATAR">GitHub Avatar</option>
                                 <option value="CLOUDINARY_IMAGE">Cloudinary Image</option>
                             </select>
+                        </label>
+
+                        <label>
+                            Description:
+                            <textarea
+                                className="textarea-large"
+                                value={editedMemory?.description || ""}
+                                onChange={(e) =>
+                                    setEditedMemory({ ...editedMemory!, description: e.target.value })
+                                }
+                            />
                         </label>
 
                         <label>
@@ -185,6 +212,13 @@ export default function MyMemories(props: Readonly<MyMemoriesProps>) {
                                     toggleFavorite={props.toggleFavorite}
                                 />
                                 <div className="button-group">
+                                    <button
+                                        id={memory.isActive ? "active-button" : "inactive-button"}
+                                        onClick={() => handleToggleActiveStatus(memory.id)} // Event-Handler für das toggeln
+                                    >
+                                        {memory.isActive ? "Active" : "Offline"}
+                                    </button>
+
                                     <button onClick={() => handleEditToggle(memory.id)}>Edit</button>
                                     <button id="button-delete" onClick={() => handleDeleteClick(memory.id)}>
                                         Delete
