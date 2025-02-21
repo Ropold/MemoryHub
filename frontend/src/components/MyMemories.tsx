@@ -83,7 +83,7 @@ export default function MyMemories(props: Readonly<MyMemoriesProps>) {
 
         if (category === "GITHUB_AVATAR") {
             // JSON-Request für GitHub Avatar
-            const updatedMemoryData = { ...editedMemory, imageUrl: imageUrl || "" }; // Nutze das imageUrl direkt
+            const updatedMemoryData = { ...editedMemory, imageUrl: imageUrl ?? "" }; // Nutze das imageUrl direkt
 
             axios.put(`/api/memory-hub/avatar/${editedMemory.id}`, updatedMemoryData, {
                 headers: { "Content-Type": "application/json" }
@@ -172,6 +172,15 @@ export default function MyMemories(props: Readonly<MyMemoriesProps>) {
             });
     };
 
+    const handleMatchIdChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setEditedMemory(prev => {
+            if (prev) {
+                return { ...prev, matchId: parseInt(e.target.value) }; // Setze matchId im editedMemory
+            }
+            return prev;
+        });
+    };
+
     return (
         <div>
             {isEditing ? (
@@ -183,7 +192,7 @@ export default function MyMemories(props: Readonly<MyMemoriesProps>) {
                             <input
                                 className="input-small"
                                 type="text"
-                                value={editedMemory?.name || ""}
+                                value={editedMemory?.name ?? ""}
                                 onChange={(e) =>
                                     setEditedMemory({ ...editedMemory!, name: e.target.value })
                                 }
@@ -203,10 +212,27 @@ export default function MyMemories(props: Readonly<MyMemoriesProps>) {
                         </label>
 
                         <label>
+                            MatchId:
+                            <select
+                                className="input-small"
+                                value={editedMemory?.matchId ?? ""} // Setze den Wert aus editedMemory
+                                onChange={handleMatchIdChange} // Event-Handler für matchId
+                            >
+                                <option value="">Select Match ID</option> {/* Standardwert */}
+                                {/* Dynamische Erstellung der Optionen für MatchId von 1 bis 20 */}
+                                {Array.from({ length: 20 }, (_, index) => (
+                                    <option key={index + 1} value={index + 1}>
+                                        Game {index + 1}
+                                    </option>
+                                ))}
+                            </select>
+                        </label>
+
+                        <label>
                             Description:
                             <textarea
                                 className="textarea-large"
-                                value={editedMemory?.description || ""}
+                                value={editedMemory?.description ?? ""}
                                 onChange={(e) =>
                                     setEditedMemory({ ...editedMemory!, description: e.target.value })
                                 }
