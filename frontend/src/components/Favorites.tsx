@@ -14,7 +14,7 @@ export default function Favorites(props: Readonly<FavoritesProps>) {
 
     useEffect(() => {
         axios
-            .get(`/api/memories/favorites`)
+            .get(`/api/memory-hub/favorites`)
             .then((response) => {
                 setFavoritesMemories(response.data);
             })
