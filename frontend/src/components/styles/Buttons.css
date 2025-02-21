@@ -54,3 +54,13 @@
 .favorite-off {
     color: #999;
 }
+
+#button-favorite-memory-card {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    outline: none;
+}
