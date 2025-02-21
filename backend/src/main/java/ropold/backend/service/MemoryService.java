@@ -104,6 +104,7 @@ public class MemoryService {
         return memoryRepository.save(updatedMemoryModel);
     }
 
+    //Not Used
     public List<MemoryModel> getMemoriesByMatchId(int matchId) {
         return memoryRepository.findAll().stream()
                 .filter(memory -> memory.matchId() == matchId)
