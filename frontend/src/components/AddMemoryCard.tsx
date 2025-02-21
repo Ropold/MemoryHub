@@ -27,25 +27,19 @@ export default function AddMemoryCard(props: Readonly<MemoryCardProps>) {
 
     // useEffect, um imageUrl zu setzen, wenn die Kategorie sich ändert und GitHub Avatar ausgewählt wird
     useEffect(() => {
-        if (category === "GITHUB_AVATAR" && props.userDetails?.html_url) {
-            setImageUrl(props.userDetails.html_url); // Setze imageUrl auf die GitHub URL
+        if (category === "GITHUB_AVATAR" && props.userDetails?.avatar_url) {
+            setImageUrl(props.userDetails.avatar_url); // Setze imageUrl auf die GitHub URL
         } else {
             setImageUrl(""); // Leere das imageUrl bei anderen Kategorien
         }
-    }, [category, props.userDetails?.html_url]); // Abhängig von der Kategorie und der GitHub-URL des Benutzers
+    }, [category, props.userDetails?.avatar_url]); // Abhängig von der Kategorie und der GitHub-URL des Benutzers
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        const data = new FormData();
-
-        if (image) {
-            data.append("image", image);
-        }
-
         const memoryData = {
             name,
-            matchId: matchId, // matchId als number
+            matchId,
             category,
             description,
             isActive: true,
@@ -56,35 +50,69 @@ export default function AddMemoryCard(props: Readonly<MemoryCardProps>) {
             imageUrl: imageUrl,
         };
 
-        data.append("memoryModelDto", new Blob([JSON.stringify(memoryData)], {type: "application/json"}));
+        if (category === "GITHUB_AVATAR") {
+            // JSON-POST an den Avatar-Endpunkt
+            axios
+                .post("/api/memory-hub/avatar", memoryData, {
+                    headers: {
+                        "Content-Type": "application/json",
+                    }
+                })
+                .then((response) => {
+                    console.log("Avatar Memory gespeichert:", response.data);
+                    navigate(`/memory/${response.data.id}`);
+                })
+                .catch((error) => {
+                    if (error.response && error.response.status === 400 && error.response.data) {
+                        const errorMessages = error.response.data;
+                        const errors: string[] = [];
+                        Object.keys(errorMessages).forEach((field) => {
+                            errors.push(`${field}: ${errorMessages[field]}`);
+                        });
 
-        console.log("memoryData:", memoryData);
+                        setErrorMessages(errors);
+                        setShowPopup(true);
+                    } else {
+                        alert("An unexpected error occurred. Please try again.");
+                    }
+                });
+        } else {
+            // Multipart-POST an den Standard-Endpunkt
+            const data = new FormData();
 
-        axios
-            .post("/api/memory-hub", data, {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                }
-            })
-            .then((response) => {
-                console.log("Antwort vom Server:", response.data);
-                navigate(`/memory/${response.data.id}`);
-            })
-            .catch((error) => {
-                if (error.response && error.response.status === 400 && error.response.data) {
-                    const errorMessages = error.response.data;
-                    const errors: string[] = [];
-                    Object.keys(errorMessages).forEach((field) => {
-                        errors.push(`${field}: ${errorMessages[field]}`);
-                    });
+            if (image) {
+                data.append("image", image);
+            }
 
-                    setErrorMessages(errors);
-                    setShowPopup(true);
-                } else {
-                    alert("An unexpected error occurred. Please try again.");
-                }
-            });
-    }
+            data.append("memoryModelDto", new Blob([JSON.stringify(memoryData)], { type: "application/json" }));
+
+            axios
+                .post("/api/memory-hub", data, {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    }
+                })
+                .then((response) => {
+                    console.log("Memory gespeichert:", response.data);
+                    navigate(`/memory/${response.data.id}`);
+                })
+                .catch((error) => {
+                    if (error.response && error.response.status === 400 && error.response.data) {
+                        const errorMessages = error.response.data;
+                        const errors: string[] = [];
+                        Object.keys(errorMessages).forEach((field) => {
+                            errors.push(`${field}: ${errorMessages[field]}`);
+                        });
+
+                        setErrorMessages(errors);
+                        setShowPopup(true);
+                    } else {
+                        alert("An unexpected error occurred. Please try again.");
+                    }
+                });
+        }
+    };
+
 
     const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
