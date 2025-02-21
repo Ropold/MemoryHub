@@ -104,6 +104,45 @@ public class MemoryService {
         return memoryRepository.save(updatedMemoryModel);
     }
 
+    public MemoryModel addMemoryAvatar(MemoryModel memoryModel) {
+        memoryModel = new MemoryModel(
+                idService.generateRandomId(),
+                memoryModel.name(),
+                memoryModel.matchId(),
+                memoryModel.category(),
+                memoryModel.description(),
+                memoryModel.isActive(),
+                memoryModel.appUserGithubId(),
+                memoryModel.appUserUsername(),
+                memoryModel.appUserAvatarUrl(),
+                memoryModel.appUserGithubUrl(),
+                memoryModel.imageUrl()
+        );
+        return memoryRepository.save(memoryModel);
+    }
+
+    public MemoryModel updateMemoryAvatar(String id, MemoryModel memoryModel) {
+        if (!memoryRepository.existsById(id)) {
+            throw new MemoryNotFoundException("No Memory found with ID: " + id);
+        }
+
+        MemoryModel updatedMemoryModel = new MemoryModel(
+                id,
+                memoryModel.name(),
+                memoryModel.matchId(),
+                memoryModel.category(),
+                memoryModel.description(),
+                memoryModel.isActive(),
+                memoryModel.appUserGithubId(),
+                memoryModel.appUserUsername(),
+                memoryModel.appUserAvatarUrl(),
+                memoryModel.appUserGithubUrl(),
+                memoryModel.imageUrl()
+        );
+        return memoryRepository.save(updatedMemoryModel);
+    }
+
+
     //Not Used
     public List<MemoryModel> getMemoriesByMatchId(int matchId) {
         return memoryRepository.findAll().stream()
