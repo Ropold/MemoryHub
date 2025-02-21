@@ -63,6 +63,7 @@ export default function Navbar(props: Readonly<NavbarProps>) {
 
             {props.user !== "anonymousUser" ? (
                 <>
+                    <button onClick={() => navigate(`/favorites`)}>Favorites</button>
                     <button onClick={() => navigate("/add")}>Add Memory</button>
                     <button onClick={() => navigate("/my-memories")}>My Memories</button>
                     <button onClick={() => navigate("/profile")}>Profile</button>

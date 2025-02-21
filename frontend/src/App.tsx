@@ -14,6 +14,7 @@ import AddMemoryCard from "./components/AddMemoryCard.tsx";
 import MyMemories from "./components/MyMemories.tsx";
 import {UserDetails} from "./components/model/UserDetailsModel.ts";
 import Details from "./components/Details.tsx";
+import Favorites from "./components/Favorites.tsx";
 
 export default function App() {
 
@@ -141,6 +142,7 @@ export default function App() {
         <Route path="/memory/:id" element={<Details allMemories={allMemories} />} />
 
         <Route element={<ProtectedRoute user={user} />}>
+            <Route path="/favorites" element={<Favorites favorites={favorites} user={user} toggleFavorite={toggleFavorite}/>} />
             <Route path="/my-memories" element={<MyMemories userDetails={userDetails} user={user} favorites={favorites} toggleFavorite={toggleFavorite} allMemories={allMemories} setAllMemories={setAllMemories}/>} />
             <Route path="/add" element={<AddMemoryCard userDetails={userDetails} handleSubmit={handleNewMemorySubmit} />} />
             <Route path="/profile" element={<Profile userDetails={userDetails} />} />
