@@ -12,3 +12,13 @@
     justify-content: center;
     padding: 16px;
 }
+
+.matchId-select {
+    width: 600px;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    margin: 16px auto; /* Automatische horizontale Zentrierung */
+    display: block; /* Damit es die ganze Breite nutzt */
+    text-align: center;
+}

@@ -20,6 +20,7 @@ export default function Play(props: Readonly<PlayProps>) {
 
     return (
         <div>
+            <div className="matchId-select">
             <label htmlFor="matchIdFilter">Wählen Sie eine Match-ID:</label>
             <select
                 id="matchIdFilter"
@@ -33,11 +34,11 @@ export default function Play(props: Readonly<PlayProps>) {
                     </option>
                 ))}
             </select>
+            </div>
 
             <div className="button-group">
             <button>Play</button>
             <button>Reset</button>
-            <button>Cheat - show all</button>
             </div>
 
             <PlayMemoryCard selectedMatchId={selectedMatchId} selectedMemoriesMatchId={selectedMemoriesMatchId}/>
