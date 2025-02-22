@@ -89,6 +89,11 @@ export default function Play(props: Readonly<PlayProps>) {
             </select>
             </div>
 
+            <div className="button-group">
+                <button>Play</button>
+                <button>Reset</button>
+            </div>
+
             <div className="game-board">
                 {cards.map(({ card, uniqueId }) => (
                     <PlayMemoryCard
