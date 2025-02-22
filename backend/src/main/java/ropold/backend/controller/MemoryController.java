@@ -106,6 +106,44 @@ public class MemoryController {
                 ));
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/avatar")
+    public MemoryModel addMemoryAvatar (@RequestBody MemoryModelDto memoryModelDto) {
+        return memoryService.addMemoryAvatar(
+                new MemoryModel(
+                        null,
+                        memoryModelDto.name(),
+                        memoryModelDto.matchId(),
+                        memoryModelDto.category(),
+                        memoryModelDto.description(),
+                        memoryModelDto.isActive(),
+                        memoryModelDto.appUserGithubId(),
+                        memoryModelDto.appUserUsername(),
+                        memoryModelDto.appUserAvatarUrl(),
+                        memoryModelDto.appUserGithubUrl(),
+                        memoryModelDto.imageUrl()
+                ));
+    }
+
+    @PutMapping("/avatar/{id}")
+    public MemoryModel updateMemoryAvatar(@PathVariable String id, @RequestBody MemoryModelDto memoryModelDto) {
+        return memoryService.updateMemoryAvatar(
+                id,
+                new MemoryModel(
+                        id,
+                        memoryModelDto.name(),
+                        memoryModelDto.matchId(),
+                        memoryModelDto.category(),
+                        memoryModelDto.description(),
+                        memoryModelDto.isActive(),
+                        memoryModelDto.appUserGithubId(),
+                        memoryModelDto.appUserUsername(),
+                        memoryModelDto.appUserAvatarUrl(),
+                        memoryModelDto.appUserGithubUrl(),
+                        memoryModelDto.imageUrl()
+                ));
+    }
+
     @PutMapping("/{id}")
     public MemoryModel updateMemory(
             @PathVariable String id,

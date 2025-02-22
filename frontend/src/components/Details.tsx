@@ -1,37 +1,76 @@
 import { MemoryModel } from "./model/MemoryModel.ts";
 import { useParams } from "react-router-dom";
 import {DefaultMemory} from "./model/DefaultMemory.ts";
+import "./styles/Details.css";
+import "./styles/Profile.css";
+import {useEffect, useState} from "react";
+import axios from "axios";
 
 type DetailsProps = {
     allMemories: MemoryModel[];
+    favorites: string[];
+    user: string;
+    toggleFavorite: (memoryId: string) => void;
 };
 
-
 export default function Details(props: Readonly<DetailsProps>) {
+    const [memory, setMemory] = useState<MemoryModel>(DefaultMemory);
     const { id } = useParams<{ id: string }>();
 
-    // Suche das Memory-Objekt mit der passenden ID
-    const memory = props.allMemories.find(mem => mem.id === id) || DefaultMemory;
+    const fetchMemoryDetails = () => {
+        if (!id) return;
+        axios
+            .get(`/api/memory-hub/${id}`)
+            .then((response) => setMemory(response.data))
+            .catch((error) => console.error("Error fetching memory details", error));
+    };
+
+    useEffect(() => {
+        fetchMemoryDetails();
+    }, [id]);
+
+    const isFavorite = props.favorites.includes(memory.id);
 
     return (
-        <div>
-            {memory ? (
+        <div className="memory-details">
+            <h2>{memory.name}</h2>
+            <p><strong>Category:</strong> {memory.category}</p>
+            <p><strong>MatchId:</strong> {memory.matchId}</p>
+            <p><strong>Description:</strong> {memory.description || "No description available"}</p>
+
+
+            {memory.imageUrl && (
+                <img src={memory.imageUrl} alt={memory.name} className="memory-card-image" />
+            )}
+
+            {props.user !== "anonymousUser" && (
+                <div className="button-group">
+                    <button
+                        onClick={() => props.toggleFavorite(memory.id)}
+                        className={isFavorite ? "favorite-on" : "favorite-off"}
+                    >
+                        ♥
+                    </button>
+                </div>
+            )}
+
+            <div className="profile-container">
+                <h3>Memory added by GitHub User</h3>
                 <div>
-                    <h3>{memory.name}</h3>
-                    <p><strong>Category:</strong> {memory.category}</p>
-                    <p><strong>Description:</strong> {memory.description}</p>
-                    <p><strong>Active:</strong> {memory.isActive ? "Yes" : "No"}</p>
+                    <p><strong>Username: </strong> {memory.appUserUsername}</p>
                     <p>
-                        <strong>Created by:</strong>
+                        <strong>GitHub Profile: </strong>
                         <a href={memory.appUserGithubUrl} target="_blank" rel="noopener noreferrer">
-                            {memory.appUserUsername}
+                            Visit Profile
                         </a>
                     </p>
-                    <img src={memory.imageUrl} alt={memory.name} width={300} />
+                    <img
+                        src={memory.appUserAvatarUrl}
+                        alt={`${memory.appUserUsername}'s avatar`}
+                        className="user-avatar"
+                    />
                 </div>
-            ) : (
-                <p>Memory not found.</p>
-            )}
+            </div>
         </div>
     );
 }
