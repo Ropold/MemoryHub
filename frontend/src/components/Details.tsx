@@ -3,6 +3,8 @@ import { useParams } from "react-router-dom";
 import {DefaultMemory} from "./model/DefaultMemory.ts";
 import "./styles/Details.css";
 import "./styles/Profile.css";
+import {useEffect, useState} from "react";
+import axios from "axios";
 
 type DetailsProps = {
     allMemories: MemoryModel[];
@@ -12,16 +14,30 @@ type DetailsProps = {
 };
 
 export default function Details(props: Readonly<DetailsProps>) {
+    const [memory, setMemory] = useState<MemoryModel>(DefaultMemory);
     const { id } = useParams<{ id: string }>();
 
-    const memory = props.allMemories.find(mem => mem.id === id) || DefaultMemory;
+    const fetchMemoryDetails = () => {
+        if (!id) return;
+        axios
+            .get(`/api/memory-hub/${id}`)
+            .then((response) => setMemory(response.data))
+            .catch((error) => console.error("Error fetching memory details", error));
+    };
+
+    useEffect(() => {
+        fetchMemoryDetails();
+    }, [id]);
+
     const isFavorite = props.favorites.includes(memory.id);
 
     return (
         <div className="memory-details">
             <h2>{memory.name}</h2>
             <p><strong>Category:</strong> {memory.category}</p>
-            <p><strong>Description:</strong> {memory.description}</p>
+            <p><strong>MatchId:</strong> {memory.matchId}</p>
+            <p><strong>Description:</strong> {memory.description || "No description available"}</p>
+
 
             {memory.imageUrl && (
                 <img src={memory.imageUrl} alt={memory.name} className="memory-card-image" />

@@ -35,7 +35,6 @@ export default function Navbar(props: Readonly<NavbarProps>) {
 
     return (
         <nav className="navbar">
-            <p>User: {props.user}</p>
             <div
                 className="clickable-header"
                 onClick={() => {

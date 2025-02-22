@@ -28,17 +28,20 @@ const SearchBar: React.FC<SearchBarProps> = ({
     };
 
     const handleCategoryChange = (event: ChangeEvent<HTMLSelectElement>) => {
-        const selectedValue = event.target.value as MemoryModel["category"] | "";
-        setSelectedCategory(selectedValue);
+        setSelectedCategory(event.target.value as MemoryModel["category"] | "");
+    };
+
+    const handleMatchIdChange = (event: ChangeEvent<HTMLSelectElement>) => {
+        onChange(event.target.value);
     };
 
     useEffect(() => {
-        const filtered = memories.filter((memory) => {
-            const lowerQuery = value.toLowerCase();
+        const lowerQuery = value.toLowerCase();
 
+        const filtered = memories.filter((memory) => {
             const matchesCategory = selectedCategory ? memory.category === selectedCategory : true;
             const matchesName = filterType === "name" && memory.name.toLowerCase().includes(lowerQuery);
-            const matchesMatchId = filterType === "matchId" && memory.matchId.toString().includes(lowerQuery);
+            const matchesMatchId = filterType === "matchId" && memory.matchId.toString() === value;
             const matchesAll =
                 filterType === "all" &&
                 (memory.name.toLowerCase().includes(lowerQuery) ||
@@ -91,6 +94,21 @@ const SearchBar: React.FC<SearchBarProps> = ({
                         <option value="">Filter by a category</option>
                         <option value="GITHUB_AVATAR">GitHub Avatar</option>
                         <option value="CLOUDINARY_IMAGE">Cloudinary Image</option>
+                    </select>
+                </label>
+                <label>
+                    <select
+                        className="input-small"
+                        value={filterType === "matchId" ? value : ""}
+                        onChange={handleMatchIdChange}
+                        disabled={filterType !== "matchId"}
+                    >
+                        <option value="">Filter by Match ID</option>
+                        {Array.from({ length: 20 }, (_, i) => i + 1).map((id) => (
+                            <option key={id} value={id.toString()}>
+                                {id}
+                            </option>
+                        ))}
                     </select>
                 </label>
             </div>
