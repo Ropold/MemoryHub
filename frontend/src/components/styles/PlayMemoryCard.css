@@ -37,3 +37,13 @@
     flex-wrap: wrap;
     justify-content: center;
 }
+
+.game-controls {
+    width: 600px;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    margin: 16px auto;
+    display: block;
+    text-align: center;
+}

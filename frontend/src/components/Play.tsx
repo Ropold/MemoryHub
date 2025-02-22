@@ -40,7 +40,7 @@ export default function Play(props: Readonly<PlayProps>) {
     }, [selectedMatchId, cardCount, props.activeMemories]);
 
     // Karte umdrehen
-    const flipCard = (uniqueId: string, matchId: number) => {
+    const flipCard = (uniqueId: string) => {
         if (flippedCards.length === 2 || flippedCards.includes(uniqueId)) {
             return;
         }
@@ -70,7 +70,7 @@ export default function Play(props: Readonly<PlayProps>) {
     return (
         <div>
             <h2>Memory Game</h2>
-
+            <div className="game-controls">
             {/* Auswahl für Match-ID */}
             <label htmlFor="matchIdFilter">Match-ID wählen:</label>
             <select id="matchIdFilter" value={selectedMatchId ?? ""} onChange={(e) => setSelectedMatchId(Number(e.target.value))}>
@@ -87,13 +87,14 @@ export default function Play(props: Readonly<PlayProps>) {
                 <option value={20}>20 Karten</option>
                 <option value={30}>30 Karten</option>
             </select>
+            </div>
 
             <div className="game-board">
                 {cards.map(({ card, uniqueId }) => (
                     <PlayMemoryCard
                         key={uniqueId}
                         memory={card}
-                        onClick={() => flipCard(uniqueId, card.matchId)}
+                        onClick={() => flipCard(uniqueId)}
                         isFlipped={flippedCards.includes(uniqueId)}
                         isMatched={matchedCards.includes(uniqueId)}
                     />
