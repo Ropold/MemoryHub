@@ -1,5 +1,6 @@
 import { MemoryModel } from "./model/MemoryModel.ts";
-import {useState} from "react";
+import {useEffect, useState} from "react";
+import PlayMemoryCard from "./PlayMemoryCard.tsx";
 
 type PlayProps = {
     activeMemories: MemoryModel[];
@@ -7,15 +8,18 @@ type PlayProps = {
 
 export default function Play(props: Readonly<PlayProps>) {
     const [selectedMatchId, setSelectedMatchId] = useState<number | null>(null);
+    const [selectedMemoriesMatchId, setSelectedMemoriesMatchId] = useState<MemoryModel[]>([]);
 
-    const filteredMemories = selectedMatchId
-        ? props.activeMemories.filter((memory) => memory.matchId === selectedMatchId)
-        : props.activeMemories;
+    useEffect(() => {
+        if (selectedMatchId) {
+            setSelectedMemoriesMatchId(props.activeMemories.filter(memory => memory.matchId === selectedMatchId));
+        } else {
+            setSelectedMemoriesMatchId(props.activeMemories);
+        }
+    }, [selectedMatchId, props.activeMemories]);
 
     return (
         <div>
-            <h2>MemoryHub - Play</h2>
-
             <label htmlFor="matchIdFilter">Wählen Sie eine Match-ID:</label>
             <select
                 id="matchIdFilter"
@@ -30,17 +34,14 @@ export default function Play(props: Readonly<PlayProps>) {
                 ))}
             </select>
 
-            <ul>
-                {filteredMemories.length > 0 ? (
-                    filteredMemories.map((memory) => (
-                        <li key={memory.id}>
-                            <h3>{memory.name}</h3>
-                        </li>
-                    ))
-                ) : (
-                    <li>Keine Erinnerungen gefunden.</li>
-                )}
-            </ul>
+            <div className="button-group">
+            <button>Play</button>
+            <button>Reset</button>
+            <button>Cheat - show all</button>
+            </div>
+
+            <PlayMemoryCard selectedMatchId={selectedMatchId} selectedMemoriesMatchId={selectedMemoriesMatchId}/>
+
         </div>
     );
 }
