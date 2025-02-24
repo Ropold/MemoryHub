@@ -45,7 +45,7 @@ export default function Navbar(props: Readonly<NavbarProps>) {
                 }}
             >
                 <h2 className="header-title">MemoryHub</h2>
-                <img src="/MemoryHub-logo-single.jpg" alt="MemoryHub Logo" className="logo-image" />
+                <img src="/src/assets/MemoryHub-logo-single.jpg" alt="MemoryHub Logo" className="logo-image" />
             </div>
 
             <button onClick={() => navigate("/play")}>Play</button>
