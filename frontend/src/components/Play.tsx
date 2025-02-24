@@ -8,38 +8,64 @@ type PlayProps = {
 
 export default function Play(props: Readonly<PlayProps>) {
     const [cards, setCards] = useState<{ card: MemoryModel; uniqueId: string }[]>([]);
+    const [previewCards, setPreviewCards] = useState<{ card: MemoryModel; uniqueId: string }[]>([]);
     const [flippedCards, setFlippedCards] = useState<string[]>([]);
     const [matchedCards, setMatchedCards] = useState<string[]>([]);
     const [selectedMatchId, setSelectedMatchId] = useState<number | null>(null);
-    const [cardCount, setCardCount] = useState<number>(10); // Standard: 10 Karten
-    const [isGameOver, setIsGameOver] = useState(false);
+    const [cardCount, setCardCount] = useState<number>(10);
+    const [showControls, setShowControls] = useState(true);
+    const [isGameStarted, setIsGameStarted] = useState(false);
+    const [showAnimation, setShowAnimation] = useState(false); // Zustand für die Animation
+    const [hasStarted, setHasStarted] = useState(false);
 
-    // Deck vorbereiten (mit Duplikaten)
     useEffect(() => {
-        if (!selectedMatchId) return;
+        if (selectedMatchId !== null) {
+            const filteredCards = props.activeMemories.filter(memory => memory.matchId === selectedMatchId);
 
-        // Karten nach matchId filtern
+            // Zeige alle Karten in der Vorschau, basierend auf der cardCount-Einstellung
+            const previewCards = filteredCards.slice(0, cardCount).map(memory => ({
+                card: memory,
+                uniqueId: memory.id + "-A"
+            }));
+
+            setPreviewCards(previewCards);
+        }
+    }, [selectedMatchId, cardCount, props.activeMemories]);
+
+
+
+    //win
+    useEffect(() => {
+        if (matchedCards.length === cards.length && hasStarted) {
+            setShowAnimation(true); // Animation starten, wenn das Spiel vorbei ist
+
+            setTimeout(() => {
+                setShowAnimation(false); // Animation nach 2 Sekunden ausblenden
+            }, 2000);
+        }
+    }, [matchedCards, cards, hasStarted]);
+
+    //start
+    useEffect(() => {
+        if (!isGameStarted || !selectedMatchId) return;
+
+        setHasStarted(true);
+
         let filteredCards = props.activeMemories.filter(memory => memory.matchId === selectedMatchId);
+        filteredCards = filteredCards.slice(0, cardCount / 2);
 
-        // Begrenzung auf die ausgewählte Kartenanzahl
-        filteredCards = filteredCards.slice(0, cardCount / 2); // Weil jede Karte doppelt vorkommt
-
-        // Duplikate erstellen mit **eindeutiger ID**
         let allCards = filteredCards.flatMap(memory => [
             { card: memory, uniqueId: memory.id + "-A" },
             { card: memory, uniqueId: memory.id + "-B" }
         ]);
 
-        // Karten mischen
         allCards = allCards.sort(() => Math.random() - 0.5);
 
         setCards(allCards);
         setFlippedCards([]);
         setMatchedCards([]);
-        setIsGameOver(false);
-    }, [selectedMatchId, cardCount, props.activeMemories]);
+    }, [selectedMatchId, cardCount, isGameStarted, props.activeMemories]);
 
-    // Karte umdrehen
     const flipCard = (uniqueId: string) => {
         if (flippedCards.length === 2 || flippedCards.includes(uniqueId)) {
             return;
@@ -60,38 +86,69 @@ export default function Play(props: Readonly<PlayProps>) {
         }
     };
 
-    // Spiel gewonnen?
-    useEffect(() => {
-        if (matchedCards.length === cards.length) {
-            setIsGameOver(true);
-        }
-    }, [matchedCards, cards]);
-
     return (
         <div>
-            <h2>Memory Game</h2>
-            <div className="game-controls">
-            {/* Auswahl für Match-ID */}
-            <label htmlFor="matchIdFilter">Match-ID wählen:</label>
-            <select id="matchIdFilter" value={selectedMatchId ?? ""} onChange={(e) => setSelectedMatchId(Number(e.target.value))}>
-                <option value="">Bitte wählen</option>
-                {[...new Set(props.activeMemories.map(m => m.matchId))].map(matchId => (
-                    <option key={matchId} value={matchId}>{matchId}</option>
-                ))}
-            </select>
-
-            {/* Auswahl für Kartenanzahl */}
-            <label htmlFor="cardCount">Anzahl der Karten:</label>
-            <select id="cardCount" value={cardCount} onChange={(e) => setCardCount(Number(e.target.value))}>
-                <option value={10}>10 Karten</option>
-                <option value={20}>20 Karten</option>
-                <option value={30}>30 Karten</option>
-            </select>
+            <div className="button-group">
+                <button
+                    onClick={() => {
+                        setIsGameStarted(true);
+                        setShowControls(false);
+                    }}
+                    disabled={isGameStarted || selectedMatchId === null}
+                    id={selectedMatchId ? "play-button-enabled" : "play-button-disabled"}
+                >
+                    Play
+                </button>
+                <button onClick={() => setShowControls(prev => !prev)} id={showControls ? "button-options-active" : "button-options"}>
+                    {showControls ? "Hide Options" : "Options"}
+                </button>
+                <button
+                    onClick={() => {
+                        setIsGameStarted(false);
+                        setShowControls(true);
+                        setSelectedMatchId(null);
+                        setCardCount(10);
+                        setCards([]);
+                        setFlippedCards([]);
+                        setMatchedCards([]);
+                        setShowAnimation(false);
+                        setHasStarted(false);
+                    }}
+                >
+                    Reset
+                </button>
             </div>
 
-            <div className="button-group">
-                <button>Play</button>
-                <button>Reset</button>
+            {showControls && (
+                <div className="game-controls">
+                    <label htmlFor="matchIdFilter">Match-ID wählen:</label>
+                    <select id="matchIdFilter" value={selectedMatchId ?? ""} onChange={(e) => setSelectedMatchId(Number(e.target.value))}>
+                        <option value="">Bitte wählen</option>
+                        {[...new Set(props.activeMemories.map(m => m.matchId))].map(matchId => (
+                            <option key={matchId} value={matchId}>{matchId}</option>
+                        ))}
+                    </select>
+
+                    <label htmlFor="cardCount">Anzahl der Karten:</label>
+                    <select id="cardCount" value={cardCount} onChange={(e) => setCardCount(Number(e.target.value))}>
+                        <option value={10}>10 Karten</option>
+                        <option value={20}>20 Karten</option>
+                        <option value={30}>30 Karten</option>
+                    </select>
+                </div>
+            )}
+
+            {/* Preview der Karten */}
+            <div className="preview-board">
+                {selectedMatchId !== null && !isGameStarted && previewCards.map(({ card, uniqueId }) => (
+                    <PlayMemoryCard
+                        key={uniqueId}
+                        memory={card}
+                        isFlipped={true}
+                        isMatched={false}
+                        onClick={() => {}}
+                    />
+                ))}
             </div>
 
             <div className="game-board">
@@ -106,7 +163,11 @@ export default function Play(props: Readonly<PlayProps>) {
                 ))}
             </div>
 
-            {isGameOver && <h3>Game Over! You Win!</h3>}
+            {showAnimation && (
+                <div className="win-animation">
+                    <h2>You Win!</h2>
+                </div>
+            )}
         </div>
     );
 }

@@ -35,6 +35,11 @@ const SearchBar: React.FC<SearchBarProps> = ({
         onChange(event.target.value);
     };
 
+    // Extrahiere die eindeutigen matchIds aus den Erinnerungen
+    const matchIds = Array.from(
+        new Set(memories.map((memory) => memory.matchId.toString()))
+    );
+
     useEffect(() => {
         const lowerQuery = value.toLowerCase();
 
@@ -104,8 +109,8 @@ const SearchBar: React.FC<SearchBarProps> = ({
                         disabled={filterType !== "matchId"}
                     >
                         <option value="">Filter by Match ID</option>
-                        {Array.from({ length: 20 }, (_, i) => i + 1).map((id) => (
-                            <option key={id} value={id.toString()}>
+                        {matchIds.map((id) => (
+                            <option key={id} value={id}>
                                 {id}
                             </option>
                         ))}

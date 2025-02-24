@@ -1,12 +1,12 @@
 .play-card {
-    width: 100px;
-    height: 150px;
-    margin: 10px;
-    display: inline-block;
-    position: relative;
+    width: 150px;
+    height: 200px;
     cursor: pointer;
     transition: transform 0.3s;
     text-align: center;
+    background-color: #f1f1f1; /* Beispiel Hintergrundfarbe */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .play-card.flipped,
@@ -14,15 +14,11 @@
     transform: rotateY(180deg);
 }
 
-.card-back {
-    width: 100%;
-    height: 100%;
-    background-color: #ccc;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 24px;
+.card-back-image {
+    width: 130px;
+    height: 150px;
     border-radius: 8px;
+    margin-top: 20px;
 }
 
 .play-card-image {
@@ -32,10 +28,24 @@
     border-radius: 8px;
 }
 
+.preview-board{
+    width: 90%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Dynamische Spalten, die sich anpassen */
+    gap: 10px; /* Abstände zwischen den Karten */
+    margin: 0 auto;
+    justify-items: center; /* Karten horizontal zentrieren */
+    padding: 20px 0;
+}
+
 .game-board {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    width: 90%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Dynamische Spalten, die sich anpassen */
+    gap: 10px; /* Abstände zwischen den Karten */
+    margin: 0 auto;
+    justify-items: center; /* Karten horizontal zentrieren */
+    padding: 20px 0;
 }
 
 .game-controls {
@@ -46,4 +56,33 @@
     margin: 16px auto;
     display: block;
     text-align: center;
+}
+
+.win-animation {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2rem;
+    color: white;
+    background-color: #28a745;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    animation: bounceIn 1s ease-out forwards;
+}
+
+@keyframes bounceIn {
+    0% {
+        transform: translate(-50%, -50%) scale(0.5);
+        opacity: 0;
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.1);
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
 }
