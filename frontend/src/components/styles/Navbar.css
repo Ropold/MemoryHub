@@ -36,7 +36,7 @@
 }
 
 .logo-image {
-    height: 20px;
+    height: 30px;
     width: auto;
     margin-left: 5px;
     margin-right: 5px;
@@ -48,6 +48,16 @@
 
 .header-title {
     margin: 2px;
+    font-family: inherit;
+    font-size: 1em; /* Standard-Button-Schriftgröße */
+    font-weight: 650;
+    text-align: center; /* Zentrierter Text */
+    background: none; /* Kein Hintergrund, weil der div-Container schon styled */
+    border: none; /* Kein Rahmen, da der Button-Container das übernimmt */
+    padding: 6px 12px; /* Ähnlicher Innenabstand wie ein Button */
+    cursor: pointer; /* Zeigt an, dass es klickbar ist */
+    text-transform: none; /* Falls Buttons sonst in Großbuchstaben sind */
+    letter-spacing: normal; /* Falls nötig, um Button-Text nachzubilden */
 }
 
 .toggle-search-on{
