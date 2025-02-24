@@ -11,14 +11,28 @@ export default function Play(props: Readonly<PlayProps>) {
     const [flippedCards, setFlippedCards] = useState<string[]>([]);
     const [matchedCards, setMatchedCards] = useState<string[]>([]);
     const [selectedMatchId, setSelectedMatchId] = useState<number | null>(null);
-    const [cardCount, setCardCount] = useState<number>(10); // Standard: 10 Karten
+    const [cardCount, setCardCount] = useState<number>(10);
     const [isGameOver, setIsGameOver] = useState(false);
     const [showControls, setShowControls] = useState(true);
-    const [isGameStarted, setIsGameStarted] = useState(false); // Zustand, der festlegt, ob das Spiel gestartet ist
+    const [isGameStarted, setIsGameStarted] = useState(false);
+    const [showPopup, setShowPopup] = useState(false);
+    const [hasStarted, setHasStarted] = useState(false); // Zustand für Spielstart
 
-    // Deck vorbereiten (mit Duplikaten) nur, wenn das Spiel gestartet wurde
+    useEffect(() => {
+        if (matchedCards.length === cards.length && hasStarted) {
+            setIsGameOver(true);
+            setShowPopup(true); // Zeigt das Popup nur wenn das Spiel gestartet wurde
+        }
+    }, [matchedCards, cards, hasStarted]);
+
+    const handleClosePopup = () => {
+        setShowPopup(false);
+    };
+
     useEffect(() => {
         if (!isGameStarted || !selectedMatchId) return;
+
+        setHasStarted(true); // Spiel wurde gestartet
 
         let filteredCards = props.activeMemories.filter(memory => memory.matchId === selectedMatchId);
         filteredCards = filteredCards.slice(0, cardCount / 2);
@@ -36,7 +50,6 @@ export default function Play(props: Readonly<PlayProps>) {
         setIsGameOver(false);
     }, [selectedMatchId, cardCount, isGameStarted, props.activeMemories]);
 
-    // Karte umdrehen
     const flipCard = (uniqueId: string) => {
         if (flippedCards.length === 2 || flippedCards.includes(uniqueId)) {
             return;
@@ -57,20 +70,13 @@ export default function Play(props: Readonly<PlayProps>) {
         }
     };
 
-    // Spiel gewonnen?
-    useEffect(() => {
-        if (matchedCards.length === cards.length) {
-            setIsGameOver(true);
-        }
-    }, [matchedCards, cards]);
-
     return (
         <div>
             <div className="button-group">
                 <button
                     onClick={() => {
-                        setIsGameStarted(true);  // Spiel starten
-                        setShowControls(false);  // Optionen ausblenden
+                        setIsGameStarted(true);
+                        setShowControls(false);
                     }}
                     disabled={isGameStarted || selectedMatchId === null}
                     id={selectedMatchId ? "play-button-enabled" : "play-button-disabled"}
@@ -90,11 +96,11 @@ export default function Play(props: Readonly<PlayProps>) {
                         setFlippedCards([]);
                         setMatchedCards([]);
                         setIsGameOver(false);
+                        setHasStarted(false); // Spiel zurücksetzen
                     }}
                 >
                     Reset
                 </button>
-
             </div>
 
             {showControls && (
@@ -129,6 +135,18 @@ export default function Play(props: Readonly<PlayProps>) {
             </div>
 
             {isGameOver && <h3>Game Over! You Win!</h3>}
+
+            {showPopup && (
+                <div className="popup-overlay">
+                    <div className="popup-content">
+                        <h3>Congratulations!</h3>
+                        <p>You have won the game!</p>
+                        <div className="popup-actions">
+                            <button className="popup-cancel" onClick={handleClosePopup}>Close</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

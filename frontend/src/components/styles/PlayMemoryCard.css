@@ -1,6 +1,6 @@
 .play-card {
-    width: 100px;
-    height: 150px;
+    width: 150px;
+    height: 200px;
     margin: 10px;
     display: inline-block;
     position: relative;
@@ -15,8 +15,8 @@
 }
 
 .card-back-image {
-    width: 100px;
-    height: 110px;
+    width: 130px;
+    height: 150px;
     border-radius: 8px;
     margin-top: 20px;
 }
@@ -29,9 +29,11 @@
 }
 
 .game-board {
+    width: 80%;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+    margin: 0 auto;
 }
 
 .game-controls {
