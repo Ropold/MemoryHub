@@ -144,9 +144,9 @@ export default function Play(props: Readonly<PlayProps>) {
                     <PlayMemoryCard
                         key={uniqueId}
                         memory={card}
-                        isFlipped={true} // In der Preview Karten nicht umdrehen
-                        isMatched={false} // In der Preview sind alle Karten ungematched
-                        onClick={() => {}} // Keine Funktionalität in der Preview
+                        isFlipped={true}
+                        isMatched={false}
+                        onClick={() => {}}
                     />
                 ))}
             </div>
