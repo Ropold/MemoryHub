@@ -14,7 +14,7 @@ export default function PlayMemoryCard(props: Readonly<PlayMemoryCardProps>) {
             {props.isFlipped || props.isMatched ? (
                 <img src={props.memory.imageUrl} alt={props.memory.name} className="play-card-image" />
             ) : (
-                <img src="/public/flip-card-cover.png" alt="Card Back" className="card-back-image" />
+                <img src="/flip-card-cover.png" alt="Card Back" className="card-back-image" />
             )}
         </div>
     );
