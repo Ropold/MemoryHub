@@ -28,7 +28,8 @@ export default function Play(props: Readonly<PlayProps>) {
     const [showAnimation, setShowAnimation] = useState(false);
     const [hasStarted, setHasStarted] = useState(false);
 
-    // Vorschau der Karten (randomized selection)
+
+// Vorschau der Karten (neu laden, wenn MatchId oder Anzahl sich ändert)
     useEffect(() => {
         if (selectedMatchId !== null) {
             let filteredCards = props.activeMemories.filter(memory => memory.matchId === selectedMatchId);
@@ -42,16 +43,30 @@ export default function Play(props: Readonly<PlayProps>) {
             }));
 
             setPreviewCards(previewCards);
+
+            // Spielfeld resetten, damit nur die Vorschau sichtbar ist
+            setCards([]);
+            setIsGameStarted(false);
+            setMatchedCards([]);
+            setFlippedCards([]);
+            setShowAnimation(false); // Win-Animation zurücksetzen
+            setHasStarted(false); // Spielstatus zurücksetzen
         }
     }, [selectedMatchId, cardCount, props.activeMemories]);
+
+
 
     // Win-Animation auslösen
     useEffect(() => {
         if (matchedCards.length === cards.length && hasStarted) {
             setShowAnimation(true);
-            setTimeout(() => setShowAnimation(false), 2000);
+            setTimeout(() => {
+                setShowAnimation(false);
+                setIsGameStarted(false);
+            }, 2000);
         }
     }, [matchedCards, cards, hasStarted]);
+
 
     // Spielstart und Kartenmischen
     useEffect(() => {
@@ -99,6 +114,8 @@ export default function Play(props: Readonly<PlayProps>) {
         }
     };
 
+    const hasGameEnded = matchedCards.length === cards.length && cards.length > 0;
+
     return (
         <div>
             <div className="space-between">
@@ -112,9 +129,14 @@ export default function Play(props: Readonly<PlayProps>) {
                 >
                     Start Game
                 </button>
-                <button onClick={() => setShowControls(prev => !prev)} id={showControls ? "button-options-active" : "button-options"}>
+                <button
+                    onClick={() => setShowControls(prev => !prev)}
+                    id={showControls ? "button-options-active" : undefined} // Setzt die ID basierend auf `showControls`
+                    className={`button-group-button ${showControls ? "" : "some-other-class"}`} // Kombiniert beide Klassen
+                >
                     {showControls ? "Hide Options" : "Options"}
                 </button>
+
                 <button
                     className="button-group-button"
                     onClick={() => {
@@ -153,9 +175,9 @@ export default function Play(props: Readonly<PlayProps>) {
                 </div>
             )}
 
-            {/* Vorschau der Karten */}
+            {/* Vorschau nur anzeigen, wenn das Spiel nicht gestartet oder beendet ist */}
             <div className="preview-board">
-                {selectedMatchId !== null && !isGameStarted && previewCards.map(({ card, uniqueId }) => (
+                {selectedMatchId !== null && !isGameStarted && !hasGameEnded && previewCards.map(({ card, uniqueId }) => (
                     <PlayMemoryCard
                         key={uniqueId}
                         memory={card}
@@ -166,9 +188,9 @@ export default function Play(props: Readonly<PlayProps>) {
                 ))}
             </div>
 
-            {/* Spielfeld */}
+            {/* Spielfeld bleibt am Ende stehen */}
             <div className="game-board">
-                {cards.map(({ card, uniqueId }) => (
+                {(isGameStarted || hasGameEnded) && cards.map(({ card, uniqueId }) => (
                     <PlayMemoryCard
                         key={uniqueId}
                         memory={card}
@@ -178,6 +200,7 @@ export default function Play(props: Readonly<PlayProps>) {
                     />
                 ))}
             </div>
+
 
             {showAnimation && (
                 <div className="win-animation">
