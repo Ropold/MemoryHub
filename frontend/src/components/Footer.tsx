@@ -1,7 +1,8 @@
+import "./styles/Navbar.css";
 
-export default function Footer () {
+export default function Footer() {
     return (
-        <footer>
+        <footer className="footer">
             <p>MemoryHub © 2025 by R.Stolz</p>
         </footer>
     );

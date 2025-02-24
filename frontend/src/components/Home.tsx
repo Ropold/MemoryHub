@@ -18,13 +18,34 @@ export default function Home(props: Readonly<HomeProps>) {
     const [filteredMemories, setFilteredMemories] = useState<MemoryModel[]>([]);
     const [filterType, setFilterType] = useState<"name" | "category" | "matchId" | "all">("name");
     const [selectedCategory, setSelectedCategory] = useState<MemoryModel["category"] | "">("");
-    const memoriesPerPage = 9;
+    const [memoriesPerPage, setMemoriesPerPage] = useState<number>(9);
+
 
     useEffect(() => {
         if (!props.showSearch) {
             setSearchQuery("");
         }
     }, [props.showSearch]);
+
+    useEffect(() => {
+        const updateMemoriesPerPage = () => {
+            if (window.innerWidth < 768) {
+                setMemoriesPerPage(8); // Kleine Bildschirme → 8 Karten
+            } else if (window.innerWidth < 1200) {
+                setMemoriesPerPage(9); // Mittelgroße Bildschirme → 9 Karten
+            } else {
+                setMemoriesPerPage(12); // Große Bildschirme → 12 Karten
+            }
+        };
+
+        updateMemoriesPerPage(); // Direkt beim ersten Render aufrufen
+        window.addEventListener("resize", updateMemoriesPerPage);
+
+        return () => {
+            window.removeEventListener("resize", updateMemoriesPerPage);
+        };
+    }, []);
+
 
     useEffect(() => {
         const filtered = filterMemories(props.activeMemories, searchQuery, filterType, selectedCategory);
@@ -55,6 +76,7 @@ export default function Home(props: Readonly<HomeProps>) {
         const totalPages = Math.ceil(memories.length / memoriesPerPage);
         return { currentMemories, totalPages };
     };
+
 
     const { currentMemories, totalPages } = getPaginationData(filteredMemories);
 
