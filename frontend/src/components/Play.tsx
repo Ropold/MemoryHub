@@ -14,31 +14,27 @@ export default function Play(props: Readonly<PlayProps>) {
     const [cardCount, setCardCount] = useState<number>(10); // Standard: 10 Karten
     const [isGameOver, setIsGameOver] = useState(false);
     const [showControls, setShowControls] = useState(true);
+    const [isGameStarted, setIsGameStarted] = useState(false); // Zustand, der festlegt, ob das Spiel gestartet ist
 
-    // Deck vorbereiten (mit Duplikaten)
+    // Deck vorbereiten (mit Duplikaten) nur, wenn das Spiel gestartet wurde
     useEffect(() => {
-        if (!selectedMatchId) return;
+        if (!isGameStarted || !selectedMatchId) return;
 
-        // Karten nach matchId filtern
         let filteredCards = props.activeMemories.filter(memory => memory.matchId === selectedMatchId);
+        filteredCards = filteredCards.slice(0, cardCount / 2);
 
-        // Begrenzung auf die ausgewählte Kartenanzahl
-        filteredCards = filteredCards.slice(0, cardCount / 2); // Weil jede Karte doppelt vorkommt
-
-        // Duplikate erstellen mit **eindeutiger ID**
         let allCards = filteredCards.flatMap(memory => [
             { card: memory, uniqueId: memory.id + "-A" },
             { card: memory, uniqueId: memory.id + "-B" }
         ]);
 
-        // Karten mischen
         allCards = allCards.sort(() => Math.random() - 0.5);
 
         setCards(allCards);
         setFlippedCards([]);
         setMatchedCards([]);
         setIsGameOver(false);
-    }, [selectedMatchId, cardCount, props.activeMemories]);
+    }, [selectedMatchId, cardCount, isGameStarted, props.activeMemories]);
 
     // Karte umdrehen
     const flipCard = (uniqueId: string) => {
@@ -71,8 +67,10 @@ export default function Play(props: Readonly<PlayProps>) {
     return (
         <div>
             <div className="button-group">
-                <button>Play</button>
-                <button onClick={()=> setShowControls(prev => !prev)} id={showControls ? "button-options-active" : "button-options"}>{showControls ? "Hide Options" : "Options"}</button>
+                <button onClick={() => setIsGameStarted(true)} disabled={isGameStarted}>Play</button> {/* Play-Button zum Starten */}
+                <button onClick={() => setShowControls(prev => !prev)} id={showControls ? "button-options-active" : "button-options"}>
+                    {showControls ? "Hide Options" : "Options"}
+                </button>
                 <button>Reset</button>
             </div>
 
