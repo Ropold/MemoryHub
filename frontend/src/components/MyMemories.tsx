@@ -16,11 +16,12 @@ type MyMemoriesProps = {
     toggleFavorite: (memoryId: string) => void;
     allMemories: MemoryModel[];
     setAllMemories: React.Dispatch<React.SetStateAction<MemoryModel[]>>;
+    isEditing: boolean;
+    setIsEditing: (value: boolean) => void;
 };
 
 export default function MyMemories(props: Readonly<MyMemoriesProps>) {
     const [userMemories, setUserMemories] = useState<MemoryModel[]>([]);
-    const [isEditing, setIsEditing] = useState<boolean>(false);
     const [editedMemory, setEditedMemory] = useState<MemoryModel | null>(null);
     const [image, setImage] = useState<File | null>(null);
     const [category, setCategory] = useState<Category>("CLOUDINARY_IMAGE");
@@ -28,10 +29,12 @@ export default function MyMemories(props: Readonly<MyMemoriesProps>) {
     const [showPopup, setShowPopup] = useState(false);
     const [memoryToDelete, setMemoryToDelete] = useState<string | null>(null);
 
+    // Filtere die Erinnerungen, die zum Benutzer gehören
     useEffect(() => {
         setUserMemories(props.allMemories.filter(memory => memory.appUserGithubId === props.user));
     }, [props.allMemories, props.user]);
 
+    // Setze das Avatar-Image, wenn die Kategorie auf "GITHUB_AVATAR" gesetzt ist
     useEffect(() => {
         if (category === "GITHUB_AVATAR" && props.userDetails?.avatar_url) {
             setImageUrl(props.userDetails.avatar_url);
@@ -48,8 +51,9 @@ export default function MyMemories(props: Readonly<MyMemoriesProps>) {
         const memoryToEdit = props.allMemories.find(memory => memory.id === memoryId);
         if (memoryToEdit) {
             setEditedMemory(memoryToEdit);
-            setIsEditing(true);
+            props.setIsEditing(true); // Umschalten in den Bearbeitungsmodus
 
+            // Setze die Kategorie, falls erforderlich
             if (memoryToEdit.imageUrl === memoryToEdit.appUserAvatarUrl) {
                 setCategory("GITHUB_AVATAR");
             } else {
@@ -67,15 +71,14 @@ export default function MyMemories(props: Readonly<MyMemoriesProps>) {
                     .then(response => response.blob())
                     .then(blob => {
                         const file = new File([blob], "current-image.jpg", { type: blob.type });
-                        setImage(file); // Setze das Bild als File
+                        setImage(file);
                     })
                     .catch(error => console.error("Error loading current image:", error));
             } else {
-                setImage(null); // Falls kein Bild vorhanden, setze das Bild auf null
+                setImage(null); // Setze das Bild auf null, wenn keins vorhanden ist
             }
         }
     };
-
 
     const handleSaveEdit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -83,7 +86,7 @@ export default function MyMemories(props: Readonly<MyMemoriesProps>) {
 
         if (category === "GITHUB_AVATAR") {
             // JSON-Request für GitHub Avatar
-            const updatedMemoryData = { ...editedMemory, imageUrl: imageUrl ?? "" }; // Nutze das imageUrl direkt
+            const updatedMemoryData = { ...editedMemory, imageUrl: imageUrl ?? "" };
 
             axios.put(`/api/memory-hub/avatar/${editedMemory.id}`, updatedMemoryData, {
                 headers: { "Content-Type": "application/json" }
@@ -92,7 +95,7 @@ export default function MyMemories(props: Readonly<MyMemoriesProps>) {
                     props.setAllMemories(prevMemories =>
                         prevMemories.map(memory => memory.id === editedMemory.id ? { ...memory, ...response.data } : memory)
                     );
-                    setIsEditing(false);
+                    props.setIsEditing(false); // Beende den Bearbeitungsmodus
                 })
                 .catch(error => {
                     console.error("Error saving changes:", error);
@@ -116,7 +119,7 @@ export default function MyMemories(props: Readonly<MyMemoriesProps>) {
                     props.setAllMemories(prevMemories =>
                         prevMemories.map(memory => memory.id === editedMemory.id ? { ...memory, ...response.data } : memory)
                     );
-                    setIsEditing(false);
+                    props.setIsEditing(false); // Beende den Bearbeitungsmodus
                 })
                 .catch(error => {
                     console.error("Error saving changes:", error);
@@ -181,9 +184,10 @@ export default function MyMemories(props: Readonly<MyMemoriesProps>) {
         });
     };
 
+
     return (
         <div>
-            {isEditing ? (
+            {props.isEditing ? (
                 <div className="edit-form">
                     <h2>Edit Memory</h2>
                     <form onSubmit={handleSaveEdit}>
@@ -263,7 +267,7 @@ export default function MyMemories(props: Readonly<MyMemoriesProps>) {
 
                         <div className="space-between">
                             <button className="button-group-button" type="submit">Save Changes</button>
-                            <button className="button-group-button" type="button" onClick={() => setIsEditing(false)}>
+                            <button className="button-group-button" type="button" onClick={() => props.setIsEditing(false)}>
                                 Cancel
                             </button>
                         </div>
