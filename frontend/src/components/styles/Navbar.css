@@ -46,3 +46,11 @@
 .header-title {
     margin: 2px;
 }
+
+.toggle-search-on{
+    background-color: #999;
+}
+
+.toggle-search-on:hover{
+    background-color: #555;
+}
