@@ -86,15 +86,18 @@ export default function Home(props: Readonly<HomeProps>) {
             </div>
 
             <div className="space-between">
-                {Array.from({ length: totalPages }, (_, index) => (
-                    <button
-                        key={index + 1}
-                        onClick={() => props.paginate(index + 1)}
-                        className={index + 1 === props.currentPage ? "active" : ""}
-                    >
-                        {index + 1}
-                    </button>
-                ))}
+                <div>
+                    {Array.from({ length: totalPages }, (_, index) => (
+                        <button
+                            key={index + 1}
+                            onClick={() => props.paginate(index + 1)}
+                            className="button-group-button"
+                            id={index + 1 === props.currentPage ? "active-paginate" : undefined} // ID nur für den aktiven Button
+                        >
+                            {index + 1}
+                        </button>
+                    ))}
+                </div>
             </div>
         </>
     );

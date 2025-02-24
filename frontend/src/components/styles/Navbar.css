@@ -73,3 +73,11 @@
 .toggle-search-on:hover{
     background-color: #555;
 }
+
+#active-paginate{
+    background-color: #999;
+}
+
+#active-paginate:hover{
+    background-color: #555;
+}
