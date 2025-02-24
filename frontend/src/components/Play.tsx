@@ -92,6 +92,8 @@ export default function Play(props: Readonly<PlayProps>) {
                         setCards([]);
                         setFlippedCards([]);
                         setMatchedCards([]);
+                        setShowAnimation(false);
+                        setHasStarted(false);
                     }}
                 >
                     Reset
