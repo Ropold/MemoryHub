@@ -8,8 +8,8 @@
 
 .memory-card {
     cursor: pointer;
-    height: 400px;
-    width: 400px;
+    height: 300px;
+    width: 300px;
     border: 1px solid #ddd; /* Dünne graue Grenze */
     border-radius: 12px; /* Abgerundete Ecken */
     padding: 20px;

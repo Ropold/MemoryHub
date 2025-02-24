@@ -1,23 +1,23 @@
-import {MemoryModel} from "./model/MemoryModel.ts";
+import { MemoryModel } from "./model/MemoryModel.ts";
 import "./styles/PlayMemoryCard.css";
 
 type PlayMemoryCardProps = {
-    selectedMatchId: number | null;
-    selectedMemoriesMatchId: MemoryModel[];
-}
+    memory: MemoryModel;
+    onClick: () => void;
+    isFlipped: boolean;
+    isMatched: boolean;
+};
 
 export default function PlayMemoryCard(props: Readonly<PlayMemoryCardProps>) {
     return (
-       <>
-        <h2>MatchId {props.selectedMatchId}</h2>
-        <div className="play-card">
-            {props.selectedMemoriesMatchId.map((memory) => (
-                <div key={memory.id}>
-                    <h3>{memory.name}</h3>
-                    <img src={memory.imageUrl} alt={memory.name} className="play-card-image" />
-                </div>
-            ))}
+        <div className={`play-card ${props.isFlipped ? "flipped" : ""} ${props.isMatched ? "matched" : ""}`} onClick={props.onClick}>
+            {props.isFlipped || props.isMatched ? (
+                <>
+                    <img src={props.memory.imageUrl} alt={props.memory.name} className="play-card-image" />
+                </>
+            ) : (
+                <div className="card-back">?</div>
+            )}
         </div>
-       </>
-    )
+    );
 }
