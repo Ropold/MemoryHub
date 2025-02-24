@@ -16,14 +16,16 @@
     display: flex;
     align-items: center;
     cursor: pointer;
-    background-color: #f9f9f9;
-    border-radius: 1px;
-    border: 1px solid transparent;
+    background-color: #66b3ff;
+    border-radius: 5px; /* Abgerundete Ecken */
+    border: 1px solid #007bff; /* Rahmen für Button-Look */
+    font-weight: bold; /* Fettgedruckter Text */
+    font-size: 16px;
+    transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
 }
 
 .clickable-header:hover {
-    border-color: #007BFF;
-    background-color: #f0f0f0;
+    background-color: #007bff;
 }
 
 /* Optional: Falls das Bild nicht die ganze Fläche ausfüllt */
@@ -36,7 +38,8 @@
 .logo-image {
     height: 20px;
     width: auto;
-    margin-left: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
     border: 1px solid #ccc;
     border-radius: 4px;
     transition: all 0.3s ease;

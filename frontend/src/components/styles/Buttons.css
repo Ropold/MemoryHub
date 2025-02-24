@@ -3,6 +3,10 @@
     background-color: #66b3ff;
 }
 
+.button-group-button:hover {
+    background-color: #007bff;
+}
+
 .space-between{
     display: flex;
     justify-content: center;
@@ -10,10 +14,6 @@
     gap: 10px;
     padding: 10px 20px;
     font-size: 1rem;
-}
-
-.button-group-button:hover {
-    background-color: #007bff;
 }
 
 /* Delete-Button */

@@ -74,5 +74,4 @@ export default function Navbar(props: Readonly<NavbarProps>) {
         </nav>
     );
 
-
 }
