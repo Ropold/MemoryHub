@@ -1,12 +1,12 @@
 .play-card {
     width: 150px;
     height: 200px;
-    margin: 10px;
-    display: inline-block;
-    position: relative;
     cursor: pointer;
     transition: transform 0.3s;
     text-align: center;
+    background-color: #f1f1f1; /* Beispiel Hintergrundfarbe */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .play-card.flipped,
@@ -29,11 +29,13 @@
 }
 
 .game-board {
-    width: 80%;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    width: 90%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Dynamische Spalten, die sich anpassen */
+    gap: 10px; /* Abstände zwischen den Karten */
     margin: 0 auto;
+    justify-items: center; /* Karten horizontal zentrieren */
+    padding: 20px 0;
 }
 
 .game-controls {
