@@ -8,6 +8,7 @@ type PlayProps = {
 
 export default function Play(props: Readonly<PlayProps>) {
     const [cards, setCards] = useState<{ card: MemoryModel; uniqueId: string }[]>([]);
+    const [previewCards, setPreviewCards] = useState<{ card: MemoryModel; uniqueId: string }[]>([]);
     const [flippedCards, setFlippedCards] = useState<string[]>([]);
     const [matchedCards, setMatchedCards] = useState<string[]>([]);
     const [selectedMatchId, setSelectedMatchId] = useState<number | null>(null);
@@ -18,6 +19,23 @@ export default function Play(props: Readonly<PlayProps>) {
     const [hasStarted, setHasStarted] = useState(false);
 
     useEffect(() => {
+        if (selectedMatchId !== null) {
+            const filteredCards = props.activeMemories.filter(memory => memory.matchId === selectedMatchId);
+
+            // Zeige alle Karten in der Vorschau, basierend auf der cardCount-Einstellung
+            const previewCards = filteredCards.slice(0, cardCount).map(memory => ({
+                card: memory,
+                uniqueId: memory.id + "-A"
+            }));
+
+            setPreviewCards(previewCards);
+        }
+    }, [selectedMatchId, cardCount, props.activeMemories]);
+
+
+
+    //win
+    useEffect(() => {
         if (matchedCards.length === cards.length && hasStarted) {
             setShowAnimation(true); // Animation starten, wenn das Spiel vorbei ist
 
@@ -27,6 +45,7 @@ export default function Play(props: Readonly<PlayProps>) {
         }
     }, [matchedCards, cards, hasStarted]);
 
+    //start
     useEffect(() => {
         if (!isGameStarted || !selectedMatchId) return;
 
@@ -118,6 +137,19 @@ export default function Play(props: Readonly<PlayProps>) {
                     </select>
                 </div>
             )}
+
+            {/* Preview der Karten */}
+            <div className="preview-board">
+                {selectedMatchId !== null && !isGameStarted && previewCards.map(({ card, uniqueId }) => (
+                    <PlayMemoryCard
+                        key={uniqueId}
+                        memory={card}
+                        isFlipped={true} // In der Preview Karten nicht umdrehen
+                        isMatched={false} // In der Preview sind alle Karten ungematched
+                        onClick={() => {}} // Keine Funktionalität in der Preview
+                    />
+                ))}
+            </div>
 
             <div className="game-board">
                 {cards.map(({ card, uniqueId }) => (
