@@ -52,7 +52,7 @@ export default function Home(props: Readonly<HomeProps>) {
         setFilteredMemories(filtered);
     }, [props.activeMemories, searchQuery, filterType, selectedCategory]);
 
-    const filterMemories = (memories: MemoryModel[], query: string, filterType: string, category: string | "") => {
+    const filterMemories = (memories: MemoryModel[], query: string, filterType: string, category: string | null) => {
         const lowerQuery = query.toLowerCase();
 
         return memories.filter((memory) => {
