@@ -12,27 +12,25 @@ export default function Play(props: Readonly<PlayProps>) {
     const [matchedCards, setMatchedCards] = useState<string[]>([]);
     const [selectedMatchId, setSelectedMatchId] = useState<number | null>(null);
     const [cardCount, setCardCount] = useState<number>(10);
-    const [isGameOver, setIsGameOver] = useState(false);
     const [showControls, setShowControls] = useState(true);
     const [isGameStarted, setIsGameStarted] = useState(false);
-    const [showPopup, setShowPopup] = useState(false);
-    const [hasStarted, setHasStarted] = useState(false); // Zustand für Spielstart
+    const [showAnimation, setShowAnimation] = useState(false); // Zustand für die Animation
+    const [hasStarted, setHasStarted] = useState(false);
 
     useEffect(() => {
         if (matchedCards.length === cards.length && hasStarted) {
-            setIsGameOver(true);
-            setShowPopup(true); // Zeigt das Popup nur wenn das Spiel gestartet wurde
+            setShowAnimation(true); // Animation starten, wenn das Spiel vorbei ist
+
+            setTimeout(() => {
+                setShowAnimation(false); // Animation nach 2 Sekunden ausblenden
+            }, 2000);
         }
     }, [matchedCards, cards, hasStarted]);
-
-    const handleClosePopup = () => {
-        setShowPopup(false);
-    };
 
     useEffect(() => {
         if (!isGameStarted || !selectedMatchId) return;
 
-        setHasStarted(true); // Spiel wurde gestartet
+        setHasStarted(true);
 
         let filteredCards = props.activeMemories.filter(memory => memory.matchId === selectedMatchId);
         filteredCards = filteredCards.slice(0, cardCount / 2);
@@ -47,7 +45,6 @@ export default function Play(props: Readonly<PlayProps>) {
         setCards(allCards);
         setFlippedCards([]);
         setMatchedCards([]);
-        setIsGameOver(false);
     }, [selectedMatchId, cardCount, isGameStarted, props.activeMemories]);
 
     const flipCard = (uniqueId: string) => {
@@ -95,8 +92,6 @@ export default function Play(props: Readonly<PlayProps>) {
                         setCards([]);
                         setFlippedCards([]);
                         setMatchedCards([]);
-                        setIsGameOver(false);
-                        setHasStarted(false); // Spiel zurücksetzen
                     }}
                 >
                     Reset
@@ -134,17 +129,9 @@ export default function Play(props: Readonly<PlayProps>) {
                 ))}
             </div>
 
-            {isGameOver && <h3>Game Over! You Win!</h3>}
-
-            {showPopup && (
-                <div className="popup-overlay">
-                    <div className="popup-content">
-                        <h3>Congratulations!</h3>
-                        <p>You have won the game!</p>
-                        <div className="popup-actions">
-                            <button className="popup-cancel" onClick={handleClosePopup}>Close</button>
-                        </div>
-                    </div>
+            {showAnimation && (
+                <div className="win-animation">
+                    <h2>You Win!</h2>
                 </div>
             )}
         </div>
