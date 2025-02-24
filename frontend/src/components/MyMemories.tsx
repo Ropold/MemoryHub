@@ -261,9 +261,9 @@ export default function MyMemories(props: Readonly<MyMemoriesProps>) {
                             )}
                         </label>
 
-                        <div className="button-group">
-                            <button type="submit">Save Changes</button>
-                            <button type="button" onClick={() => setIsEditing(false)}>
+                        <div className="space-between">
+                            <button className="button-group-button" type="submit">Save Changes</button>
+                            <button className="button-group-button" type="button" onClick={() => setIsEditing(false)}>
                                 Cancel
                             </button>
                         </div>
@@ -280,7 +280,7 @@ export default function MyMemories(props: Readonly<MyMemoriesProps>) {
                                     user={props.user}
                                     toggleFavorite={props.toggleFavorite}
                                 />
-                                <div className="button-group">
+                                <div className="space-between">
                                     <button
                                         id={memory.isActive ? "active-button" : "inactive-button"}
                                         onClick={() => handleToggleActiveStatus(memory.id)} // Event-Handler für das toggeln
@@ -288,7 +288,7 @@ export default function MyMemories(props: Readonly<MyMemoriesProps>) {
                                         {memory.isActive ? "Active" : "Offline"}
                                     </button>
 
-                                    <button onClick={() => handleEditToggle(memory.id)}>Edit</button>
+                                    <button className="button-group-button" onClick={() => handleEditToggle(memory.id)}>Edit</button>
                                     <button id="button-delete" onClick={() => handleDeleteClick(memory.id)}>
                                         Delete
                                     </button>

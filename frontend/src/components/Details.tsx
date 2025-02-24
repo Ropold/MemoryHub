@@ -44,14 +44,15 @@ export default function Details(props: Readonly<DetailsProps>) {
             )}
 
             {props.user !== "anonymousUser" && (
-                <div className="button-group">
+                <div>
                     <button
+                        className={`button-group-button ${isFavorite ? "favorite-on" : "favorite-off"}`}
                         onClick={() => props.toggleFavorite(memory.id)}
-                        className={isFavorite ? "favorite-on" : "favorite-off"}
                     >
                         ♥
                     </button>
                 </div>
+
             )}
 
             <div className="profile-container">

@@ -85,7 +85,7 @@ export default function Home(props: Readonly<HomeProps>) {
                 ))}
             </div>
 
-            <div className="button-group">
+            <div className="space-between">
                 {Array.from({ length: totalPages }, (_, index) => (
                     <button
                         key={index + 1}

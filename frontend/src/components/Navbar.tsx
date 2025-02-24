@@ -32,7 +32,6 @@ export default function Navbar(props: Readonly<NavbarProps>) {
             });
     }
 
-
     return (
         <nav className="navbar">
             <div
@@ -48,30 +47,31 @@ export default function Navbar(props: Readonly<NavbarProps>) {
                 <img src="/src/assets/MemoryHub-logo-single.jpg" alt="MemoryHub Logo" className="logo-image" />
             </div>
 
-            <button onClick={() => navigate("/play")}>Play</button>
+            <button id="play-button-navbar" onClick={() => navigate("/play")}>Play</button>
 
             <button
                 onClick={() => {
                     props.toggleSearchBar();
                     navigate("/");
                 }}
-                className={props.showSearch ? "toggle-search-on" : "toggle-search-off"}
+                className={props.showSearch ? "toggle-search-on" : "button-group-button"}
             >
                 {props.showSearch ? "Hide Search" : "Search"} {/* Dynamischer Text */}
             </button>
 
             {props.user !== "anonymousUser" ? (
                 <>
-                    <button onClick={() => navigate(`/favorites`)}>Favorites</button>
-                    <button onClick={() => navigate("/add")}>Add Memory</button>
-                    <button onClick={() => navigate("/my-memories")}>My Memories</button>
-                    <button onClick={() => navigate("/profile")}>Profile</button>
-                    <button onClick={logoutFromGithub}>Logout</button>
+                    <button className="button-group-button" onClick={() => navigate(`/favorites`)}>Favorites</button>
+                    <button className="button-group-button" onClick={() => navigate("/add")}>Add Memory</button>
+                    <button className="button-group-button" onClick={() => navigate("/my-memories")}>My Memories</button>
+                    <button className="button-group-button" onClick={() => navigate("/profile")}>Profile</button>
+                    <button className="button-group-button" onClick={logoutFromGithub}>Logout</button>
                 </>
             ) : (
-                <button onClick={loginWithGithub}>Login with GitHub</button>
+                <button className="button-group-button" onClick={loginWithGithub}>Login with GitHub</button>
             )}
         </nav>
     );
+
 
 }

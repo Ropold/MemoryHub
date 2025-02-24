@@ -201,8 +201,8 @@ export default function AddMemoryCard(props: Readonly<MemoryCardProps>) {
                     <img src={URL.createObjectURL(image)} className="memory-card-image" alt="Preview" />
                 )}
 
-                <div className="button-group">
-                    <button type="submit">Add Memory Card</button>
+                <div className="space-between">
+                    <button className="button-group-button" type="submit">Add Memory Card</button>
                 </div>
             </form>
 

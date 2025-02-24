@@ -30,7 +30,7 @@
 
 .preview-board{
     display: grid; /* Grid statt Flex verwenden */
-    grid-template-columns: repeat(5, 1fr); /* Genau 5 Karten pro Reihe */
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 10px; /* Abstand zwischen den Karten */
     margin: 0 auto;
     justify-items: center; /* Karten innerhalb der Zellen zentrieren */
@@ -39,11 +39,12 @@
 
 .game-board {
     display: grid; /* Grid statt Flex verwenden */
-    grid-template-columns: repeat(5, 1fr); /* Genau 5 Karten pro Reihe */
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Dynamische Anzahl an Karten pro Reihe */
     gap: 10px; /* Abstand zwischen den Karten */
     margin: 0 auto;
     justify-items: center; /* Karten innerhalb der Zellen zentrieren */
     padding: 20px 0;
+    width: 1400px;
 }
 
 .game-controls {

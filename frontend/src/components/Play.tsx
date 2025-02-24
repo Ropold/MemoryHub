@@ -6,6 +6,16 @@ type PlayProps = {
     activeMemories: MemoryModel[];
 };
 
+// Fisher-Yates-Shuffle-Funktion für wirklich zufälliges Mischen
+const shuffleArray = <T,>(array: T[]): T[] => {
+    let shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+};
+
 export default function Play(props: Readonly<PlayProps>) {
     const [cards, setCards] = useState<{ card: MemoryModel; uniqueId: string }[]>([]);
     const [previewCards, setPreviewCards] = useState<{ card: MemoryModel; uniqueId: string }[]>([]);
@@ -15,14 +25,17 @@ export default function Play(props: Readonly<PlayProps>) {
     const [cardCount, setCardCount] = useState<number>(10);
     const [showControls, setShowControls] = useState(true);
     const [isGameStarted, setIsGameStarted] = useState(false);
-    const [showAnimation, setShowAnimation] = useState(false); // Zustand für die Animation
+    const [showAnimation, setShowAnimation] = useState(false);
     const [hasStarted, setHasStarted] = useState(false);
 
+    // Vorschau der Karten (randomized selection)
     useEffect(() => {
         if (selectedMatchId !== null) {
-            const filteredCards = props.activeMemories.filter(memory => memory.matchId === selectedMatchId);
+            let filteredCards = props.activeMemories.filter(memory => memory.matchId === selectedMatchId);
 
-            // Zeige alle Karten in der Vorschau, basierend auf der cardCount-Einstellung
+            // Zufällig mischen, bevor die Vorschau angezeigt wird
+            filteredCards = shuffleArray(filteredCards);
+
             const previewCards = filteredCards.slice(0, cardCount).map(memory => ({
                 card: memory,
                 uniqueId: memory.id + "-A"
@@ -32,26 +45,26 @@ export default function Play(props: Readonly<PlayProps>) {
         }
     }, [selectedMatchId, cardCount, props.activeMemories]);
 
-
-
-    //win
+    // Win-Animation auslösen
     useEffect(() => {
         if (matchedCards.length === cards.length && hasStarted) {
-            setShowAnimation(true); // Animation starten, wenn das Spiel vorbei ist
-
-            setTimeout(() => {
-                setShowAnimation(false); // Animation nach 2 Sekunden ausblenden
-            }, 2000);
+            setShowAnimation(true);
+            setTimeout(() => setShowAnimation(false), 2000);
         }
     }, [matchedCards, cards, hasStarted]);
 
-    //start
+    // Spielstart und Kartenmischen
     useEffect(() => {
         if (!isGameStarted || !selectedMatchId) return;
 
         setHasStarted(true);
 
         let filteredCards = props.activeMemories.filter(memory => memory.matchId === selectedMatchId);
+
+        // Karten vorher mischen, damit nicht immer dieselben zuerst genommen werden
+        filteredCards = shuffleArray(filteredCards);
+
+        // Jetzt erst die gewünschte Anzahl nehmen
         filteredCards = filteredCards.slice(0, cardCount / 2);
 
         let allCards = filteredCards.flatMap(memory => [
@@ -59,17 +72,17 @@ export default function Play(props: Readonly<PlayProps>) {
             { card: memory, uniqueId: memory.id + "-B" }
         ]);
 
-        allCards = allCards.sort(() => Math.random() - 0.5);
+        // Endgültiges Deck mischen
+        allCards = shuffleArray(allCards);
 
-        setCards(allCards);
+        setCards([...allCards]);
         setFlippedCards([]);
         setMatchedCards([]);
     }, [selectedMatchId, cardCount, isGameStarted, props.activeMemories]);
 
+    // Karte umdrehen
     const flipCard = (uniqueId: string) => {
-        if (flippedCards.length === 2 || flippedCards.includes(uniqueId)) {
-            return;
-        }
+        if (flippedCards.length === 2 || flippedCards.includes(uniqueId)) return;
 
         const newFlippedCards = [...flippedCards, uniqueId];
         setFlippedCards(newFlippedCards);
@@ -88,7 +101,7 @@ export default function Play(props: Readonly<PlayProps>) {
 
     return (
         <div>
-            <div className="button-group">
+            <div className="space-between">
                 <button
                     onClick={() => {
                         setIsGameStarted(true);
@@ -97,7 +110,7 @@ export default function Play(props: Readonly<PlayProps>) {
                     disabled={isGameStarted || selectedMatchId === null}
                     id={selectedMatchId ? "play-button-enabled" : "play-button-disabled"}
                 >
-                    Play
+                    Start Game
                 </button>
                 <button onClick={() => setShowControls(prev => !prev)} id={showControls ? "button-options-active" : "button-options"}>
                     {showControls ? "Hide Options" : "Options"}
@@ -109,6 +122,7 @@ export default function Play(props: Readonly<PlayProps>) {
                         setSelectedMatchId(null);
                         setCardCount(10);
                         setCards([]);
+                        setPreviewCards([]);
                         setFlippedCards([]);
                         setMatchedCards([]);
                         setShowAnimation(false);
@@ -138,7 +152,7 @@ export default function Play(props: Readonly<PlayProps>) {
                 </div>
             )}
 
-            {/* Preview der Karten */}
+            {/* Vorschau der Karten */}
             <div className="preview-board">
                 {selectedMatchId !== null && !isGameStarted && previewCards.map(({ card, uniqueId }) => (
                     <PlayMemoryCard
@@ -151,6 +165,7 @@ export default function Play(props: Readonly<PlayProps>) {
                 ))}
             </div>
 
+            {/* Spielfeld */}
             <div className="game-board">
                 {cards.map(({ card, uniqueId }) => (
                     <PlayMemoryCard
