@@ -1,23 +1,19 @@
-.button-group {
-    margin-top: 10px; /* Abstand zur RoomCard */
-    display: flex;    /* Aktiviert Flexbox */
-    gap: 10px;        /* Abstand zwischen den Buttons */
-    justify-content: center; /* Optional: Zentriert die Buttons */
+
+.button-group-button {
+    background-color: #66b3ff;
 }
 
+.button-group-button:hover {
+    background-color: #007bff;
+}
 
-.button-group button {
+.space-between{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
     padding: 10px 20px;
     font-size: 1rem;
-    background-color: #66b3ff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.button-group button:hover {
-    background-color: #007bff;
 }
 
 /* Delete-Button */
@@ -35,6 +31,14 @@
 }
 
 #active-button:hover {
+    background-color: #388e3c;
+}
+
+#play-button-navbar{
+    background-color: #66bb6a;
+}
+
+#play-button-navbar:hover{
     background-color: #388e3c;
 }
 

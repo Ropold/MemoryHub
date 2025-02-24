@@ -1,6 +1,8 @@
 import { MemoryModel } from "./model/MemoryModel.ts";
 import React, { ChangeEvent, useEffect } from "react";
 import "./styles/SearchBar.css";
+import "./styles/Buttons.css";
+import "./styles/AddMemoryCard.css";
 
 type SearchBarProps = {
     value: string;

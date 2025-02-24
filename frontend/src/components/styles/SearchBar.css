@@ -22,7 +22,6 @@
     cursor: pointer;
     border: 1px solid #ccc;
     border-radius: 4px;
-    background-color: white;
     transition: all 0.3s ease;
     height: 40px;
     flex: 1;
@@ -30,7 +29,7 @@
 }
 
 .filter-buttons button:hover {
-    background-color: #f0f0f0;
+    background-color: #007bff;
 }
 
 .filter-buttons button.active {

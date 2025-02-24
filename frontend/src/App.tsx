@@ -25,10 +25,16 @@ export default function App() {
     const [favorites, setFavorites] = useState<string[]>([]);
     const [showSearch, setShowSearch] = useState<boolean>(false);
     const [currentPage, setCurrentPage] = useState<number>(1);
+    const [isEditing, setIsEditing] = useState<boolean>(false);
 
     const resetCurrentPage = () => {
         setCurrentPage(1);
     };
+
+    const resetEditingState = () => {
+        setIsEditing(false);  // Der Zustand wird auf false gesetzt
+    }
+
 
     const location = useLocation();
 
@@ -134,7 +140,7 @@ export default function App() {
 
   return (
     <>
-      <Navbar user={user} getUser={getUser} getActiveMemories={getActiveMemories} getAllMemories={getAllMemories} toggleSearchBar={toggleSearchBar} showSearch={showSearch} resetCurrentPage={resetCurrentPage}/>
+      <Navbar user={user} getUser={getUser} getActiveMemories={getActiveMemories} getAllMemories={getAllMemories} toggleSearchBar={toggleSearchBar} showSearch={showSearch} resetCurrentPage={resetCurrentPage} resetEditingState={resetEditingState}/>
       <Routes>
         <Route path="*" element={<NotFound />} />
         <Route path="/" element={<Home activeMemories={activeMemories} toggleFavorite={toggleFavorite} favorites={favorites} user={user} showSearch={showSearch} currentPage={currentPage} paginate={setCurrentPage}/>} />
@@ -143,7 +149,7 @@ export default function App() {
 
         <Route element={<ProtectedRoute user={user} />}>
             <Route path="/favorites" element={<Favorites favorites={favorites} user={user} toggleFavorite={toggleFavorite}/>} />
-            <Route path="/my-memories" element={<MyMemories userDetails={userDetails} user={user} favorites={favorites} toggleFavorite={toggleFavorite} allMemories={allMemories} setAllMemories={setAllMemories}/>} />
+            <Route path="/my-memories" element={<MyMemories userDetails={userDetails} user={user} favorites={favorites} toggleFavorite={toggleFavorite} allMemories={allMemories} setAllMemories={setAllMemories} isEditing={isEditing} setIsEditing={setIsEditing}/>} />
             <Route path="/add" element={<AddMemoryCard userDetails={userDetails} handleSubmit={handleNewMemorySubmit} />} />
             <Route path="/profile" element={<Profile userDetails={userDetails} />} />
         </Route>

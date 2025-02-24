@@ -18,7 +18,8 @@ export default function Home(props: Readonly<HomeProps>) {
     const [filteredMemories, setFilteredMemories] = useState<MemoryModel[]>([]);
     const [filterType, setFilterType] = useState<"name" | "category" | "matchId" | "all">("name");
     const [selectedCategory, setSelectedCategory] = useState<MemoryModel["category"] | "">("");
-    const memoriesPerPage = 9;
+    const [memoriesPerPage, setMemoriesPerPage] = useState<number>(9);
+
 
     useEffect(() => {
         if (!props.showSearch) {
@@ -27,11 +28,31 @@ export default function Home(props: Readonly<HomeProps>) {
     }, [props.showSearch]);
 
     useEffect(() => {
+        const updateMemoriesPerPage = () => {
+            if (window.innerWidth < 768) {
+                setMemoriesPerPage(8); // Kleine Bildschirme → 8 Karten
+            } else if (window.innerWidth < 1200) {
+                setMemoriesPerPage(9); // Mittelgroße Bildschirme → 9 Karten
+            } else {
+                setMemoriesPerPage(12); // Große Bildschirme → 12 Karten
+            }
+        };
+
+        updateMemoriesPerPage(); // Direkt beim ersten Render aufrufen
+        window.addEventListener("resize", updateMemoriesPerPage);
+
+        return () => {
+            window.removeEventListener("resize", updateMemoriesPerPage);
+        };
+    }, []);
+
+
+    useEffect(() => {
         const filtered = filterMemories(props.activeMemories, searchQuery, filterType, selectedCategory);
         setFilteredMemories(filtered);
     }, [props.activeMemories, searchQuery, filterType, selectedCategory]);
 
-    const filterMemories = (memories: MemoryModel[], query: string, filterType: string, category: string | "") => {
+    const filterMemories = (memories: MemoryModel[], query: string, filterType: string, category: string | null) => {
         const lowerQuery = query.toLowerCase();
 
         return memories.filter((memory) => {
@@ -55,6 +76,7 @@ export default function Home(props: Readonly<HomeProps>) {
         const totalPages = Math.ceil(memories.length / memoriesPerPage);
         return { currentMemories, totalPages };
     };
+
 
     const { currentMemories, totalPages } = getPaginationData(filteredMemories);
 
@@ -85,16 +107,19 @@ export default function Home(props: Readonly<HomeProps>) {
                 ))}
             </div>
 
-            <div className="button-group">
-                {Array.from({ length: totalPages }, (_, index) => (
-                    <button
-                        key={index + 1}
-                        onClick={() => props.paginate(index + 1)}
-                        className={index + 1 === props.currentPage ? "active" : ""}
-                    >
-                        {index + 1}
-                    </button>
-                ))}
+            <div className="space-between">
+                <div>
+                    {Array.from({ length: totalPages }, (_, index) => (
+                        <button
+                            key={index + 1}
+                            onClick={() => props.paginate(index + 1)}
+                            className="button-group-button"
+                            id={index + 1 === props.currentPage ? "active-paginate" : undefined} // ID nur für den aktiven Button
+                        >
+                            {index + 1}
+                        </button>
+                    ))}
+                </div>
             </div>
         </>
     );
