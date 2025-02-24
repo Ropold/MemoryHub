@@ -64,3 +64,11 @@
     font-size: 24px;
     outline: none;
 }
+
+#button-options-active{
+    background-color: #999;
+}
+
+#button-options-active:hover {
+    background-color: #555;
+}

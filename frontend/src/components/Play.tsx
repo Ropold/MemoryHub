@@ -13,6 +13,7 @@ export default function Play(props: Readonly<PlayProps>) {
     const [selectedMatchId, setSelectedMatchId] = useState<number | null>(null);
     const [cardCount, setCardCount] = useState<number>(10); // Standard: 10 Karten
     const [isGameOver, setIsGameOver] = useState(false);
+    const [showControls, setShowControls] = useState(true);
 
     // Deck vorbereiten (mit Duplikaten)
     useEffect(() => {
@@ -69,30 +70,30 @@ export default function Play(props: Readonly<PlayProps>) {
 
     return (
         <div>
-            <h2>Memory Game</h2>
-            <div className="game-controls">
-            {/* Auswahl für Match-ID */}
-            <label htmlFor="matchIdFilter">Match-ID wählen:</label>
-            <select id="matchIdFilter" value={selectedMatchId ?? ""} onChange={(e) => setSelectedMatchId(Number(e.target.value))}>
-                <option value="">Bitte wählen</option>
-                {[...new Set(props.activeMemories.map(m => m.matchId))].map(matchId => (
-                    <option key={matchId} value={matchId}>{matchId}</option>
-                ))}
-            </select>
-
-            {/* Auswahl für Kartenanzahl */}
-            <label htmlFor="cardCount">Anzahl der Karten:</label>
-            <select id="cardCount" value={cardCount} onChange={(e) => setCardCount(Number(e.target.value))}>
-                <option value={10}>10 Karten</option>
-                <option value={20}>20 Karten</option>
-                <option value={30}>30 Karten</option>
-            </select>
-            </div>
-
             <div className="button-group">
                 <button>Play</button>
+                <button onClick={()=> setShowControls(prev => !prev)} id={showControls ? "button-options-active" : "button-options"}>{showControls ? "Hide Options" : "Options"}</button>
                 <button>Reset</button>
             </div>
+
+            {showControls && (
+                <div className="game-controls">
+                    <label htmlFor="matchIdFilter">Match-ID wählen:</label>
+                    <select id="matchIdFilter" value={selectedMatchId ?? ""} onChange={(e) => setSelectedMatchId(Number(e.target.value))}>
+                        <option value="">Bitte wählen</option>
+                        {[...new Set(props.activeMemories.map(m => m.matchId))].map(matchId => (
+                            <option key={matchId} value={matchId}>{matchId}</option>
+                        ))}
+                    </select>
+
+                    <label htmlFor="cardCount">Anzahl der Karten:</label>
+                    <select id="cardCount" value={cardCount} onChange={(e) => setCardCount(Number(e.target.value))}>
+                        <option value={10}>10 Karten</option>
+                        <option value={20}>20 Karten</option>
+                        <option value={30}>30 Karten</option>
+                    </select>
+                </div>
+            )}
 
             <div className="game-board">
                 {cards.map(({ card, uniqueId }) => (
