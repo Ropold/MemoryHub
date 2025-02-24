@@ -116,6 +116,7 @@ export default function Play(props: Readonly<PlayProps>) {
                     {showControls ? "Hide Options" : "Options"}
                 </button>
                 <button
+                    className="button-group-button"
                     onClick={() => {
                         setIsGameStarted(false);
                         setShowControls(true);

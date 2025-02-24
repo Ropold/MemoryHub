@@ -9,14 +9,12 @@
 /* Überschrift */
 .profile-container h2 {
     font-size: 2rem;
-    color: #333;
     margin-bottom: 20px;
 }
 
 /* Allgemeine Stile für Textabsätze */
 .profile-container p {
     font-size: 1.2rem;
-    color: #555;
     margin-bottom: 10px;
 }
 
