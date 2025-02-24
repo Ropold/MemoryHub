@@ -80,7 +80,21 @@ export default function Play(props: Readonly<PlayProps>) {
                 <button onClick={() => setShowControls(prev => !prev)} id={showControls ? "button-options-active" : "button-options"}>
                     {showControls ? "Hide Options" : "Options"}
                 </button>
-                <button>Reset</button>
+                <button
+                    onClick={() => {
+                        setIsGameStarted(false);
+                        setShowControls(true);
+                        setSelectedMatchId(null);
+                        setCardCount(10);
+                        setCards([]);
+                        setFlippedCards([]);
+                        setMatchedCards([]);
+                        setIsGameOver(false);
+                    }}
+                >
+                    Reset
+                </button>
+
             </div>
 
             {showControls && (
