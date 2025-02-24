@@ -72,3 +72,19 @@
 #button-options-active:hover {
     background-color: #555;
 }
+
+#play-button-disabled{
+    background-color: #999;
+}
+
+#play-button-disabled:hover {
+    background-color: #555;
+}
+
+#play-button-enabled{
+    background-color: #66bb6a;
+}
+
+#play-button-enabled:hover{
+    background-color: #388e3c;
+}

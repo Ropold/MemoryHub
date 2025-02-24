@@ -67,7 +67,16 @@ export default function Play(props: Readonly<PlayProps>) {
     return (
         <div>
             <div className="button-group">
-                <button onClick={() => setIsGameStarted(true)} disabled={isGameStarted}>Play</button> {/* Play-Button zum Starten */}
+                <button
+                    onClick={() => {
+                        setIsGameStarted(true);  // Spiel starten
+                        setShowControls(false);  // Optionen ausblenden
+                    }}
+                    disabled={isGameStarted || selectedMatchId === null}
+                    id={selectedMatchId ? "play-button-enabled" : "play-button-disabled"}
+                >
+                    Play
+                </button>
                 <button onClick={() => setShowControls(prev => !prev)} id={showControls ? "button-options-active" : "button-options"}>
                     {showControls ? "Hide Options" : "Options"}
                 </button>
