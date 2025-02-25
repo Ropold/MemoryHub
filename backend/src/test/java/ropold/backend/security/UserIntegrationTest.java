@@ -15,6 +15,7 @@ import ropold.backend.model.AppUser;
 import ropold.backend.repository.AppUserRepository;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -67,6 +68,47 @@ class UserIntegrationTest {
         mockMvc.perform(get("/api/users/me"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("anonymousUser"));
+    }
+
+
+    @Test
+    void testGetUserDetails_withLoggedInUser_expectUserDetails() throws Exception {
+        // Erstellen eines Mock OAuth2User
+        OAuth2User mockUser = mock(OAuth2User.class);
+        when(mockUser.getAttributes()).thenReturn(Map.of(
+                "login", "username",
+                "name", "max mustermann",
+                "avatar_url", "https://github.com/avatar",
+                "html_url", "https://github.com/mustermann"
+        ));
+
+        // Simuliere den OAuth2User in der SecurityContext
+        SecurityContext context = SecurityContextHolder.createEmptyContext();
+        Authentication authentication = new UsernamePasswordAuthenticationToken(mockUser, null, mockUser.getAuthorities());
+        context.setAuthentication(authentication);
+        SecurityContextHolder.setContext(context);
+
+        mockMvc.perform(get("/api/users/me/details"))
+                .andExpect(status().isOk())
+                .andExpect(content().json("""
+                {
+                    "login": "username",
+                    "name": "max mustermann",
+                    "avatar_url": "https://github.com/avatar",
+                    "html_url": "https://github.com/mustermann"
+                }
+            """));
+    }
+
+    @Test
+    void testGetUserDetails_withoutLogin_expectErrorMessage() throws Exception {
+        mockMvc.perform(get("/api/users/me/details"))
+                .andExpect(status().isOk())
+                .andExpect(content().json("""
+                {
+                    "message": "User not authenticated"
+                }
+            """));
     }
 
 }
