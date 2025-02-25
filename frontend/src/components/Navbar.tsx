@@ -1,6 +1,7 @@
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
 import "./styles/Navbar.css";
+import headerLogo from "../assets/MemoryHub-logo-single.jpg";
 
 type NavbarProps = {
     user: string
@@ -45,7 +46,7 @@ export default function Navbar(props: Readonly<NavbarProps>) {
                 }}
             >
                 <h2 className="header-title">MemoryHub</h2>
-                <img src="/src/assets/MemoryHub-logo-single.jpg" alt="MemoryHub Logo" className="logo-image" />
+                <img src={headerLogo} alt="MemoryHub Logo" className="logo-image" />
             </div>
 
             <button id="play-button-navbar" onClick={() => navigate("/play")}>Play</button>
