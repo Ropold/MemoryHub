@@ -143,7 +143,7 @@ public class MemoryService {
     }
 
 
-    //Not Used
+    //Only Used in Tests
     public List<MemoryModel> getMemoriesByMatchId(int matchId) {
         return memoryRepository.findAll().stream()
                 .filter(memory -> memory.matchId() == matchId)
