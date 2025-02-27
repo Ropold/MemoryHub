@@ -140,4 +140,18 @@ class MemoryControllerIntegrationTest {
         Assertions.assertFalse(updatedUser.favorites().contains("2"));
     }
 
+    @Test
+    void ToggleActiveStatus_shouldToggleActiveStatus() throws Exception {
+        MemoryModel memoryBefore = memoryRepository.findById("1").orElseThrow();
+        Assertions.assertTrue(memoryBefore.isActive());
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/memory-hub/1/toggle-active")
+                        .with(oidcLogin().idToken(i -> i.claim("sub", "user")))
+                )
+                .andExpect(status().isOk());
+
+        MemoryModel updatedMemory = memoryRepository.findById("1").orElseThrow();
+        Assertions.assertFalse(updatedMemory.isActive());
+    }
+
 }
