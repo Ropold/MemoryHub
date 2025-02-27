@@ -126,4 +126,18 @@ class MemoryControllerIntegrationTest {
         Assertions.assertTrue(updatedUser.favorites().contains("1"));
     }
 
+    @Test
+    void removeMemoryFromFavorites_shouldRemoveMemoryAndReturnFavorites() throws Exception {
+        AppUser userBefore = appUserRepository.findById("user").orElseThrow();
+        Assertions.assertTrue(userBefore.favorites().contains("2"));
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/memory-hub/favorites/2")
+                        .with(oidcLogin().idToken(i -> i.claim("sub", "user")))
+                )
+                .andExpect(status().isNoContent()); // .isOk = 200, .isNoContent = 204
+
+        AppUser updatedUser = appUserRepository.findById("user").orElseThrow();
+        Assertions.assertFalse(updatedUser.favorites().contains("2"));
+    }
+
 }
