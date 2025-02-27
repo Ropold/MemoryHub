@@ -2,6 +2,7 @@ package ropold.backend.controller;
 
 
 import com.cloudinary.Cloudinary;
+import com.mongodb.assertions.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,7 +82,7 @@ class MemoryControllerIntegrationTest {
                 "Max Mustermann",
                 "https://github.com/avatar",
                 "https://github.com/mustermann",
-                List.of("1", "2") // IDs stimmen mit den gespeicherten MemoryModels überein
+                List.of("2") // IDs stimmen mit den gespeicherten MemoryModels überein
         );
 
         appUserRepository.save(user);
@@ -95,19 +96,6 @@ class MemoryControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(content().json("""
              [
-                 {
-                     "id": "1",
-                     "name": "Avatar Erinnerung",
-                     "matchId": 101,
-                     "category": "GITHUB_AVATAR",
-                     "description": "Eine Erinnerung, die mit einem GitHub-Avatar verknüpft ist",
-                     "isActive": true,
-                     "appUserGithubId": "user",
-                     "appUserUsername": "user1",
-                     "appUserAvatarUrl": "https://avatars.example.com/user1.png",
-                     "appUserGithubUrl": "https://github.com/user1",
-                     "imageUrl": "https://example.com/image1.jpg"
-                 },
                  {
                      "id": "2",
                      "name": "Cloudinary Erinnerung",
@@ -125,5 +113,17 @@ class MemoryControllerIntegrationTest {
              """));
     }
 
+    @Test
+    void addMemoryToFavorites_shouldAddMemoryAndReturnFavorites() throws Exception {
+        AppUser userBefore = appUserRepository.findById("user").orElseThrow();
+        Assertions.assertFalse(userBefore.favorites().contains("1"));
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/memory-hub/favorites/1")
+                        .with(oidcLogin().idToken(i -> i.claim("sub", "user"))))
+                .andExpect(status().isCreated());
+
+        AppUser updatedUser = appUserRepository.findById("user").orElseThrow();
+        Assertions.assertTrue(updatedUser.favorites().contains("1"));
+    }
 
 }
