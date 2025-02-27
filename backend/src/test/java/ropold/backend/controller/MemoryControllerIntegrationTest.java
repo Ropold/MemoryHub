@@ -51,7 +51,7 @@ class MemoryControllerIntegrationTest {
                 Category.GITHUB_AVATAR,
                 "Eine Erinnerung, die mit einem GitHub-Avatar verknüpft ist",
                 true,
-                "github123",
+                "user",
                 "user1",
                 "https://avatars.example.com/user1.png",
                 "https://github.com/user1",
@@ -65,11 +65,11 @@ class MemoryControllerIntegrationTest {
                 Category.CLOUDINARY_IMAGE,
                 "Eine Erinnerung, die mit einem Cloudinary-Bild gespeichert ist",
                 false,
-                "github456",
-                "user2",
-                "https://avatars.example.com/user2.png",
-                "https://github.com/user2",
-                "https://example.com/image2.jpg"
+                "user",
+                "user1",
+                "https://avatars.example.com/user1.png",
+                "https://github.com/user1",
+                "https://example.com/image1.jpg"
         );
 
         memoryRepository.saveAll(List.of(memoryModel1, memoryModel2));
@@ -102,7 +102,7 @@ class MemoryControllerIntegrationTest {
                      "category": "GITHUB_AVATAR",
                      "description": "Eine Erinnerung, die mit einem GitHub-Avatar verknüpft ist",
                      "isActive": true,
-                     "appUserGithubId": "github123",
+                     "appUserGithubId": "user",
                      "appUserUsername": "user1",
                      "appUserAvatarUrl": "https://avatars.example.com/user1.png",
                      "appUserGithubUrl": "https://github.com/user1",
@@ -115,11 +115,11 @@ class MemoryControllerIntegrationTest {
                      "category": "CLOUDINARY_IMAGE",
                      "description": "Eine Erinnerung, die mit einem Cloudinary-Bild gespeichert ist",
                      "isActive": false,
-                     "appUserGithubId": "github456",
-                     "appUserUsername": "user2",
-                     "appUserAvatarUrl": "https://avatars.example.com/user2.png",
-                     "appUserGithubUrl": "https://github.com/user2",
-                     "imageUrl": "https://example.com/image2.jpg"
+                     "appUserGithubId": "user",
+                     "appUserUsername": "user1",
+                     "appUserAvatarUrl": "https://avatars.example.com/user1.png",
+                     "appUserGithubUrl": "https://github.com/user1",
+                     "imageUrl": "https://example.com/image1.jpg"
                  }
              ]
              """));
