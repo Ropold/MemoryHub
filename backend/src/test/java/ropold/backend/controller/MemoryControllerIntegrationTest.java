@@ -2,6 +2,7 @@ package ropold.backend.controller;
 
 
 import com.cloudinary.Cloudinary;
+import com.mongodb.assertions.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +52,7 @@ class MemoryControllerIntegrationTest {
                 Category.GITHUB_AVATAR,
                 "Eine Erinnerung, die mit einem GitHub-Avatar verknüpft ist",
                 true,
-                "github123",
+                "user",
                 "user1",
                 "https://avatars.example.com/user1.png",
                 "https://github.com/user1",
@@ -65,11 +66,11 @@ class MemoryControllerIntegrationTest {
                 Category.CLOUDINARY_IMAGE,
                 "Eine Erinnerung, die mit einem Cloudinary-Bild gespeichert ist",
                 false,
-                "github456",
-                "user2",
-                "https://avatars.example.com/user2.png",
-                "https://github.com/user2",
-                "https://example.com/image2.jpg"
+                "user",
+                "user1",
+                "https://avatars.example.com/user1.png",
+                "https://github.com/user1",
+                "https://example.com/image1.jpg"
         );
 
         memoryRepository.saveAll(List.of(memoryModel1, memoryModel2));
@@ -81,7 +82,7 @@ class MemoryControllerIntegrationTest {
                 "Max Mustermann",
                 "https://github.com/avatar",
                 "https://github.com/mustermann",
-                List.of("1", "2") // IDs stimmen mit den gespeicherten MemoryModels überein
+                List.of("2") // IDs stimmen mit den gespeicherten MemoryModels überein
         );
 
         appUserRepository.save(user);
@@ -96,34 +97,61 @@ class MemoryControllerIntegrationTest {
                 .andExpect(content().json("""
              [
                  {
-                     "id": "1",
-                     "name": "Avatar Erinnerung",
-                     "matchId": 101,
-                     "category": "GITHUB_AVATAR",
-                     "description": "Eine Erinnerung, die mit einem GitHub-Avatar verknüpft ist",
-                     "isActive": true,
-                     "appUserGithubId": "github123",
-                     "appUserUsername": "user1",
-                     "appUserAvatarUrl": "https://avatars.example.com/user1.png",
-                     "appUserGithubUrl": "https://github.com/user1",
-                     "imageUrl": "https://example.com/image1.jpg"
-                 },
-                 {
                      "id": "2",
                      "name": "Cloudinary Erinnerung",
                      "matchId": 102,
                      "category": "CLOUDINARY_IMAGE",
                      "description": "Eine Erinnerung, die mit einem Cloudinary-Bild gespeichert ist",
                      "isActive": false,
-                     "appUserGithubId": "github456",
-                     "appUserUsername": "user2",
-                     "appUserAvatarUrl": "https://avatars.example.com/user2.png",
-                     "appUserGithubUrl": "https://github.com/user2",
-                     "imageUrl": "https://example.com/image2.jpg"
+                     "appUserGithubId": "user",
+                     "appUserUsername": "user1",
+                     "appUserAvatarUrl": "https://avatars.example.com/user1.png",
+                     "appUserGithubUrl": "https://github.com/user1",
+                     "imageUrl": "https://example.com/image1.jpg"
                  }
              ]
              """));
     }
 
+    @Test
+    void addMemoryToFavorites_shouldAddMemoryAndReturnFavorites() throws Exception {
+        AppUser userBefore = appUserRepository.findById("user").orElseThrow();
+        Assertions.assertFalse(userBefore.favorites().contains("1"));
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/memory-hub/favorites/1")
+                        .with(oidcLogin().idToken(i -> i.claim("sub", "user"))))
+                .andExpect(status().isCreated());
+
+        AppUser updatedUser = appUserRepository.findById("user").orElseThrow();
+        Assertions.assertTrue(updatedUser.favorites().contains("1"));
+    }
+
+    @Test
+    void removeMemoryFromFavorites_shouldRemoveMemoryAndReturnFavorites() throws Exception {
+        AppUser userBefore = appUserRepository.findById("user").orElseThrow();
+        Assertions.assertTrue(userBefore.favorites().contains("2"));
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/memory-hub/favorites/2")
+                        .with(oidcLogin().idToken(i -> i.claim("sub", "user")))
+                )
+                .andExpect(status().isNoContent()); // .isOk = 200, .isNoContent = 204
+
+        AppUser updatedUser = appUserRepository.findById("user").orElseThrow();
+        Assertions.assertFalse(updatedUser.favorites().contains("2"));
+    }
+
+    @Test
+    void ToggleActiveStatus_shouldToggleActiveStatus() throws Exception {
+        MemoryModel memoryBefore = memoryRepository.findById("1").orElseThrow();
+        Assertions.assertTrue(memoryBefore.isActive());
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/memory-hub/1/toggle-active")
+                        .with(oidcLogin().idToken(i -> i.claim("sub", "user")))
+                )
+                .andExpect(status().isOk());
+
+        MemoryModel updatedMemory = memoryRepository.findById("1").orElseThrow();
+        Assertions.assertFalse(updatedMemory.isActive());
+    }
 
 }
