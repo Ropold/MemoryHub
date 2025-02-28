@@ -288,7 +288,7 @@ class MemoryControllerIntegrationTest {
 
         List<MemoryModel> allMemories = memoryRepository.findAll();
         Assertions.assertEquals(1, allMemories.size());
-        MemoryModel savedMemoryModel = allMemories.get(0);
+        MemoryModel savedMemoryModel = allMemories.getFirst();
         org.assertj.core.api.Assertions.assertThat(savedMemoryModel)
                 .usingRecursiveComparison()
                 .ignoringFields("id", "imageUrl")
@@ -340,7 +340,7 @@ class MemoryControllerIntegrationTest {
         List<MemoryModel> allMemories = memoryRepository.findAll();
         Assertions.assertEquals(1, allMemories.size());
 
-        MemoryModel savedMemoryModel = allMemories.get(0);
+        MemoryModel savedMemoryModel = allMemories.getFirst();
         org.assertj.core.api.Assertions.assertThat(savedMemoryModel)
                 .usingRecursiveComparison()
                 .ignoringFields("id")
