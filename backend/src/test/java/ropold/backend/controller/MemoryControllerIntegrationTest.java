@@ -2,13 +2,19 @@ package ropold.backend.controller;
 
 
 import com.cloudinary.Cloudinary;
-import com.mongodb.assertions.Assertions;
+import com.cloudinary.Uploader;
+import org.junit.jupiter.api.Assertions;  // Importiere JUnit Assertions
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -18,8 +24,14 @@ import ropold.backend.model.MemoryModel;
 import ropold.backend.repository.AppUserRepository;
 import ropold.backend.repository.MemoryRepository;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oidcLogin;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -238,6 +250,60 @@ class MemoryControllerIntegrationTest {
                      "imageUrl": "https://example.com/image1.jpg"
                   }
                 """));
+    }
+
+    @Test
+    void postMemory_shouldAddMemory() throws Exception {
+        OAuth2User mockOAuth2User = mock(OAuth2User.class);
+        when(mockOAuth2User.getName()).thenReturn("user");
+
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(mockOAuth2User, null,
+                        Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")))
+        );
+
+        memoryRepository.deleteAll();
+        Uploader mockUploader = mock(Uploader.class);
+        when(mockUploader.upload(any(), anyMap())).thenReturn(Map.of("secure_url", "https://www.test.de/"));
+        when(cloudinary.uploader()).thenReturn(mockUploader);
+
+        mockMvc.perform(MockMvcRequestBuilders.multipart("/api/memory-hub")
+                        .file(new MockMultipartFile("image", "test.jpg", "image/jpeg", "test image".getBytes()))
+                        .file(new MockMultipartFile("memoryModelDto", "", "application/json", """
+            {
+            "name": "Avatar Erinnerung",
+             "matchId": 101,
+             "category": "GITHUB_AVATAR",
+             "description": "Eine Erinnerung, die mit einem GitHub-Avatar verknüpft ist",
+             "isActive": true,
+             "appUserGithubId": "user",
+             "appUserUsername": "user1",
+             "appUserAvatarUrl": "https://avatars.example.com/user1.png",
+             "appUserGithubUrl": "https://github.com/user1",
+             "imageUrl": "https://example.com/image1.jpg"
+          }
+        """.getBytes())))
+                .andExpect(status().isCreated());
+
+        List<MemoryModel> allMemories = memoryRepository.findAll();
+        Assertions.assertEquals(1, allMemories.size());
+        MemoryModel savedMemoryModel = allMemories.get(0);
+        org.assertj.core.api.Assertions.assertThat(savedMemoryModel)
+                .usingRecursiveComparison()
+                .ignoringFields("id", "imageUrl")
+                .isEqualTo(new MemoryModel(
+                        null,
+                        "Avatar Erinnerung",
+                        101,
+                        Category.GITHUB_AVATAR,
+                        "Eine Erinnerung, die mit einem GitHub-Avatar verknüpft ist",
+                        true,
+                        "user",
+                        "user1",
+                        "https://avatars.example.com/user1.png",
+                        "https://github.com/user1",
+                        null
+                ));
     }
 
 
