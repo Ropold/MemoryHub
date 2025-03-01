@@ -359,6 +359,72 @@ class MemoryControllerIntegrationTest {
                 ));
     }
 
+    @Test
+    void updateMemory_withAvatar_shouldUpdateMemoryDetails() throws Exception {
+        // GIVEN
+        OAuth2User mockOAuth2User = mock(OAuth2User.class);
+        when(mockOAuth2User.getName()).thenReturn("user");
+
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(mockOAuth2User, null,
+                        Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")))
+        );
+
+        MemoryModel existingMemory = new MemoryModel(
+                "1",
+                "Avatar Erinnerung",
+                101,
+                Category.GITHUB_AVATAR,
+                "Eine Erinnerung, die mit einem GitHub-Avatar verknüpft ist",
+                true,
+                "user",
+                "user1",
+                "https://avatars.example.com/user1.png",
+                "https://github.com/user1",
+                "https://example.com/image1.jpg"
+        );
+        memoryRepository.save(existingMemory);
+
+        // WHEN
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/memory-hub/avatar/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                        {
+                            "name": "Updated Erinnerung",
+                            "matchId": 102,
+                            "category": "GITHUB_AVATAR",
+                            "description": "Eine aktualisierte Erinnerung mit GitHub-Avatar",
+                            "isActive": false,
+                            "appUserGithubId": "user",
+                            "appUserUsername": "userUpdated",
+                            "appUserAvatarUrl": "https://avatars.example.com/userUpdated.png",
+                            "appUserGithubUrl": "https://github.com/userUpdated",
+                            "imageUrl": "https://example.com/updated-image.jpg"
+                        }
+                    """))
+                .andExpect(status().isOk())
+                .andExpect(content().json("""
+                {
+                    "id": "1",
+                    "name": "Updated Erinnerung",
+                    "matchId": 102,
+                    "category": "GITHUB_AVATAR",
+                    "description": "Eine aktualisierte Erinnerung mit GitHub-Avatar",
+                    "isActive": false,
+                    "appUserGithubId": "user",
+                    "appUserUsername": "userUpdated",
+                    "appUserAvatarUrl": "https://avatars.example.com/userUpdated.png",
+                    "appUserGithubUrl": "https://github.com/userUpdated",
+                    "imageUrl": "https://example.com/updated-image.jpg"
+                }
+            """));
+
+        // THEN
+        MemoryModel updatedMemory = memoryRepository.findById("1").orElseThrow();
+        Assertions.assertFalse(updatedMemory.isActive());
+        Assertions.assertEquals("Updated Erinnerung", updatedMemory.name());
+        Assertions.assertEquals("https://example.com/updated-image.jpg", updatedMemory.imageUrl());
+    }
 
 
 }
