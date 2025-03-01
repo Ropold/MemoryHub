@@ -34,8 +34,7 @@ import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oidcLogin;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -425,6 +424,45 @@ class MemoryControllerIntegrationTest {
         Assertions.assertEquals("Updated Erinnerung", updatedMemory.name());
         Assertions.assertEquals("https://example.com/updated-image.jpg", updatedMemory.imageUrl());
     }
+
+    @Test
+    void updateMemoryWithPut_shouldUpdateMemoryDetails() throws Exception {
+        OAuth2User mockOAuth2User = mock(OAuth2User.class);
+        when(mockOAuth2User.getName()).thenReturn("user");
+
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(mockOAuth2User, null,
+                        Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")))
+        );
+
+        Uploader mockUploader = mock(Uploader.class);
+        when(mockUploader.upload(any(), anyMap())).thenReturn(Map.of("secure_url", "https://example.com/updated-image.jpg"));
+        when(cloudinary.uploader()).thenReturn(mockUploader);
+
+        mockMvc.perform(MockMvcRequestBuilders.multipart("/api/memories/1")
+                        .file(new MockMultipartFile("image", "test.jpg", "image/jpeg", "test image".getBytes()))
+                        .file(new MockMultipartFile("memoryModelDto", "", "application/json", """
+                {
+                    "name": "Updated Erinnerung",
+                    "matchId": 102,
+                    "category": "GITHUB_AVATAR",
+                    "description": "Eine aktualisierte Erinnerung mit GitHub-Avatar",
+                    "isActive": false,
+                    "appUserGithubId": "user",
+                    "appUserUsername": "userUpdated",
+                    "appUserAvatarUrl": "https://avatars.example.com/userUpdated.png",
+                    "appUserGithubUrl": "https://github.com/userUpdated"
+                }
+                """.getBytes()))
+                        .contentType("multipart/form-data")
+                        .with(request -> { request.setMethod("PUT"); return request; }))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Updated Erinnerung"))
+                .andExpect(jsonPath("$.imageUrl").value("https://example.com/updated-image.jpg"));
+
+        Assertions.assertEquals("Updated Erinnerung", memoryRepository.findById("1").orElseThrow().name());
+    }
+
 
 
 }
