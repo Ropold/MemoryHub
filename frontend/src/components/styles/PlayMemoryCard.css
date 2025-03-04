@@ -47,6 +47,18 @@
     width: 1400px;
 }
 
+.game-board[data-cards="10"] {
+    grid-template-columns: repeat(5, 1fr); /* 5 Spalten für 10 Karten */
+    grid-template-rows: repeat(2, 1fr); /* 2 Reihen */
+    width: 800px;
+}
+
+.game-board[data-cards="20"] {
+    grid-template-columns: repeat(5, 1fr); /* 4 Reihen, 5 Spalten für 20 Karten */
+    grid-template-rows: repeat(4, 1fr); /* 4 Reihen */
+    width: 800px;
+}
+
 .game-controls {
     width: 600px;
     padding: 8px;

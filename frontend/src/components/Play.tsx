@@ -8,7 +8,7 @@ type PlayProps = {
 
 // Fisher-Yates-Shuffle-Funktion für wirklich zufälliges Mischen
 const shuffleArray = <T,>(array: T[]): T[] => {
-    let shuffled = [...array];
+    const shuffled = [...array];
     for (let i = shuffled.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
@@ -170,7 +170,7 @@ export default function Play(props: Readonly<PlayProps>) {
                     <select id="cardCount" value={cardCount} onChange={(e) => setCardCount(Number(e.target.value))}>
                         <option value={10}>10 Karten</option>
                         <option value={20}>20 Karten</option>
-                        <option value={30}>30 Karten</option>
+                        <option value={32}>32 Karten</option>
                     </select>
                 </div>
             )}
@@ -189,7 +189,7 @@ export default function Play(props: Readonly<PlayProps>) {
             </div>
 
             {/* Spielfeld bleibt am Ende stehen */}
-            <div className="game-board">
+            <div className="game-board" data-cards={cardCount}>
                 {(isGameStarted || hasGameEnded) && cards.map(({ card, uniqueId }) => (
                     <PlayMemoryCard
                         key={uniqueId}
