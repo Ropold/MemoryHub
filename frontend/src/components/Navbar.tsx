@@ -36,6 +36,13 @@ export default function Navbar(props: Readonly<NavbarProps>) {
 
     return (
         <nav className="navbar">
+
+            <div className="clickable-header-play" onClick={() => navigate("/play")}>
+                <h2 className="header-title">Play</h2>
+                <img src={headerLogo} alt="MemoryHub Logo" className="logo-image" />
+            </div>
+
+
             <div
                 className="clickable-header"
                 onClick={() => {
@@ -45,11 +52,10 @@ export default function Navbar(props: Readonly<NavbarProps>) {
                     navigate("/");
                 }}
             >
-                <h2 className="header-title">MemoryHub</h2>
+                <h2 className="header-title">Memory-Cards</h2>
                 <img src={headerLogo} alt="MemoryHub Logo" className="logo-image" />
             </div>
 
-            <button id="play-button-navbar" onClick={() => navigate("/play")}>Play</button>
 
             <button
                 onClick={() => {

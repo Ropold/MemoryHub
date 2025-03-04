@@ -12,6 +12,28 @@
     left: 0;
 }
 
+.clickable-header-play {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    background-color: #66bb6a;
+    border-radius: 5px; /* Abgerundete Ecken */
+    border: 1px solid #007bff; /* Rahmen für Button-Look */
+    font-weight: bold; /* Fettgedruckter Text */
+    font-size: 15px;
+    transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+}
+
+.clickable-header-play:hover {
+    background-color: #388e3c;
+}
+
+.clickable-header-player img {
+    max-width: 80%;
+    max-height: 80%;
+    object-fit: contain; /* Verhindert Verzerrungen */
+}
+
 .clickable-header {
     display: flex;
     align-items: center;
@@ -20,7 +42,7 @@
     border-radius: 5px; /* Abgerundete Ecken */
     border: 1px solid #007bff; /* Rahmen für Button-Look */
     font-weight: bold; /* Fettgedruckter Text */
-    font-size: 16px;
+    font-size: 15px;
     transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
 }
 

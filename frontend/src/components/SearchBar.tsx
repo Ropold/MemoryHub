@@ -65,7 +65,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
         <div className="search-bar">
             <input
                 type="text"
-                placeholder="Search Memories..."
+                placeholder="Search Memory..."
                 value={value}
                 onChange={handleInputChange}
             />
