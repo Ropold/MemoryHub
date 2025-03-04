@@ -1,115 +1,52 @@
 import { MemoryModel } from "./model/MemoryModel.ts";
-import React, { ChangeEvent, useEffect } from "react";
 import "./styles/SearchBar.css";
 import "./styles/Buttons.css";
 import "./styles/AddMemoryCard.css";
 
 type SearchBarProps = {
-    value: string;
-    onChange: (value: string) => void;
-    memories: MemoryModel[];
-    setFilteredMemories: (memories: MemoryModel[]) => void;
-    filterType: "name" | "category" | "matchId" | "all";
-    setFilterType: (filterType: "name" | "category" | "matchId" | "all") => void;
+    searchQuery: string;
+    setSearchQuery: (value: string) => void;
     selectedCategory: MemoryModel["category"] | "";
     setSelectedCategory: (category: MemoryModel["category"] | "") => void;
+    selectedMatchId: string;
+    setSelectedMatchId: (matchId: string) => void;
+    memories: MemoryModel[];
 };
 
 const SearchBar: React.FC<SearchBarProps> = ({
-                                                 value,
-                                                 onChange,
-                                                 memories,
-                                                 setFilteredMemories,
-                                                 filterType,
-                                                 setFilterType,
+                                                 searchQuery,
+                                                 setSearchQuery,
                                                  selectedCategory,
-                                                 setSelectedCategory
+                                                 setSelectedCategory,
+                                                 selectedMatchId,
+                                                 setSelectedMatchId,
+                                                 memories,
                                              }) => {
-    const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-        onChange(event.target.value);
+    const matchIds = Array.from(new Set(memories.map((memory) => memory.matchId.toString())));
+
+    const handleReset = () => {
+        setSearchQuery("");
+        setSelectedCategory("");
+        setSelectedMatchId("");
     };
-
-    const handleCategoryChange = (event: ChangeEvent<HTMLSelectElement>) => {
-        setSelectedCategory(event.target.value as MemoryModel["category"] | "");
-    };
-
-    const handleMatchIdChange = (event: ChangeEvent<HTMLSelectElement>) => {
-        onChange(event.target.value);
-    };
-
-    // Extrahiere die eindeutigen matchIds aus den Erinnerungen
-    const matchIds = Array.from(
-        new Set(memories.map((memory) => memory.matchId.toString()))
-    );
-
-    useEffect(() => {
-        const lowerQuery = value.toLowerCase();
-
-        const filtered = memories.filter((memory) => {
-            const matchesCategory = selectedCategory ? memory.category === selectedCategory : true;
-            const matchesName = filterType === "name" && memory.name.toLowerCase().includes(lowerQuery);
-            const matchesMatchId = filterType === "matchId" && memory.matchId.toString() === value;
-            const matchesAll =
-                filterType === "all" &&
-                (memory.name.toLowerCase().includes(lowerQuery) ||
-                    memory.category.toLowerCase().includes(lowerQuery) ||
-                    memory.matchId.toString().includes(lowerQuery));
-
-            return matchesCategory && (matchesName || matchesMatchId || matchesAll);
-        });
-
-        setFilteredMemories(filtered);
-    }, [value, filterType, memories, selectedCategory, setFilteredMemories]);
 
     return (
         <div className="search-bar">
+            {/* Name-Suche */}
             <input
                 type="text"
-                placeholder="Search Memory..."
-                value={filterType === "name" ? value : ""}  // Zeigt nur den Wert im input an, wenn filterType "name" ist
-                disabled={filterType === "matchId"}
-                onChange={handleInputChange}
+                placeholder="Search by name or description..."
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
             />
+
             <div className="filter-buttons">
-                <button
-                    onClick={() => setFilterType("name")}
-                    className={filterType === "name" ? "active" : ""}
-                >
-                    Name
-                </button>
-                <button
-                    onClick={() => setFilterType("matchId")}
-                    className={filterType === "matchId" ? "active" : ""}
-                >
-                    Deck ID
-                </button>
-                <button
-                    onClick={() => {
-                        setFilterType("all");
-                        setSelectedCategory("");
-                        onChange('');
-                    }}
-                    className={filterType === "all" && selectedCategory === "" ? "active" : ""}
-                >
-                    No Filter
-                </button>
+                {/* Match-ID-Filter (jetzt zuerst) */}
                 <label>
                     <select
                         className="input-small"
-                        value={selectedCategory}
-                        onChange={handleCategoryChange}
-                    >
-                        <option value="">Filter by a category</option>
-                        <option value="GITHUB_AVATAR">GitHub Avatar</option>
-                        <option value="CLOUDINARY_IMAGE">Cloudinary Image</option>
-                    </select>
-                </label>
-                <label>
-                    <select
-                        className="input-small"
-                        value={filterType === "matchId" ? value : ""}
-                        onChange={handleMatchIdChange}
-                        disabled={filterType !== "matchId"}
+                        value={selectedMatchId}
+                        onChange={(event) => setSelectedMatchId(event.target.value)}
                     >
                         <option value="">Filter by Game Deck ID</option>
                         {matchIds.map((id) => (
@@ -119,6 +56,24 @@ const SearchBar: React.FC<SearchBarProps> = ({
                         ))}
                     </select>
                 </label>
+
+                {/* Kategorie-Filter (jetzt danach) */}
+                <label>
+                    <select
+                        className="input-small"
+                        value={selectedCategory}
+                        onChange={(event) => setSelectedCategory(event.target.value as MemoryModel["category"] | "")}
+                    >
+                        <option value="">Filter by Category</option>
+                        <option value="GITHUB_AVATAR">GitHub Avatar</option>
+                        <option value="CLOUDINARY_IMAGE">Cloudinary Image</option>
+                    </select>
+                </label>
+
+                {/* Reset-Button */}
+                <button onClick={handleReset} className="button-group-button">
+                    Reset Filters
+                </button>
             </div>
         </div>
     );
