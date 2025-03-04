@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import ropold.backend.repository.MemoryRepository;
+import ropold.backend.service.MemoryService;
 
 import java.util.Collections;
 import java.util.Map;
@@ -36,8 +37,12 @@ class ExceptionHandlerTest {
 
     @MockBean
     private Cloudinary cloudinary;
+
     @Autowired
     private MemoryRepository memoryRepository;
+
+    @MockBean
+    private MemoryService memoryService;
 
     @Test
     void whenMemoryNotFoundException_thenReturnsNotFound() throws Exception {
@@ -112,6 +117,15 @@ class ExceptionHandlerTest {
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.message", is("You are not allowed to create memories for other users")))
                 .andReturn();
+    }
+
+    @Test
+    void whenRuntimeExceptionThrown_thenReturnsInternalServerError() throws Exception {
+        when(memoryService.getMemoryById(any())).thenThrow(new RuntimeException("Unexpected error"));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/memory-hub/{id}", "any-id"))
+                .andExpect(status().isInternalServerError()) // Überprüft den Statuscode 500
+                .andExpect(jsonPath("$.message").value("Unexpected error"));  // Überprüft die Fehlermeldung
     }
 
 }
