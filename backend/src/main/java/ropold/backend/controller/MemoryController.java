@@ -8,6 +8,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ropold.backend.exception.AccessDeniedException;
+import ropold.backend.exception.MemoryNotFoundException;
 import ropold.backend.model.MemoryModel;
 import ropold.backend.model.MemoryModelDto;
 import ropold.backend.service.AppUserService;
@@ -70,8 +71,13 @@ public class MemoryController {
 
     @GetMapping("/{id}")
     public MemoryModel getMemoryById(@PathVariable String id) {
-        return memoryService.getMemoryById(id);
+        MemoryModel memory = memoryService.getMemoryById(id);
+        if (memory == null) {
+            throw new MemoryNotFoundException("No Memory found with id: " + id);
+        }
+        return memory;
     }
+
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping()
