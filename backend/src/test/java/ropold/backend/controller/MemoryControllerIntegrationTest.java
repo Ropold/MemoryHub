@@ -31,11 +31,9 @@ import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyMap;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oidcLogin;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -359,6 +357,132 @@ class MemoryControllerIntegrationTest {
                 ));
     }
 
+    @Test
+    void updateMemory_withAvatar_shouldUpdateMemoryDetails() throws Exception {
+        // GIVEN
+        OAuth2User mockOAuth2User = mock(OAuth2User.class);
+        when(mockOAuth2User.getName()).thenReturn("user");
 
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(mockOAuth2User, null,
+                        Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")))
+        );
+
+        MemoryModel existingMemory = new MemoryModel(
+                "1",
+                "Avatar Erinnerung",
+                101,
+                Category.GITHUB_AVATAR,
+                "Eine Erinnerung, die mit einem GitHub-Avatar verknüpft ist",
+                true,
+                "user",
+                "user1",
+                "https://avatars.example.com/user1.png",
+                "https://github.com/user1",
+                "https://example.com/image1.jpg"
+        );
+        memoryRepository.save(existingMemory);
+
+        // WHEN
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/memory-hub/avatar/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                        {
+                            "name": "Updated Erinnerung",
+                            "matchId": 102,
+                            "category": "GITHUB_AVATAR",
+                            "description": "Eine aktualisierte Erinnerung mit GitHub-Avatar",
+                            "isActive": false,
+                            "appUserGithubId": "user",
+                            "appUserUsername": "userUpdated",
+                            "appUserAvatarUrl": "https://avatars.example.com/userUpdated.png",
+                            "appUserGithubUrl": "https://github.com/userUpdated",
+                            "imageUrl": "https://example.com/updated-image.jpg"
+                        }
+                    """))
+                .andExpect(status().isOk())
+                .andExpect(content().json("""
+                {
+                    "id": "1",
+                    "name": "Updated Erinnerung",
+                    "matchId": 102,
+                    "category": "GITHUB_AVATAR",
+                    "description": "Eine aktualisierte Erinnerung mit GitHub-Avatar",
+                    "isActive": false,
+                    "appUserGithubId": "user",
+                    "appUserUsername": "userUpdated",
+                    "appUserAvatarUrl": "https://avatars.example.com/userUpdated.png",
+                    "appUserGithubUrl": "https://github.com/userUpdated",
+                    "imageUrl": "https://example.com/updated-image.jpg"
+                }
+            """));
+
+        // THEN
+        MemoryModel updatedMemory = memoryRepository.findById("1").orElseThrow();
+        Assertions.assertFalse(updatedMemory.isActive());
+        Assertions.assertEquals("Updated Erinnerung", updatedMemory.name());
+        Assertions.assertEquals("https://example.com/updated-image.jpg", updatedMemory.imageUrl());
+    }
+
+    @Test
+    void updateMemoryWithPut_shouldUpdateMemoryDetails() throws Exception {
+        OAuth2User mockOAuth2User = mock(OAuth2User.class);
+        when(mockOAuth2User.getName()).thenReturn("user");
+
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(mockOAuth2User, null,
+                        Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")))
+        );
+
+        Uploader mockUploader = mock(Uploader.class);
+        when(mockUploader.upload(any(), anyMap())).thenReturn(Map.of("secure_url", "https://example.com/updated-image.jpg"));
+        when(cloudinary.uploader()).thenReturn(mockUploader);
+
+        mockMvc.perform(MockMvcRequestBuilders.multipart("/api/memory-hub/1")
+                        .file(new MockMultipartFile("image", "test.jpg", "image/jpeg", "test image".getBytes()))
+                        .file(new MockMultipartFile("memoryModelDto", "", "application/json", """
+            {
+                "name": "Updated Erinnerung",
+                "matchId": 102,
+                "category": "GITHUB_AVATAR",
+                "description": "Eine aktualisierte Erinnerung mit GitHub-Avatar",
+                "isActive": false,
+                "appUserGithubId": "user",
+                "appUserUsername": "userUpdated",
+                "appUserAvatarUrl": "https://avatars.example.com/userUpdated.png",
+                "appUserGithubUrl": "https://github.com/userUpdated",
+                "imageUrl": "https://example.com/updated-image.jpg"
+            }
+            """.getBytes()))
+                        .contentType("multipart/form-data")
+                        .with(request -> { request.setMethod("PUT"); return request; }))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Updated Erinnerung"))
+                .andExpect(jsonPath("$.imageUrl").value("https://example.com/updated-image.jpg"));
+
+        Assertions.assertEquals("Updated Erinnerung", memoryRepository.findById("1").orElseThrow().name());
+    }
+
+    @Test
+    void deleteMemory_shouldDeleteMemory() throws Exception {
+
+        OAuth2User mockOAuth2User = mock(OAuth2User.class);
+        when(mockOAuth2User.getName()).thenReturn("user");
+
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(mockOAuth2User, null,
+                        Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")))
+        );
+
+        Uploader mockUploader = mock(Uploader.class);
+        when(mockUploader.upload(any(), anyMap())).thenReturn(Map.of("secure_url", "https://example.com/updated-image.jpg"));
+        when(cloudinary.uploader()).thenReturn(mockUploader);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/memory-hub/1"))
+                .andExpect(status().isNoContent());
+
+        Assertions.assertTrue(memoryRepository.findById("1").isEmpty());
+        verify(mockUploader).destroy(eq("image1"), anyMap());
+    }
 
 }
