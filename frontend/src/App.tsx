@@ -4,7 +4,7 @@ import Navbar from "./components/Navbar.tsx";
 import {useEffect, useState} from "react";
 import axios from "axios";
 import {Route, Routes, useLocation} from "react-router-dom";
-import Home from "./components/Home.tsx";
+import ListOfAllCards from "./components/ListOfAllCards.tsx";
 import NotFound from "./components/NotFound.tsx";
 import {MemoryModel} from "./components/model/MemoryModel.ts";
 import Play from "./components/Play.tsx";
@@ -68,8 +68,7 @@ export default function App() {
     function getAppUserFavorites(){
         axios.get(`/api/memory-hub/favorites`)
             .then((response) => {
-                const favoriteIds = response.data.map((favorite: any) => favorite.id);
-                setFavorites(favoriteIds);
+                setFavorites(response.data);
             })
             .catch((error) => {
                 console.error(error);
@@ -145,7 +144,7 @@ export default function App() {
       <Routes>
         <Route path="*" element={<NotFound />} />
         <Route path="/" element={<Welcome />} />
-        <Route path="/list-of-all-cards" element={<Home activeMemories={activeMemories} toggleFavorite={toggleFavorite} favorites={favorites} user={user} showSearch={showSearch} currentPage={currentPage} paginate={setCurrentPage}/>} />
+        <Route path="/list-of-all-cards" element={<ListOfAllCards activeMemories={activeMemories} toggleFavorite={toggleFavorite} favorites={favorites} user={user} showSearch={showSearch} currentPage={currentPage} paginate={setCurrentPage}/>} />
         <Route path="/play" element={<Play activeMemories={activeMemories} />} />
         <Route path="/memory/:id" element={<Details allMemories={allMemories} favorites={favorites} user={user} toggleFavorite={toggleFavorite}/>} />
 

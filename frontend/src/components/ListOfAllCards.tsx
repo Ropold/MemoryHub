@@ -13,7 +13,7 @@ type HomeProps = {
     paginate: (pageNumber: number) => void;
 };
 
-export default function Home(props: Readonly<HomeProps>) {
+export default function ListOfAllCards(props: Readonly<HomeProps>) {
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [filteredMemories, setFilteredMemories] = useState<MemoryModel[]>([]);
     const [filterType, setFilterType] = useState<"name" | "category" | "matchId" | "all">("name");
