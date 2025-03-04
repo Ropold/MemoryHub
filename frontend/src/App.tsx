@@ -16,7 +16,8 @@ import {UserDetails} from "./components/model/UserDetailsModel.ts";
 import Details from "./components/Details.tsx";
 import Favorites from "./components/Favorites.tsx";
 import Welcome from "./components/Welcome.tsx";
-import HighScore from "./components/styles/HighScore.tsx";
+import HighScore from "./components/HighScore.tsx";
+import {HighScoreModel} from "./components/model/HighScoreModel.ts";
 
 export default function App() {
 
@@ -28,6 +29,7 @@ export default function App() {
     const [showSearch, setShowSearch] = useState<boolean>(false);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [isEditing, setIsEditing] = useState<boolean>(false);
+    const [highScores, setHighScores] = useState<HighScoreModel[]>([]);
 
     const resetCurrentPage = () => {
         setCurrentPage(1);
@@ -99,6 +101,18 @@ export default function App() {
             });
     }
 
+    const getHighScores = () => {
+        axios
+            .get("/api/high-score")
+            .then((response) => {
+                setHighScores(response.data);
+                console.log(response.data);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }
+
     function toggleFavorite(memoryId: string) {
         const isFavorite = favorites.includes(memoryId);
 
@@ -127,6 +141,7 @@ export default function App() {
         getUser();
         getActiveMemories();
         getAllMemories();
+        getHighScores();
     }, []);
 
     useEffect(() => {
@@ -149,7 +164,7 @@ export default function App() {
         <Route path="/list-of-all-cards" element={<ListOfAllCards activeMemories={activeMemories} toggleFavorite={toggleFavorite} favorites={favorites} user={user} showSearch={showSearch} currentPage={currentPage} paginate={setCurrentPage}/>} />
         <Route path="/play" element={<Play activeMemories={activeMemories} />} />
         <Route path="/memory/:id" element={<Details allMemories={allMemories} favorites={favorites} user={user} toggleFavorite={toggleFavorite}/>} />
-        <Route path="/high-score" element={<HighScore/>} />
+        <Route path="/high-score" element={<HighScore highScores={highScores}/>} />
 
         <Route element={<ProtectedRoute user={user} />}>
             <Route path="/favorites" element={<Favorites favorites={favorites} user={user} toggleFavorite={toggleFavorite}/>} />
