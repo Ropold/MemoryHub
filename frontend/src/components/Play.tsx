@@ -158,7 +158,7 @@ export default function Play(props: Readonly<PlayProps>) {
 
             {showControls && (
                 <div className="game-controls">
-                    <label htmlFor="matchIdFilter">Match-ID wählen:</label>
+                    <label htmlFor="matchIdFilter">Game-Deck wählen:</label>
                     <select id="matchIdFilter" value={selectedMatchId ?? ""} onChange={(e) => setSelectedMatchId(Number(e.target.value))}>
                         <option value="">Bitte wählen</option>
                         {[...new Set(props.activeMemories.map(m => m.matchId))].map(matchId => (

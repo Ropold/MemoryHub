@@ -36,30 +36,39 @@ export default function Navbar(props: Readonly<NavbarProps>) {
 
     return (
         <nav className="navbar">
+
+            <button className="button-group-button" onClick={() => navigate("/")}>Home</button>
+
+            <div className="clickable-header-play" onClick={() => navigate("/play")}>
+                <h2 className="header-title">Play</h2>
+                <img src={headerLogo} alt="MemoryHub Logo" className="logo-image" />
+            </div>
+
             <div
                 className="clickable-header"
                 onClick={() => {
                     props.getActiveMemories();
                     props.getAllMemories();
                     props.resetCurrentPage();
-                    navigate("/");
+                    navigate("/list-of-all-cards");
                 }}
             >
-                <h2 className="header-title">MemoryHub</h2>
+                <h2 className="header-title">Memory Collection</h2>
                 <img src={headerLogo} alt="MemoryHub Logo" className="logo-image" />
             </div>
 
-            <button id="play-button-navbar" onClick={() => navigate("/play")}>Play</button>
 
             <button
                 onClick={() => {
                     props.toggleSearchBar();
-                    navigate("/");
+                    navigate("/list-of-all-cards");
                 }}
                 className={props.showSearch ? "toggle-search-on" : "button-group-button"}
             >
                 {props.showSearch ? "Hide Search" : "Search"} {/* Dynamischer Text */}
             </button>
+
+            <button id="button-high-score" onClick={()=> navigate("/high-score")}>High-Score</button>
 
             {props.user !== "anonymousUser" ? (
                 <>

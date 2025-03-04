@@ -4,7 +4,7 @@ import Navbar from "./components/Navbar.tsx";
 import {useEffect, useState} from "react";
 import axios from "axios";
 import {Route, Routes, useLocation} from "react-router-dom";
-import Home from "./components/Home.tsx";
+import ListOfAllCards from "./components/ListOfAllCards.tsx";
 import NotFound from "./components/NotFound.tsx";
 import {MemoryModel} from "./components/model/MemoryModel.ts";
 import Play from "./components/Play.tsx";
@@ -15,6 +15,8 @@ import MyMemories from "./components/MyMemories.tsx";
 import {UserDetails} from "./components/model/UserDetailsModel.ts";
 import Details from "./components/Details.tsx";
 import Favorites from "./components/Favorites.tsx";
+import Welcome from "./components/Welcome.tsx";
+import HighScore from "./components/styles/HighScore.tsx";
 
 export default function App() {
 
@@ -65,9 +67,9 @@ export default function App() {
     }
 
     function getAppUserFavorites(){
-        axios.get(`/api/memory-hub/favorites`)
+        axios.get<MemoryModel[]>(`/api/memory-hub/favorites`)
             .then((response) => {
-                const favoriteIds = response.data.map((favorite: any) => favorite.id);
+                const favoriteIds = response.data.map((memory) => memory.id);
                 setFavorites(favoriteIds);
             })
             .catch((error) => {
@@ -143,9 +145,11 @@ export default function App() {
       <Navbar user={user} getUser={getUser} getActiveMemories={getActiveMemories} getAllMemories={getAllMemories} toggleSearchBar={toggleSearchBar} showSearch={showSearch} resetCurrentPage={resetCurrentPage} resetEditingState={resetEditingState}/>
       <Routes>
         <Route path="*" element={<NotFound />} />
-        <Route path="/" element={<Home activeMemories={activeMemories} toggleFavorite={toggleFavorite} favorites={favorites} user={user} showSearch={showSearch} currentPage={currentPage} paginate={setCurrentPage}/>} />
+        <Route path="/" element={<Welcome />} />
+        <Route path="/list-of-all-cards" element={<ListOfAllCards activeMemories={activeMemories} toggleFavorite={toggleFavorite} favorites={favorites} user={user} showSearch={showSearch} currentPage={currentPage} paginate={setCurrentPage}/>} />
         <Route path="/play" element={<Play activeMemories={activeMemories} />} />
         <Route path="/memory/:id" element={<Details allMemories={allMemories} favorites={favorites} user={user} toggleFavorite={toggleFavorite}/>} />
+        <Route path="/high-score" element={<HighScore/>} />
 
         <Route element={<ProtectedRoute user={user} />}>
             <Route path="/favorites" element={<Favorites favorites={favorites} user={user} toggleFavorite={toggleFavorite}/>} />

@@ -13,32 +13,33 @@ type HomeProps = {
     paginate: (pageNumber: number) => void;
 };
 
-export default function Home(props: Readonly<HomeProps>) {
+export default function ListOfAllCards(props: Readonly<HomeProps>) {
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [filteredMemories, setFilteredMemories] = useState<MemoryModel[]>([]);
-    const [filterType, setFilterType] = useState<"name" | "category" | "matchId" | "all">("name");
     const [selectedCategory, setSelectedCategory] = useState<MemoryModel["category"] | "">("");
+    const [selectedMatchId, setSelectedMatchId] = useState<string>("");
     const [memoriesPerPage, setMemoriesPerPage] = useState<number>(9);
-
 
     useEffect(() => {
         if (!props.showSearch) {
             setSearchQuery("");
+            setSelectedCategory("");
+            setSelectedMatchId("");
         }
     }, [props.showSearch]);
 
     useEffect(() => {
         const updateMemoriesPerPage = () => {
             if (window.innerWidth < 768) {
-                setMemoriesPerPage(8); // Kleine Bildschirme → 8 Karten
+                setMemoriesPerPage(8);
             } else if (window.innerWidth < 1200) {
-                setMemoriesPerPage(9); // Mittelgroße Bildschirme → 9 Karten
+                setMemoriesPerPage(9);
             } else {
-                setMemoriesPerPage(12); // Große Bildschirme → 12 Karten
+                setMemoriesPerPage(12);
             }
         };
 
-        updateMemoriesPerPage(); // Direkt beim ersten Render aufrufen
+        updateMemoriesPerPage();
         window.addEventListener("resize", updateMemoriesPerPage);
 
         return () => {
@@ -46,28 +47,30 @@ export default function Home(props: Readonly<HomeProps>) {
         };
     }, []);
 
-
     useEffect(() => {
-        const filtered = filterMemories(props.activeMemories, searchQuery, filterType, selectedCategory);
+        const filtered = filterMemories(props.activeMemories, searchQuery, selectedCategory, selectedMatchId);
         setFilteredMemories(filtered);
-    }, [props.activeMemories, searchQuery, filterType, selectedCategory]);
+    }, [props.activeMemories, searchQuery, selectedCategory, selectedMatchId]);
 
-    const filterMemories = (memories: MemoryModel[], query: string, filterType: string, category: string | null) => {
+    const filterMemories = (
+        memories: MemoryModel[],
+        query: string,
+        category: string,
+        matchId: string
+    ) => {
         const lowerQuery = query.toLowerCase();
 
         return memories.filter((memory) => {
             const matchesCategory = category ? memory.category === category : true;
-            const matchesName = filterType === "name" && memory.name.toLowerCase().includes(lowerQuery);
-            const matchesMatchId = filterType === "matchId" && memory.matchId.toString().includes(lowerQuery);
-            const matchesAll =
-                filterType === "all" &&
-                (memory.name.toLowerCase().includes(lowerQuery) ||
-                    memory.category.toLowerCase().includes(lowerQuery) ||
-                    memory.matchId.toString().includes(lowerQuery));
+            const matchesMatchId = matchId ? memory.matchId.toString() === matchId : true;
+            const matchesSearch =
+                memory.name.toLowerCase().includes(lowerQuery) ||
+                memory.description.toLowerCase().includes(lowerQuery); // 🔥 NEU: description wird jetzt mit durchsucht!
 
-            return matchesCategory && (matchesName || matchesMatchId || matchesAll);
+            return matchesCategory && matchesMatchId && matchesSearch;
         });
     };
+
 
     const getPaginationData = (memories: MemoryModel[]) => {
         const indexOfLastMemory = props.currentPage * memoriesPerPage;
@@ -77,21 +80,19 @@ export default function Home(props: Readonly<HomeProps>) {
         return { currentMemories, totalPages };
     };
 
-
     const { currentMemories, totalPages } = getPaginationData(filteredMemories);
 
     return (
         <>
             {props.showSearch && (
                 <SearchBar
-                    value={searchQuery}
-                    onChange={setSearchQuery}
-                    memories={props.activeMemories}
-                    setFilteredMemories={setFilteredMemories}
-                    filterType={filterType}
-                    setFilterType={setFilterType}
+                    searchQuery={searchQuery}
+                    setSearchQuery={setSearchQuery}
                     selectedCategory={selectedCategory}
                     setSelectedCategory={setSelectedCategory}
+                    selectedMatchId={selectedMatchId}
+                    setSelectedMatchId={setSelectedMatchId}
+                    memories={props.activeMemories}
                 />
             )}
 
@@ -114,7 +115,7 @@ export default function Home(props: Readonly<HomeProps>) {
                             key={index + 1}
                             onClick={() => props.paginate(index + 1)}
                             className="button-group-button"
-                            id={index + 1 === props.currentPage ? "active-paginate" : undefined} // ID nur für den aktiven Button
+                            id={index + 1 === props.currentPage ? "active-paginate" : undefined}
                         >
                             {index + 1}
                         </button>
