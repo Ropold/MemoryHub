@@ -67,6 +67,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
                 type="text"
                 placeholder="Search Memory..."
                 value={filterType === "name" ? value : ""}  // Zeigt nur den Wert im input an, wenn filterType "name" ist
+                disabled={filterType === "matchId"}
                 onChange={handleInputChange}
             />
             <div className="filter-buttons">
@@ -80,7 +81,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
                     onClick={() => setFilterType("matchId")}
                     className={filterType === "matchId" ? "active" : ""}
                 >
-                    Match ID
+                    Deck ID
                 </button>
                 <button
                     onClick={() => {
@@ -110,7 +111,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
                         onChange={handleMatchIdChange}
                         disabled={filterType !== "matchId"}
                     >
-                        <option value="">Filter by Match ID</option>
+                        <option value="">Filter by Game Deck ID</option>
                         {matchIds.map((id) => (
                             <option key={id} value={id}>
                                 {id}

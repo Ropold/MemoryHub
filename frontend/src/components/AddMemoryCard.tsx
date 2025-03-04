@@ -164,7 +164,7 @@ export default function AddMemoryCard(props: Readonly<MemoryCardProps>) {
                 </label>
 
                 <label>
-                    Match ID:
+                    Game Deck ID:
                     <select
                         className="input-small"
                         value={matchId}
