@@ -439,21 +439,22 @@ class MemoryControllerIntegrationTest {
         when(mockUploader.upload(any(), anyMap())).thenReturn(Map.of("secure_url", "https://example.com/updated-image.jpg"));
         when(cloudinary.uploader()).thenReturn(mockUploader);
 
-        mockMvc.perform(MockMvcRequestBuilders.multipart("/api/memories/1")
+        mockMvc.perform(MockMvcRequestBuilders.multipart("/api/memory-hub/1")
                         .file(new MockMultipartFile("image", "test.jpg", "image/jpeg", "test image".getBytes()))
                         .file(new MockMultipartFile("memoryModelDto", "", "application/json", """
-                {
-                    "name": "Updated Erinnerung",
-                    "matchId": 102,
-                    "category": "GITHUB_AVATAR",
-                    "description": "Eine aktualisierte Erinnerung mit GitHub-Avatar",
-                    "isActive": false,
-                    "appUserGithubId": "user",
-                    "appUserUsername": "userUpdated",
-                    "appUserAvatarUrl": "https://avatars.example.com/userUpdated.png",
-                    "appUserGithubUrl": "https://github.com/userUpdated"
-                }
-                """.getBytes()))
+            {
+                "name": "Updated Erinnerung",
+                "matchId": 102,
+                "category": "GITHUB_AVATAR",
+                "description": "Eine aktualisierte Erinnerung mit GitHub-Avatar",
+                "isActive": false,
+                "appUserGithubId": "user",
+                "appUserUsername": "userUpdated",
+                "appUserAvatarUrl": "https://avatars.example.com/userUpdated.png",
+                "appUserGithubUrl": "https://github.com/userUpdated",
+                "imageUrl": "https://example.com/updated-image.jpg"
+            }
+            """.getBytes()))
                         .contentType("multipart/form-data")
                         .with(request -> { request.setMethod("PUT"); return request; }))
                 .andExpect(status().isOk())
