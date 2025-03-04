@@ -31,8 +31,7 @@ import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyMap;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oidcLogin;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -464,6 +463,26 @@ class MemoryControllerIntegrationTest {
         Assertions.assertEquals("Updated Erinnerung", memoryRepository.findById("1").orElseThrow().name());
     }
 
+    @Test
+    void deleteMemory_shouldDeleteMemory() throws Exception {
 
+        OAuth2User mockOAuth2User = mock(OAuth2User.class);
+        when(mockOAuth2User.getName()).thenReturn("user");
+
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(mockOAuth2User, null,
+                        Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")))
+        );
+
+        Uploader mockUploader = mock(Uploader.class);
+        when(mockUploader.upload(any(), anyMap())).thenReturn(Map.of("secure_url", "https://example.com/updated-image.jpg"));
+        when(cloudinary.uploader()).thenReturn(mockUploader);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/memory-hub/1"))
+                .andExpect(status().isNoContent());
+
+        Assertions.assertTrue(memoryRepository.findById("1").isEmpty());
+        verify(mockUploader).destroy(eq("image1"), anyMap());
+    }
 
 }
