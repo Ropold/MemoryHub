@@ -15,6 +15,7 @@ import MyMemories from "./components/MyMemories.tsx";
 import {UserDetails} from "./components/model/UserDetailsModel.ts";
 import Details from "./components/Details.tsx";
 import Favorites from "./components/Favorites.tsx";
+import Welcome from "./components/Welcome.tsx";
 
 export default function App() {
 
@@ -143,7 +144,8 @@ export default function App() {
       <Navbar user={user} getUser={getUser} getActiveMemories={getActiveMemories} getAllMemories={getAllMemories} toggleSearchBar={toggleSearchBar} showSearch={showSearch} resetCurrentPage={resetCurrentPage} resetEditingState={resetEditingState}/>
       <Routes>
         <Route path="*" element={<NotFound />} />
-        <Route path="/" element={<Home activeMemories={activeMemories} toggleFavorite={toggleFavorite} favorites={favorites} user={user} showSearch={showSearch} currentPage={currentPage} paginate={setCurrentPage}/>} />
+        <Route path="/" element={<Welcome />} />
+        <Route path="/list-of-all-cards" element={<Home activeMemories={activeMemories} toggleFavorite={toggleFavorite} favorites={favorites} user={user} showSearch={showSearch} currentPage={currentPage} paginate={setCurrentPage}/>} />
         <Route path="/play" element={<Play activeMemories={activeMemories} />} />
         <Route path="/memory/:id" element={<Details allMemories={allMemories} favorites={favorites} user={user} toggleFavorite={toggleFavorite}/>} />
 
