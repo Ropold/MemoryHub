@@ -46,6 +46,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, MEMORY_HUB_PATH).authenticated()
                         .requestMatchers("/api/users/me").permitAll()
                         .requestMatchers("/api/users/me/details").permitAll()
+                        .requestMatchers("/api/high-score").permitAll()
                         .anyRequest().permitAll()
                 )
                 .logout(l -> l.logoutUrl("/api/users/logout")
