@@ -68,7 +68,7 @@ export default function Navbar(props: Readonly<NavbarProps>) {
                 {props.showSearch ? "Hide Search" : "Search"} {/* Dynamischer Text */}
             </button>
 
-            <button className="button-group-button">High-Score</button>
+            <button id="button-high-score" onClick={()=> navigate("/high-score")}>High-Score</button>
 
             {props.user !== "anonymousUser" ? (
                 <>

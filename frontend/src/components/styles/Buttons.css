@@ -92,3 +92,11 @@
 #play-button-enabled:hover{
     background-color: #388e3c;
 }
+
+#button-high-score {
+    background-color: #ff9e00;
+}
+
+#button-high-score:hover {
+    background-color: #e67e00;
+}

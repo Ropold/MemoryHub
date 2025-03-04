@@ -66,7 +66,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
             <input
                 type="text"
                 placeholder="Search Memory..."
-                value={value}
+                value={filterType === "name" ? value : ""}  // Zeigt nur den Wert im input an, wenn filterType "name" ist
                 onChange={handleInputChange}
             />
             <div className="filter-buttons">
