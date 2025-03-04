@@ -100,3 +100,11 @@
 #button-high-score:hover {
     background-color: #e67e00;
 }
+
+.reset-button-not-possible {
+    background-color: #999;
+}
+
+.reset-button-not-possible:hover {
+   background-color: #555 !important;
+}

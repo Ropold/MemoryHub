@@ -71,7 +71,10 @@ const SearchBar: React.FC<SearchBarProps> = ({
                 </label>
 
                 {/* Reset-Button */}
-                <button onClick={handleReset} className="button-group-button">
+                <button
+                    onClick={handleReset}
+                    className={`${searchQuery || selectedMatchId || selectedCategory ? "button-group-button" : "reset-button-not-possible"}`}
+                >
                     Reset Filters
                 </button>
             </div>
