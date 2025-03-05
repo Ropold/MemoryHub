@@ -15,9 +15,9 @@ public class HighScoreController {
 
     private final HighScoreService highScoreService;
 
-    @GetMapping()
-    public List<HighScoreModel> getAllHighScores() {
-        return highScoreService.getAllHighScores();
+    @GetMapping("/{numberOfCards}")
+    public List<HighScoreModel> getBestHighScoresForCards(@PathVariable int numberOfCards) {
+        return highScoreService.getBestHighScoresForCards(numberOfCards);
     }
 
     @ResponseStatus(HttpStatus.CREATED)

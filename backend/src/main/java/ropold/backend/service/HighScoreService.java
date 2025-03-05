@@ -1,14 +1,12 @@
 package ropold.backend.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ropold.backend.model.HighScoreModel;
 import ropold.backend.repository.HighScoreRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -17,12 +15,13 @@ public class HighScoreService {
     private final HighScoreRepository highScoreRepository;
     private final IdService idService;
 
-    public List<HighScoreModel> getAllHighScores() {
-        // Verwende die findAll-Methode mit Sortierung nach scoreTime aufsteigend
-        return highScoreRepository.findAll(Sort.by(Sort.Order.asc("scoreTime")));
+    public List<HighScoreModel> getBestHighScoresForCards(int numberOfCards) {
+        // Holen Sie sich die besten 10 Highscores für die angegebene Kartenanzahl, sortiert nach scoreTime
+        return highScoreRepository.findTop10ByNumberOfCardsOrderByScoreTimeAsc(numberOfCards);
     }
 
     public HighScoreModel addHighScore(HighScoreModel highScoreModel) {
+        // Erstelle das neue HighScoreModel mit einer neuen ID und aktuellen Zeitstempel
         HighScoreModel newHighScoreModel = new HighScoreModel(
                 idService.generateRandomId(),
                 highScoreModel.playerName(),
@@ -33,19 +32,26 @@ public class HighScoreService {
                 LocalDateTime.now()
         );
 
-        List<HighScoreModel> scoresForCategory = highScoreRepository.findByNumberOfCardsOrderByScoreTimeAsc(newHighScoreModel.numberOfCards());
+        // Finde die besten 10 Highscores für diese Kartenanzahl
+        List<HighScoreModel> scoresForCategory = highScoreRepository.findTop10ByNumberOfCardsOrderByScoreTimeAsc(newHighScoreModel.numberOfCards());
 
-        if (scoresForCategory.size() >= 10) {
-            // Falls es schon 10 Einträge gibt, lösche den schlechtesten (höchste scoreTime)
-            Optional<HighScoreModel> worstScore = scoresForCategory.stream()
-                    .max((s1, s2) -> Double.compare(s1.scoreTime(), s2.scoreTime()));
-
-            worstScore.ifPresent(score -> highScoreRepository.deleteById(score.id()));
+        // Überprüfe, ob der neue Highscore eine bessere Zeit als der schlechteste Highscore hat
+        if (scoresForCategory.size() >= 10 && newHighScoreModel.scoreTime() > scoresForCategory.get(9).scoreTime()) {
+            // Wenn der neue Highscore schlechter ist als der schlechteste der aktuellen Top 10, wird er nicht gespeichert
+            return null;
         }
 
-        // Speichere den neuen HighScore
+        // Wenn schon 10 Einträge existieren, lösche den schlechtesten (höchste scoreTime)
+        if (scoresForCategory.size() >= 10) {
+            // Der schlechteste Eintrag ist der letzte, wenn die Liste nach scoreTime aufsteigend sortiert ist
+            HighScoreModel worstScore = scoresForCategory.get(9); // Der 10. Eintrag in einer Liste mit maximal 10 Einträgen
+            highScoreRepository.deleteById(worstScore.id());
+        }
+
+        // Speichere das neue HighScore
         return highScoreRepository.save(newHighScoreModel);
     }
+
 
     public void deleteHighScore(String id) {
         highScoreRepository.deleteById(id);
