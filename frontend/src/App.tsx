@@ -108,7 +108,6 @@ export default function App() {
             .get("/api/high-score/10")
             .then((response) => {
                 setHighScores10(response.data);
-                console.log(response.data);
             })
             .catch((error) => {
                 console.error(error);
@@ -120,7 +119,6 @@ export default function App() {
             .get("/api/high-score/20")
             .then((response) => {
                 setHighScores20(response.data);
-                console.log(response.data);
             })
             .catch((error) => {
                 console.error(error);
@@ -132,7 +130,6 @@ export default function App() {
             .get("/api/high-score/32")
             .then((response) => {
                 setHighScores32(response.data);
-                console.log(response.data);
             })
             .catch((error) => {
                 console.error(error);
