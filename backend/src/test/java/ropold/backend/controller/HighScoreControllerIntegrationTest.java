@@ -112,6 +112,62 @@ class HighScoreControllerIntegrationTest {
                 ));
     }
 
+    @Test
+    void postHighScore_withHighTime_shouldNotSave() throws Exception {
+        // GIVEN: Bestehende Highscores vorbereiten
+        highScoreRepository.deleteAll();
+
+        LocalDateTime fixedDate = LocalDateTime.of(2025, 3, 5, 12, 0, 0);
+
+        List<HighScoreModel> existingScores = List.of(
+                new HighScoreModel("1", "player1", "john_doe_123", 5, 32, 5.6, fixedDate),
+                new HighScoreModel("2", "player2", "john_doe_123", 5, 32, 6.6, fixedDate),
+                new HighScoreModel("3", "player3", "john_doe_123", 5, 32, 8.6, fixedDate),
+                new HighScoreModel("4", "player4", "john_doe_123", 5, 32, 9.6, fixedDate),
+                new HighScoreModel("5", "player5", "john_doe_123", 5, 32, 10.6, fixedDate),
+                new HighScoreModel("6", "player6", "john_doe_123", 5, 32, 12.6, fixedDate),
+                new HighScoreModel("7", "player7", "john_doe_123", 5, 32, 13.6, fixedDate),
+                new HighScoreModel("8", "player8", "john_doe_123", 5, 32, 13.6, fixedDate),
+                new HighScoreModel("9", "player9", "john_doe_123", 5, 32, 15.6, fixedDate),
+                new HighScoreModel("10", "player10", "john_doe_123", 5, 32, 29.6, fixedDate)
+        );
+
+        highScoreRepository.saveAll(existingScores);
+        Assertions.assertEquals(10, highScoreRepository.count()); // Sicherstellen, dass 10 Einträge existieren
+
+        // WHEN: Ein neuer, schlechterer Highscore wird gepostet
+        String newHighScoreJson = """
+            {
+                "playerName": "NEIN!",
+                "appUserGithubId": "john_doe_123",
+                "matchId": 5,
+                "numberOfCards": 32,
+                "scoreTime": 36.6
+            }
+            """;
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/high-score")
+                        .contentType("application/json")
+                        .content(newHighScoreJson))
+                .andExpect(status().isCreated()) // API gibt immer 201 zurück
+                .andExpect(MockMvcResultMatchers.content().string("")); // Aber Body ist null
+
+        // THEN: Sicherstellen, dass kein zusätzlicher Eintrag gespeichert wurde
+        List<HighScoreModel> allHighScores = highScoreRepository.findAll();
+        Assertions.assertEquals(10, allHighScores.size()); // Anzahl der Highscores bleibt gleich
+    }
+
+    @Test
+    void deleteHighScore() throws Exception {
+        // WHEN: Eintrag mit ID "1" wird gelöscht
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/high-score/1"))
+                .andExpect(status().isNoContent()); // Erwartung auf 204 No Content setzen
+
+        // THEN: Prüfen, dass nur noch ein Eintrag existiert und ID "2" übrig bleibt
+        Assertions.assertEquals(1, highScoreRepository.count());
+        Assertions.assertTrue(highScoreRepository.existsById("2"));
+    }
+
 
 
 }
