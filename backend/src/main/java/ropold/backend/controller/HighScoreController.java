@@ -26,5 +26,11 @@ public class HighScoreController {
         return highScoreService.addHighScore(highScoreModel);
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/{id}")
+    public void deleteHighScore(@PathVariable String id) {
+        highScoreService.deleteHighScore(id);
+    }
+
 }
 

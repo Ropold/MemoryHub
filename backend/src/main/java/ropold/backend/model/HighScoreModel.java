@@ -15,7 +15,6 @@ public record HighScoreModel(
         int matchId,
         int numberOfCards,
         double scoreTime,
-        @NotNull LocalDateTime date,
-        int position
+        @NotNull LocalDateTime date
 ) {
 }
