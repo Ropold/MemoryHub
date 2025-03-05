@@ -1,6 +1,7 @@
 package ropold.backend.controller;
 
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class HighScoreControllerIntegrationTest {
+class HighScoreControllerIntegrationTest {
 
     @Autowired
     private HighScoreRepository highScoreRepository;
@@ -70,6 +71,47 @@ public class HighScoreControllerIntegrationTest {
                 ]
                 """));
     }
+
+    @Test
+    void postHighScore_shouldReturnSavedHighScore() throws Exception {
+        // GIVEN
+        highScoreRepository.deleteAll();
+
+        String highScoreJson = """
+            {
+                "playerName": "player1",
+                "appUserGithubId": "123456",
+                "matchId": 1,
+                "numberOfCards": 10,
+                "scoreTime": 9.5
+            }
+            """;
+
+        // WHEN
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/high-score")
+                        .contentType("application/json")
+                        .content(highScoreJson))
+                .andExpect(status().isCreated());
+
+        // THEN
+        List<HighScoreModel> allHighScores = highScoreRepository.findAll();
+        Assertions.assertEquals(1, allHighScores.size());
+
+        HighScoreModel savedHighScore = allHighScores.getFirst();
+        org.assertj.core.api.Assertions.assertThat(savedHighScore)
+                .usingRecursiveComparison()
+                .ignoringFields("id", "date")
+                .isEqualTo(new HighScoreModel(
+                        null,
+                        "player1",
+                        "123456",
+                        1,
+                        10,
+                        9.5,
+                        null
+                ));
+    }
+
 
 
 }
