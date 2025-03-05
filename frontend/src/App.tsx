@@ -29,7 +29,9 @@ export default function App() {
     const [showSearch, setShowSearch] = useState<boolean>(false);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [isEditing, setIsEditing] = useState<boolean>(false);
-    const [highScores, setHighScores] = useState<HighScoreModel[]>([]);
+    const [highScores10, setHighScores10] = useState<HighScoreModel[]>([]);
+    const [highScores20, setHighScores20] = useState<HighScoreModel[]>([]);
+    const [highScores32, setHighScores32] = useState<HighScoreModel[]>([]);
 
     const resetCurrentPage = () => {
         setCurrentPage(1);
@@ -101,11 +103,35 @@ export default function App() {
             });
     }
 
-    const getHighScores = () => {
+    const getHighScoresFor10Cards = () => {
         axios
-            .get("/api/high-score")
+            .get("/api/high-score/10")
             .then((response) => {
-                setHighScores(response.data);
+                setHighScores10(response.data);
+                console.log(response.data);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }
+
+    const getHighScoresFor20Cards = () => {
+        axios
+            .get("/api/high-score/20")
+            .then((response) => {
+                setHighScores20(response.data);
+                console.log(response.data);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }
+
+    const getHighScoresFor32Cards = () => {
+        axios
+            .get("/api/high-score/32")
+            .then((response) => {
+                setHighScores32(response.data);
                 console.log(response.data);
             })
             .catch((error) => {
@@ -141,7 +167,9 @@ export default function App() {
         getUser();
         getActiveMemories();
         getAllMemories();
-        getHighScores();
+        getHighScoresFor10Cards();
+        getHighScoresFor20Cards();
+        getHighScoresFor32Cards();
     }, []);
 
     useEffect(() => {
@@ -164,7 +192,7 @@ export default function App() {
         <Route path="/list-of-all-cards" element={<ListOfAllCards activeMemories={activeMemories} toggleFavorite={toggleFavorite} favorites={favorites} user={user} showSearch={showSearch} currentPage={currentPage} paginate={setCurrentPage}/>} />
         <Route path="/play" element={<Play activeMemories={activeMemories} />} />
         <Route path="/memory/:id" element={<Details allMemories={allMemories} favorites={favorites} user={user} toggleFavorite={toggleFavorite}/>} />
-        <Route path="/high-score" element={<HighScore highScores={highScores}/>} />
+        <Route path="/high-score" element={<HighScore highScores10={highScores10} highScores20={highScores20} highScores32={highScores32}/>} />
 
         <Route element={<ProtectedRoute user={user} />}>
             <Route path="/favorites" element={<Favorites favorites={favorites} user={user} toggleFavorite={toggleFavorite}/>} />

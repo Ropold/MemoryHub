@@ -1,7 +1,9 @@
 import { HighScoreModel } from "./model/HighScoreModel.ts";
 
 type HighScoreProps = {
-    highScores: HighScoreModel[];
+    highScores10: HighScoreModel[];
+    highScores20: HighScoreModel[];
+    highScores32: HighScoreModel[];
 }
 
 export default function HighScore(props: Readonly<HighScoreProps>) {
@@ -18,7 +20,7 @@ export default function HighScore(props: Readonly<HighScoreProps>) {
                 </tr>
                 </thead>
                 <tbody>
-                {props.highScores.map((highScore, index) => (
+                {props.highScores32.map((highScore, index) => (
                     <tr key={highScore.id}>
                         <td>{index + 1}</td>
                         <td>{highScore.playerName}</td>
