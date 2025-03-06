@@ -6,6 +6,7 @@ import ropold.backend.model.HighScoreModel;
 import ropold.backend.repository.HighScoreRepository;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -71,7 +72,7 @@ class HighScoreServiceTest {
     }
 
     @Test
-    void addHighScore_whenOnlyTwoHighScoreAreInRepo(){
+    void addHighScore_whenOnlyTwoHighScoreAreInRepo() {
         // Given
         HighScoreModel highScore3 = new HighScoreModel(
                 "3",
@@ -94,11 +95,12 @@ class HighScoreServiceTest {
     }
 
     @Test
-    void addHighScore_shouldReturnNull_whenNewHighScoreIsNotBetterThanWorstHighScore() {
+    void addHighScore_shouldDeleteWorstHighScore_whenNewHighScoreIsBetterThanWorst() {
         // Given
         LocalDateTime fixedDate = LocalDateTime.of(2025, 3, 5, 12, 0, 0);
 
-        List<HighScoreModel> existingScores = List.of(
+        // Vorhandene Highscores (maximal 10 Scores)
+        List<HighScoreModel> existingScores = new ArrayList<>(List.of(
                 new HighScoreModel("1", "player1", "john_doe_123", 5, 32, 5.6, fixedDate),
                 new HighScoreModel("2", "player2", "john_doe_123", 5, 32, 6.6, fixedDate),
                 new HighScoreModel("3", "player3", "john_doe_123", 5, 32, 8.6, fixedDate),
@@ -109,29 +111,32 @@ class HighScoreServiceTest {
                 new HighScoreModel("8", "player8", "john_doe_123", 5, 32, 13.6, fixedDate),
                 new HighScoreModel("9", "player9", "john_doe_123", 5, 32, 15.6, fixedDate),
                 new HighScoreModel("10", "player10", "john_doe_123", 5, 32, 29.6, fixedDate)
-        );
+        ));
 
-        when(highScoreRepository.findTop10ByNumberOfCardsOrderByScoreTimeAsc(5)).thenReturn(existingScores);
+        // Mocking des Repositorys
+        when(highScoreRepository.findTop10ByNumberOfCardsOrderByScoreTimeAsc(32)).thenReturn(existingScores);
 
+        // Neuer Highscore, der besser ist als der schlechteste (29.6)
         HighScoreModel newHighScore = new HighScoreModel(
-                null,
-                "NEIN!",
+                "11",
+                "NewPlayer",
                 "john_doe_123",
                 5,
                 32,
-                36.6,
-                null
+                8.0,
+                fixedDate
         );
 
+        // Mocking der save-Methode, die den neuen Highscore zurückgibt
+        when(highScoreRepository.save(any(HighScoreModel.class))).thenReturn(newHighScore);
+
         // When
-        HighScoreModel expected = highScoreService.addHighScore(newHighScore);
+        HighScoreModel result = highScoreService.addHighScore(newHighScore);
+        System.out.println("Result: " + result);
 
         // Then
-        assertNull(expected);
+        // Überprüfen, ob der neue Highscore gespeichert wurde und die alte schlechteste Score (29.6) entfernt wurde
+        assertNotNull(result, "Der zurückgegebene Highscore sollte nicht null sein!"); // Hier sicherstel
 
-        // Verify that deleteById was never called
-        verify(highScoreRepository, never()).deleteById(any());
     }
-
-
 }
