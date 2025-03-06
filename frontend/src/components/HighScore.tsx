@@ -1,4 +1,5 @@
 import { HighScoreModel } from "./model/HighScoreModel.ts";
+import "./styles/HighScore.css";
 
 type HighScoreProps = {
     highScores10: HighScoreModel[];
@@ -9,26 +10,79 @@ type HighScoreProps = {
 export default function HighScore(props: Readonly<HighScoreProps>) {
     return (
         <div className="high-score">
-            <h2>High Score</h2>
-            <p>Here you can see the high score of the players!</p>
-            <table>
-                <thead>
-                <tr>
-                    <th>Rank</th>
-                    <th>Player</th>
-                    <th>Score</th>
-                </tr>
-                </thead>
-                <tbody>
-                {props.highScores32.map((highScore, index) => (
-                    <tr key={highScore.id}>
-                        <td>{index + 1}</td>
-                        <td>{highScore.playerName}</td>
-                        <td>{highScore.scoreTime}</td>
-                    </tr>
-                ))}
-                </tbody>
-            </table>
+            {/* High Scores Table Container */}
+            <div className="high-score-item-container">
+
+                {/* Top 10 High Scores Table */}
+                <div className="high-score-table">
+                    <h3>Game 10 Cards</h3>
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Player</th>
+                            <th>Time</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {props.highScores10.map((highScore, index) => (
+                            <tr key={highScore.id}>
+                                <td>{index + 1}</td>
+                                <td>{highScore.playerName}</td>
+                                <td>{highScore.scoreTime}</td>
+                            </tr>
+                        ))}
+                        </tbody>
+                    </table>
+                </div>
+
+                {/* Top 20 High Scores Table */}
+                <div className="high-score-table">
+                    <h3>Game 20 Cards</h3>
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Player</th>
+                            <th>Time</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {props.highScores20.map((highScore, index) => (
+                            <tr key={highScore.id}>
+                                <td>{index + 1}</td>
+                                <td>{highScore.playerName}</td>
+                                <td>{highScore.scoreTime}</td>
+                            </tr>
+                        ))}
+                        </tbody>
+                    </table>
+                </div>
+
+                {/* Top 32 High Scores Table */}
+                <div className="high-score-table">
+                    <h3>Game 32 Cards</h3>
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Player</th>
+                            <th>Time</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {props.highScores32.map((highScore, index) => (
+                            <tr key={highScore.id}>
+                                <td>{index + 1}</td>
+                                <td>{highScore.playerName}</td>
+                                <td>{highScore.scoreTime}</td>
+                            </tr>
+                        ))}
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
         </div>
     );
 }
