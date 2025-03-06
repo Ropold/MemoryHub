@@ -16,7 +16,8 @@ import {UserDetails} from "./components/model/UserDetailsModel.ts";
 import Details from "./components/Details.tsx";
 import Favorites from "./components/Favorites.tsx";
 import Welcome from "./components/Welcome.tsx";
-import HighScore from "./components/styles/HighScore.tsx";
+import HighScore from "./components/HighScore.tsx";
+import {HighScoreModel} from "./components/model/HighScoreModel.ts";
 
 export default function App() {
 
@@ -28,6 +29,9 @@ export default function App() {
     const [showSearch, setShowSearch] = useState<boolean>(false);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [isEditing, setIsEditing] = useState<boolean>(false);
+    const [highScores10, setHighScores10] = useState<HighScoreModel[]>([]);
+    const [highScores20, setHighScores20] = useState<HighScoreModel[]>([]);
+    const [highScores32, setHighScores32] = useState<HighScoreModel[]>([]);
 
     const resetCurrentPage = () => {
         setCurrentPage(1);
@@ -99,6 +103,39 @@ export default function App() {
             });
     }
 
+    const getHighScoresFor10Cards = () => {
+        axios
+            .get("/api/high-score/10")
+            .then((response) => {
+                setHighScores10(response.data);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }
+
+    const getHighScoresFor20Cards = () => {
+        axios
+            .get("/api/high-score/20")
+            .then((response) => {
+                setHighScores20(response.data);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }
+
+    const getHighScoresFor32Cards = () => {
+        axios
+            .get("/api/high-score/32")
+            .then((response) => {
+                setHighScores32(response.data);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }
+
     function toggleFavorite(memoryId: string) {
         const isFavorite = favorites.includes(memoryId);
 
@@ -127,6 +164,9 @@ export default function App() {
         getUser();
         getActiveMemories();
         getAllMemories();
+        getHighScoresFor10Cards();
+        getHighScoresFor20Cards();
+        getHighScoresFor32Cards();
     }, []);
 
     useEffect(() => {
@@ -149,7 +189,7 @@ export default function App() {
         <Route path="/list-of-all-cards" element={<ListOfAllCards activeMemories={activeMemories} toggleFavorite={toggleFavorite} favorites={favorites} user={user} showSearch={showSearch} currentPage={currentPage} paginate={setCurrentPage}/>} />
         <Route path="/play" element={<Play activeMemories={activeMemories} />} />
         <Route path="/memory/:id" element={<Details allMemories={allMemories} favorites={favorites} user={user} toggleFavorite={toggleFavorite}/>} />
-        <Route path="/high-score" element={<HighScore/>} />
+        <Route path="/high-score" element={<HighScore highScores10={highScores10} highScores20={highScores20} highScores32={highScores32}/>} />
 
         <Route element={<ProtectedRoute user={user} />}>
             <Route path="/favorites" element={<Favorites favorites={favorites} user={user} toggleFavorite={toggleFavorite}/>} />
