@@ -21,6 +21,7 @@ export default function HighScore(props: Readonly<HighScoreProps>) {
                         <tr>
                             <th>Rank</th>
                             <th>Player</th>
+                            <th>Game-Deck</th>
                             <th>Time</th>
                         </tr>
                         </thead>
@@ -29,6 +30,7 @@ export default function HighScore(props: Readonly<HighScoreProps>) {
                             <tr key={highScore.id}>
                                 <td>{index + 1}</td>
                                 <td>{highScore.playerName}</td>
+                                <td>{highScore.matchId}</td>
                                 <td>{highScore.scoreTime}</td>
                             </tr>
                         ))}
@@ -44,6 +46,7 @@ export default function HighScore(props: Readonly<HighScoreProps>) {
                         <tr>
                             <th>Rank</th>
                             <th>Player</th>
+                            <th>Game-Deck</th>
                             <th>Time</th>
                         </tr>
                         </thead>
@@ -52,6 +55,7 @@ export default function HighScore(props: Readonly<HighScoreProps>) {
                             <tr key={highScore.id}>
                                 <td>{index + 1}</td>
                                 <td>{highScore.playerName}</td>
+                                <td>{highScore.matchId}</td>
                                 <td>{highScore.scoreTime}</td>
                             </tr>
                         ))}
@@ -66,8 +70,8 @@ export default function HighScore(props: Readonly<HighScoreProps>) {
                         <thead>
                         <tr>
                             <th>Rank</th>
-                            <th>Deck-Id</th>
                             <th>Player</th>
+                            <th>Game-Deck</th>
                             <th>Time</th>
                         </tr>
                         </thead>

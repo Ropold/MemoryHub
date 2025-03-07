@@ -148,13 +148,12 @@ export default function Play(props: Readonly<PlayProps>) {
     const hasGameEnded = matchedCards.length === cards.length && cards.length > 0;
 
     const postHighScore = () => {
-
         const highScoreData = {
             playerName,
             appUserGithubId: props.user,
             matchId: selectedMatchId,
             numberOfCards: cardCount,
-            scoreTime: time,
+            scoreTime: parseFloat(time.toFixed(1)),
         };
 
         axios
@@ -166,6 +165,13 @@ export default function Play(props: Readonly<PlayProps>) {
                 console.error("Fehler beim Speichern des Highscores:", error);
             });
     };
+
+    useEffect(() => {
+        if (matchedCards.length === cards.length && cards.length > 0) {
+            postHighScore();
+        }
+    }, [matchedCards, cards]);
+
 
     return (
         <div>
