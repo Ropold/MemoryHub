@@ -1,9 +1,13 @@
 import { useState, useEffect } from "react";
 import { MemoryModel } from "./model/MemoryModel.ts";
 import PlayMemoryCard from "./PlayMemoryCard.tsx";
+import {HighScoreModel} from "./model/HighScoreModel.ts";
 
 type PlayProps = {
     activeMemories: MemoryModel[];
+    highScores10: HighScoreModel[];
+    highScores20: HighScoreModel[];
+    highScores32: HighScoreModel[];
 };
 
 // Fisher-Yates-Shuffle-Funktion für wirklich zufälliges Mischen
