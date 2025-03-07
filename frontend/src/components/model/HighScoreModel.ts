@@ -7,6 +7,5 @@ export type HighScoreModel = {
     numberOfCards: number;
     scoreTime: number;
     date: string;
-    position: number;
 }
 

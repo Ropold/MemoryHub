@@ -31,6 +31,30 @@ export default function Play(props: Readonly<PlayProps>) {
     const [isGameStarted, setIsGameStarted] = useState(false);
     const [showAnimation, setShowAnimation] = useState(false);
     const [hasStarted, setHasStarted] = useState(false);
+    const [time, setTime] = useState<number>(0);
+    const [intervalId, setIntervalId] = useState<number | null>(null);
+
+    // Timer starten, wenn das Spiel beginnt
+    useEffect(() => {
+        if (isGameStarted) {
+            setTime(0); // Timer zurücksetzen
+            const id = window.setInterval(() => {
+                setTime(prev => prev + 0.1); // Timer um 0.1 Sekunden erhöhen
+            }, 100);
+            setIntervalId(id);
+        } else if (!isGameStarted && intervalId) {
+            clearInterval(intervalId);
+            setIntervalId(null);
+        }
+    }, [isGameStarted]);
+
+// Timer stoppen, wenn das Spiel gewonnen ist
+    useEffect(() => {
+        if (matchedCards.length === cards.length && cards.length > 0 && intervalId) {
+            clearInterval(intervalId);
+            setIntervalId(null);
+        }
+    }, [matchedCards, cards]);
 
 
 // Vorschau der Karten (neu laden, wenn MatchId oder Anzahl sich ändert)
@@ -154,11 +178,14 @@ export default function Play(props: Readonly<PlayProps>) {
                         setMatchedCards([]);
                         setShowAnimation(false);
                         setHasStarted(false);
+                        setTime(0);
                     }}
                 >
                     Reset
                 </button>
+                <div className="timer">⏱️ Time: {time.toFixed(1)} sec</div>
             </div>
+
 
             {showControls && (
                 <div className="game-controls">
@@ -209,6 +236,7 @@ export default function Play(props: Readonly<PlayProps>) {
             {showAnimation && (
                 <div className="win-animation">
                     <h2>You Win!</h2>
+                    <p>Time: {time.toFixed(1)} sec</p>
                 </div>
             )}
         </div>
