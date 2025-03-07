@@ -2,12 +2,14 @@ import { useState, useEffect } from "react";
 import { MemoryModel } from "./model/MemoryModel.ts";
 import PlayMemoryCard from "./PlayMemoryCard.tsx";
 import {HighScoreModel} from "./model/HighScoreModel.ts";
+import axios from "axios";
 
 type PlayProps = {
     activeMemories: MemoryModel[];
     highScores10: HighScoreModel[];
     highScores20: HighScoreModel[];
     highScores32: HighScoreModel[];
+    user: string;
 };
 
 // Fisher-Yates-Shuffle-Funktion für wirklich zufälliges Mischen
@@ -33,6 +35,7 @@ export default function Play(props: Readonly<PlayProps>) {
     const [hasStarted, setHasStarted] = useState(false);
     const [time, setTime] = useState<number>(0);
     const [intervalId, setIntervalId] = useState<number | null>(null);
+    const [playerName, setPlayerName] = useState<string>("");
 
     // Timer starten, wenn das Spiel beginnt
     useEffect(() => {
@@ -143,6 +146,26 @@ export default function Play(props: Readonly<PlayProps>) {
     };
 
     const hasGameEnded = matchedCards.length === cards.length && cards.length > 0;
+
+    const postHighScore = () => {
+
+        const highScoreData = {
+            playerName,
+            appUserGithubId: props.user,
+            matchId: selectedMatchId,
+            numberOfCards: cardCount,
+            scoreTime: time,
+        };
+
+        axios
+            .post("/api/high-score", highScoreData)
+            .then(() => {
+                console.log("Highscore erfolgreich gespeichert:", highScoreData);
+            })
+            .catch((error) => {
+                console.error("Fehler beim Speichern des Highscores:", error);
+            });
+    };
 
     return (
         <div>
