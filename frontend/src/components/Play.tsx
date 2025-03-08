@@ -148,17 +148,27 @@ export default function Play(props: Readonly<PlayProps>) {
     // Funktion zur Überprüfung des Highscores
     const checkForHighScore = () => {
         // Wählt das passende Highscore-Array je nach Kartenzahl
-        const highScores = cardCount === 10 ? props.highScores10 : cardCount === 20 ? props.highScores20 : props.highScores32;
+        const highScores = cardCount === 10 ? props.highScores10
+            : cardCount === 20 ? props.highScores20
+                : props.highScores32;
 
-        // Bestimmt die schlechteste Zeit (das ist der Highscore, der ersetzt werden könnte)
-        const highestScoreTime = highScores.length > 0 ? Math.max(...highScores.map((score) => score.scoreTime)) : Infinity;
+        // Wenn weniger als 10 Einträge existieren, immer aufnehmen
+        if (highScores.length < 10) {
+            setIsNewHighScore(true);
+            setShowNameInput(true);
+            return;
+        }
 
-        // Prüft, ob die Zeit des Spielers in die Top 10 passt
+        // Bestimmt die schlechteste Zeit in den Top 10
+        const highestScoreTime = Math.max(...highScores.map((score) => score.scoreTime));
+
+        // Wenn die aktuelle Zeit besser als die schlechteste Zeit ist, dann aufnehmen
         if (time < highestScoreTime) {
-            setIsNewHighScore(true);  // Spieler hat einen neuen Highscore
-            setShowNameInput(true);   // Spieler kann seinen Namen eingeben
+            setIsNewHighScore(true);
+            setShowNameInput(true);
         }
     };
+
 
     // Posten des Highscores
     const postHighScore = () => {
