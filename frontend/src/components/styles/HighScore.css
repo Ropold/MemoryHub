@@ -6,20 +6,20 @@
     text-align: center;
 }
 
-
 .high-score-item-container {
-    display: flex;
-    justify-content: space-between;
     gap: 20px;
     margin-bottom: 40px;
+    width: 100%; /* Stellt sicher, dass die Container die gesamte Breite des Containers nutzen */
 }
 
 .high-score-table {
-    width: 30%;
+    width: 100%;  /* Jetzt auf 100%, sodass die Tabellen untereinander passen */
+    max-width: 800px; /* Optional: Limitiert die maximale Breite für bessere Darstellung */
     background-color: #f9f9f9;
     padding: 15px;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px; /* Fügt Abstand zwischen den Tabellen hinzu */
 }
 
 .high-score-table h3 {
@@ -30,32 +30,37 @@
 }
 
 table {
-    width: 100%;
+    width: 100%;  /* Stellt sicher, dass die Tabelle die gesamte Breite des Containers nutzt */
     border-collapse: collapse;
 }
 
 th, td {
-    padding: 8px;
+    padding: 12px;  /* Erhöht das Padding, um die Zeilenhöhe zu vergrößern */
     text-align: left;
     border-bottom: 1px solid #ddd;
 }
 
 th {
     background-color: #ff9e00;
+    white-space: nowrap; /* Verhindert Zeilenumbrüche in den Kopfzellen */
 }
 
 td {
     color: #555;
+    white-space: nowrap; /* Verhindert Zeilenumbrüche in den Datenzellen */
+    text-overflow: ellipsis; /* Verhindert, dass Text aus der Zelle herausragt */
+    overflow: hidden;  /* Verhindert Überlauf in den Zellen */
 }
 
 @media (max-width: 768px) {
     .high-score-item-container {
-        flex-direction: column;
+        flex-direction: column; /* Setzt die Reihenfolge auf vertikal */
+        overflow-x: auto;  /* Ermöglicht horizontales Scrollen auf kleinen Bildschirmen */
     }
 
     .high-score-table {
-        width: 100%;
-        margin-bottom: 20px;
+        width: 100%; /* Die Tabellen nehmen nun die volle Breite ein */
+        margin-bottom: 20px; /* Fügt Abstand zwischen den Tabellen hinzu */
     }
 }
 
@@ -83,7 +88,7 @@ td {
     border-radius: 4px;
     box-sizing: border-box;
     transition: border 0.3s ease;
+    white-space: nowrap;  /* Verhindert Zeilenumbrüche im Eingabefeld */
+    overflow: hidden;  /* Verhindert Überlauf */
+    text-overflow: ellipsis; /* Gibt an, dass Text bei Überlauf abgeschnitten wird */
 }
-
-
-

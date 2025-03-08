@@ -7,6 +7,17 @@ type HighScoreProps = {
     highScores32: HighScoreModel[];
 }
 
+const formatDate = (date: string) => {
+    const options: Intl.DateTimeFormatOptions = {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+    };
+    return new Date(date).toLocaleDateString('de-DE', options);
+};
+
 export default function HighScore(props: Readonly<HighScoreProps>) {
     return (
         <div className="high-score">
@@ -20,6 +31,7 @@ export default function HighScore(props: Readonly<HighScoreProps>) {
                         <thead>
                         <tr>
                             <th>Rank</th>
+                            <th>Date</th>
                             <th>Player</th>
                             <th>Game-Deck</th>
                             <th>Time</th>
@@ -29,6 +41,7 @@ export default function HighScore(props: Readonly<HighScoreProps>) {
                         {props.highScores10.map((highScore, index) => (
                             <tr key={highScore.id}>
                                 <td>{index + 1}</td>
+                                <td>{formatDate(highScore.date)}</td>
                                 <td>{highScore.playerName}</td>
                                 <td>{highScore.matchId}</td>
                                 <td>{highScore.scoreTime}</td>
@@ -45,6 +58,7 @@ export default function HighScore(props: Readonly<HighScoreProps>) {
                         <thead>
                         <tr>
                             <th>Rank</th>
+                            <th>Date</th>
                             <th>Player</th>
                             <th>Game-Deck</th>
                             <th>Time</th>
@@ -54,6 +68,7 @@ export default function HighScore(props: Readonly<HighScoreProps>) {
                         {props.highScores20.map((highScore, index) => (
                             <tr key={highScore.id}>
                                 <td>{index + 1}</td>
+                                <td>{formatDate(highScore.date)}</td>
                                 <td>{highScore.playerName}</td>
                                 <td>{highScore.matchId}</td>
                                 <td>{highScore.scoreTime}</td>
@@ -70,6 +85,7 @@ export default function HighScore(props: Readonly<HighScoreProps>) {
                         <thead>
                         <tr>
                             <th>Rank</th>
+                            <th>Date</th>
                             <th>Player</th>
                             <th>Game-Deck</th>
                             <th>Time</th>
@@ -79,6 +95,7 @@ export default function HighScore(props: Readonly<HighScoreProps>) {
                         {props.highScores32.map((highScore, index) => (
                             <tr key={highScore.id}>
                                 <td>{index + 1}</td>
+                                <td>{formatDate(highScore.date)}</td>
                                 <td>{highScore.playerName}</td>
                                 <td>{highScore.matchId}</td>
                                 <td>{highScore.scoreTime}</td>
