@@ -12,6 +12,9 @@ type NavbarProps = {
     showSearch: boolean
     resetCurrentPage: () => void
     resetEditingState: () => void
+    getHighScoresFor10Cards: () => void;
+    getHighScoresFor20Cards: () => void;
+    getHighScoresFor32Cards: () => void;
 }
 
 export default function Navbar(props: Readonly<NavbarProps>) {
@@ -68,7 +71,18 @@ export default function Navbar(props: Readonly<NavbarProps>) {
                 {props.showSearch ? "Hide Search" : "Search"} {/* Dynamischer Text */}
             </button>
 
-            <button id="button-high-score" onClick={()=> navigate("/high-score")}>High-Score</button>
+            <button
+                id="button-high-score"
+                onClick={() => {
+                    props.getHighScoresFor10Cards();
+                    props.getHighScoresFor20Cards();
+                    props.getHighScoresFor32Cards();
+                    navigate("/high-score");
+                }}
+            >
+                High-Score
+            </button>
+
 
             {props.user !== "anonymousUser" ? (
                 <>

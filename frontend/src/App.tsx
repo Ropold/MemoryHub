@@ -182,7 +182,7 @@ export default function App() {
 
   return (
     <>
-      <Navbar user={user} getUser={getUser} getActiveMemories={getActiveMemories} getAllMemories={getAllMemories} toggleSearchBar={toggleSearchBar} showSearch={showSearch} resetCurrentPage={resetCurrentPage} resetEditingState={resetEditingState}/>
+      <Navbar user={user} getUser={getUser} getActiveMemories={getActiveMemories} getAllMemories={getAllMemories} toggleSearchBar={toggleSearchBar} showSearch={showSearch} resetCurrentPage={resetCurrentPage} resetEditingState={resetEditingState} getHighScoresFor10Cards={getHighScoresFor10Cards} getHighScoresFor20Cards={getHighScoresFor20Cards} getHighScoresFor32Cards={getHighScoresFor32Cards}/>
       <Routes>
         <Route path="*" element={<NotFound />} />
         <Route path="/" element={<Welcome />} />

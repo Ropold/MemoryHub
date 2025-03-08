@@ -276,6 +276,29 @@ export default function Play(props: Readonly<PlayProps>) {
                 </div>
             )}
 
+            {/* Spielername Eingabefeld, wenn ein neuer Highscore erreicht wurde */}
+            {isNewHighScore && showNameInput && (
+                <div className="high-score-input">
+                    <label htmlFor="playerName">Glückwunsch! Du hast einen Platz in der Highscore-Liste erreicht. Trage deinen Namen ein:</label>
+                    <input
+                        className="playerName"
+                        type="text"
+                        value={playerName}
+                        onChange={(e) => setPlayerName(e.target.value)}
+                        placeholder="Enter your name"
+                    />
+                    <button
+                        className="button-group-button"
+                        onClick={() => {
+                            setShowNameInput(false);
+                            postHighScore();
+                        }}
+                    >
+                        save Highscore
+                    </button>
+                </div>
+            )}
+
             {/* Vorschau der Karten, wenn das Spiel nicht gestartet oder beendet ist */}
             {selectedMatchId !== null && !isGameStarted && !hasGameEnded && (
                 <div className="preview-board">
@@ -312,28 +335,6 @@ export default function Play(props: Readonly<PlayProps>) {
                 </div>
             )}
 
-            {/* Spielername Eingabefeld, wenn ein neuer Highscore erreicht wurde */}
-            {isNewHighScore && showNameInput && (
-                <div className="high-score-input">
-                    <label htmlFor="playerName">Glückwunsch! Du hast einen Platz in der Highscore-Liste erreicht. Trage deinen Namen ein:</label>
-                    <input
-                        className="playerName"
-                        type="text"
-                        value={playerName}
-                        onChange={(e) => setPlayerName(e.target.value)}
-                        placeholder="Enter your name"
-                    />
-                    <button
-                        className="button-group-button"
-                        onClick={() => {
-                            setShowNameInput(false);
-                            postHighScore();
-                        }}
-                    >
-                        save Highscore
-                    </button>
-                </div>
-            )}
         </div>
     );
 
