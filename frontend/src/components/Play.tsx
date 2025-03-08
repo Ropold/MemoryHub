@@ -4,6 +4,7 @@ import PlayMemoryCard from "./PlayMemoryCard.tsx";
 import { HighScoreModel } from "./model/HighScoreModel.ts";
 import axios from "axios";
 
+
 type PlayProps = {
     activeMemories: MemoryModel[];
     highScores10: HighScoreModel[];
@@ -237,6 +238,7 @@ export default function Play(props: Readonly<PlayProps>) {
                         setShowAnimation(false);
                         setHasStarted(false);
                         setTime(0);
+                        setShowNameInput(false);
                     }}
                 >
                     Reset
@@ -312,22 +314,23 @@ export default function Play(props: Readonly<PlayProps>) {
 
             {/* Spielername Eingabefeld, wenn ein neuer Highscore erreicht wurde */}
             {isNewHighScore && showNameInput && (
-                <div className="highscore-input">
-                    <label htmlFor="playerName">Your Name:</label>
+                <div className="high-score-input">
+                    <label htmlFor="playerName">Glückwunsch! Du hast einen Platz in der Highscore-Liste erreicht. Trage deinen Namen ein:</label>
                     <input
-                        id="playerName"
+                        className="playerName"
                         type="text"
                         value={playerName}
                         onChange={(e) => setPlayerName(e.target.value)}
                         placeholder="Enter your name"
                     />
                     <button
+                        className="button-group-button"
                         onClick={() => {
-                            setShowNameInput(false); // Name eingegeben und nun das Highscore posten
+                            setShowNameInput(false);
                             postHighScore();
                         }}
                     >
-                        Save Highscore
+                        save Highscore
                     </button>
                 </div>
             )}
