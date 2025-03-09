@@ -330,8 +330,8 @@ export default function Play(props: Readonly<PlayProps>) {
             {/* Win-Animation */}
             {showAnimation && (
                 <div className="win-animation">
-                    <h2>You Win!</h2>
-                    <p>Time: {time.toFixed(1)} sec</p>
+                    <h2>Glückwunsch!</h2>
+                    <p>Du hast es in {time.toFixed(1)} Sekunden geschafft!</p>
                 </div>
             )}
 
