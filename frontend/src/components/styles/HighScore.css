@@ -1,6 +1,5 @@
 .high-score {
     font-family: Arial, sans-serif;
-    padding: 20px;
     max-width: 1000px;
     margin: 0 auto;
     text-align: center;
@@ -16,7 +15,7 @@
     width: 100%;  /* Jetzt auf 100%, sodass die Tabellen untereinander passen */
     max-width: 800px; /* Optional: Limitiert die maximale Breite für bessere Darstellung */
     background-color: #f9f9f9;
-    padding: 15px;
+    padding: 5px;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     margin-bottom: 20px; /* Fügt Abstand zwischen den Tabellen hinzu */
@@ -25,18 +24,19 @@
 .high-score-table h3 {
     font-size: 1.3rem;
     color: #444;
-    text-align: center;
     margin-bottom: 15px;
+    border: 4px solid #66b3ff;
+    border-radius: 10px;
 }
 
 table {
     width: 100%;  /* Stellt sicher, dass die Tabelle die gesamte Breite des Containers nutzt */
     border-collapse: collapse;
+    text-align: center;
 }
 
 th, td {
     padding: 12px;  /* Erhöht das Padding, um die Zeilenhöhe zu vergrößern */
-    text-align: left;
     border-bottom: 1px solid #ddd;
 }
 
@@ -51,6 +51,15 @@ td {
     text-overflow: ellipsis; /* Verhindert, dass Text aus der Zelle herausragt */
     overflow: hidden;  /* Verhindert Überlauf in den Zellen */
 }
+
+tbody tr td {
+    border-bottom: 1px solid #ff9e00; /* Orange Linie für jede Tabellenzeile */
+}
+
+tbody tr:last-child td {
+    border-bottom: 2px solid #ff9e00; /* Dickerer Abschluss für die letzte Zeile */
+}
+
 
 @media (max-width: 768px) {
     .high-score-item-container {

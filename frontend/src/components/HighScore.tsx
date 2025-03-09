@@ -26,13 +26,13 @@ export default function HighScore(props: Readonly<HighScoreProps>) {
 
                 {/* Top 10 High Scores Table */}
                 <div className="high-score-table">
-                    <h3>Game 10 Cards</h3>
+                    <h3>10 Cards High-Score</h3>
                     <table>
                         <thead>
                         <tr>
                             <th>Rank</th>
-                            <th>Date</th>
                             <th>Player</th>
+                            <th>Date</th>
                             <th>Game-Deck</th>
                             <th>Time</th>
                         </tr>
@@ -41,8 +41,8 @@ export default function HighScore(props: Readonly<HighScoreProps>) {
                         {props.highScores10.map((highScore, index) => (
                             <tr key={highScore.id}>
                                 <td>{index + 1}</td>
-                                <td>{formatDate(highScore.date)}</td>
                                 <td>{highScore.playerName}</td>
+                                <td>{formatDate(highScore.date)}</td>
                                 <td>{highScore.matchId}</td>
                                 <td>{highScore.scoreTime}</td>
                             </tr>
@@ -53,13 +53,13 @@ export default function HighScore(props: Readonly<HighScoreProps>) {
 
                 {/* Top 20 High Scores Table */}
                 <div className="high-score-table">
-                    <h3>Game 20 Cards</h3>
+                    <h3>20 Cards High-Score</h3>
                     <table>
                         <thead>
                         <tr>
                             <th>Rank</th>
-                            <th>Date</th>
                             <th>Player</th>
+                            <th>Date</th>
                             <th>Game-Deck</th>
                             <th>Time</th>
                         </tr>
@@ -68,8 +68,8 @@ export default function HighScore(props: Readonly<HighScoreProps>) {
                         {props.highScores20.map((highScore, index) => (
                             <tr key={highScore.id}>
                                 <td>{index + 1}</td>
-                                <td>{formatDate(highScore.date)}</td>
                                 <td>{highScore.playerName}</td>
+                                <td>{formatDate(highScore.date)}</td>
                                 <td>{highScore.matchId}</td>
                                 <td>{highScore.scoreTime}</td>
                             </tr>
@@ -80,13 +80,13 @@ export default function HighScore(props: Readonly<HighScoreProps>) {
 
                 {/* Top 32 High Scores Table */}
                 <div className="high-score-table">
-                    <h3>Game 32 Cards</h3>
+                    <h3>32 Cards High-Score</h3>
                     <table>
                         <thead>
                         <tr>
                             <th>Rank</th>
-                            <th>Date</th>
                             <th>Player</th>
+                            <th>Date</th>
                             <th>Game-Deck</th>
                             <th>Time</th>
                         </tr>
@@ -95,8 +95,8 @@ export default function HighScore(props: Readonly<HighScoreProps>) {
                         {props.highScores32.map((highScore, index) => (
                             <tr key={highScore.id}>
                                 <td>{index + 1}</td>
-                                <td>{formatDate(highScore.date)}</td>
                                 <td>{highScore.playerName}</td>
+                                <td>{formatDate(highScore.date)}</td>
                                 <td>{highScore.matchId}</td>
                                 <td>{highScore.scoreTime}</td>
                             </tr>
