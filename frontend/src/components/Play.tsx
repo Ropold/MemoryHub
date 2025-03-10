@@ -39,6 +39,19 @@ export default function Play(props: Readonly<PlayProps>) {
     const [playerName, setPlayerName] = useState<string>("");
     const [isNewHighScore, setIsNewHighScore] = useState<boolean>(false);
     const [showNameInput, setShowNameInput] = useState<boolean>(false);
+    const [showPopup, setShowPopup] = useState(false);
+    const [popupMessage, setPopupMessage] = useState("");
+
+
+    const handleSaveHighScore = () => {
+        if (playerName.trim().length < 3) {
+            setPopupMessage("Dein Name muss mindestens 3 Zeichen lang sein!");
+            setShowPopup(true);
+            return;
+        }
+        setShowNameInput(false);
+        postHighScore();
+    };
 
     // Timer starten, wenn das Spiel beginnt
     useEffect(() => {
@@ -279,7 +292,7 @@ export default function Play(props: Readonly<PlayProps>) {
             {/* Spielername Eingabefeld, wenn ein neuer Highscore erreicht wurde */}
             {isNewHighScore && showNameInput && (
                 <div className="high-score-input">
-                    <label htmlFor="playerName">Glückwunsch! Du hast einen Platz in der Highscore-Liste ergattert. Trage deinen Namen ein, um verewigt zu werden!</label>
+                    <label htmlFor="playerName">Glückwunsch! Du hast einen Platz in der Highscore-Liste ergattert. Trage deinen Namen ein:</label>
                     <input
                         className="playerName"
                         type="text"
@@ -287,21 +300,12 @@ export default function Play(props: Readonly<PlayProps>) {
                         onChange={(e) => setPlayerName(e.target.value)}
                         placeholder="Enter your name"
                     />
-                    <button
-                        className="button-group-button"
-                        onClick={() => {
-                            if (playerName.trim().length < 3) {
-                                alert("Dein Name muss mindestens 3 Zeichen lang sein!");
-                                return;
-                            }
-                            setShowNameInput(false);
-                            postHighScore();
-                        }}
-                    >
-                        save Highscore
+                    <button className="button-group-button" onClick={handleSaveHighScore}>
+                        Save Highscore
                     </button>
                 </div>
             )}
+
 
             {/* Vorschau der Karten, wenn das Spiel nicht gestartet oder beendet ist */}
             {selectedMatchId !== null && !isGameStarted && !hasGameEnded && (
@@ -338,7 +342,23 @@ export default function Play(props: Readonly<PlayProps>) {
                 </div>
             )}
 
+            {/* Popup */}
+            {showPopup && (
+                <div className="popup-overlay">
+                    <div className="popup-content">
+                        <h3>Hinweis</h3>
+                        <p>{popupMessage}</p>
+                        <div className="popup-actions">
+                            <button onClick={() => setShowPopup(false)} className="popup-confirm">
+                                OK
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
         </div>
+
     );
 
 }
