@@ -101,3 +101,6 @@ tbody tr:last-child td {
     overflow: hidden;  /* Verhindert Überlauf */
     text-overflow: ellipsis; /* Gibt an, dass Text bei Überlauf abgeschnitten wird */
 }
+
+
+

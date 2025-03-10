@@ -279,7 +279,7 @@ export default function Play(props: Readonly<PlayProps>) {
             {/* Spielername Eingabefeld, wenn ein neuer Highscore erreicht wurde */}
             {isNewHighScore && showNameInput && (
                 <div className="high-score-input">
-                    <label htmlFor="playerName">Glückwunsch! Du hast einen Platz in der Highscore-Liste erreicht. Trage deinen Namen ein:</label>
+                    <label htmlFor="playerName">Glückwunsch! Du hast einen Platz in der Highscore-Liste ergattert. Trage deinen Namen ein, um verewigt zu werden!</label>
                     <input
                         className="playerName"
                         type="text"
@@ -290,6 +290,10 @@ export default function Play(props: Readonly<PlayProps>) {
                     <button
                         className="button-group-button"
                         onClick={() => {
+                            if (playerName.trim().length < 3) {
+                                alert("Dein Name muss mindestens 3 Zeichen lang sein!");
+                                return;
+                            }
                             setShowNameInput(false);
                             postHighScore();
                         }}
@@ -330,8 +334,7 @@ export default function Play(props: Readonly<PlayProps>) {
             {/* Win-Animation */}
             {showAnimation && (
                 <div className="win-animation">
-                    <h2>Glückwunsch!</h2>
-                    <p>Du hast es in {time.toFixed(1)} Sekunden geschafft!</p>
+                    <p>Du hast das Memory-Spiel in {time.toFixed(1)} Sekunden geschafft!</p>
                 </div>
             )}
 
