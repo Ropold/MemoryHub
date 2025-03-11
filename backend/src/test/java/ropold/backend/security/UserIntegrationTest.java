@@ -13,7 +13,6 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.test.web.servlet.MockMvc;
 import ropold.backend.model.AppUser;
 import ropold.backend.repository.AppUserRepository;
-import ropold.backend.service.MemoryService;
 
 import java.util.List;
 import java.util.Map;
