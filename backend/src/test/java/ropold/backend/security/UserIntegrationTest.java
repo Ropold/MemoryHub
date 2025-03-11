@@ -33,8 +33,6 @@ class UserIntegrationTest {
     @Autowired
     AppUserRepository appUserRepository;
 
-    @Autowired
-    MemoryService memoryService;
 
     @BeforeEach
     void setup() {

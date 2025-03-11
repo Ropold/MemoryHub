@@ -163,7 +163,7 @@ export default function App() {
     useEffect(() => {
         getUser();
         getActiveMemories();
-        getAllMemories();
+        //getAllMemories();
         getHighScoresFor10Cards();
         getHighScoresFor20Cards();
         getHighScoresFor32Cards();
