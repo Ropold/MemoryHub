@@ -339,7 +339,7 @@ class MemoryServiceTest {
     @Test
     void getMemoriesByMatchId_Success() {
         // Given
-        MemoryModel memoryModel1 = new MemoryModel(
+        MemoryModel memoryModel874 = new MemoryModel(
                 "1",
                 "Avatar Erinnerung 1",
                 101,
@@ -353,7 +353,7 @@ class MemoryServiceTest {
                 "https://example.com/image1.jpg"
         );
 
-        MemoryModel memoryModel2 = new MemoryModel(
+        MemoryModel memoryModel789 = new MemoryModel(
                 "2",
                 "Cloudinary Erinnerung 2",
                 102,
@@ -381,7 +381,7 @@ class MemoryServiceTest {
                 "https://example.com/image3.jpg"
         );
 
-        List<MemoryModel> allMemories = List.of(memoryModel1, memoryModel2, memoryModel3);
+        List<MemoryModel> allMemories = List.of(memoryModel874, memoryModel789, memoryModel3);
 
         // Simuliere, dass alle Memories aus dem Repository abgerufen werden
         when(memoryRepository.findAll()).thenReturn(allMemories);
@@ -390,7 +390,7 @@ class MemoryServiceTest {
         List<MemoryModel> memoriesByMatchId = memoryService.getMemoriesByMatchId(101);
 
         // Then
-        List<MemoryModel> expectedMemories = List.of(memoryModel1, memoryModel3);
+        List<MemoryModel> expectedMemories = List.of(memoryModel874, memoryModel3);
         assertEquals(expectedMemories, memoriesByMatchId);
         verify(memoryRepository, times(1)).findAll(); // Verifizieren, dass alle Erinnerungen abgerufen wurden
     }
@@ -398,7 +398,7 @@ class MemoryServiceTest {
     @Test
     void getMemoriesByMatchId_EmptyResult() {
         // Given
-        MemoryModel memoryModel1 = new MemoryModel(
+        MemoryModel memoryModel23 = new MemoryModel(
                 "1",
                 "Avatar Erinnerung 1",
                 101,
@@ -412,7 +412,7 @@ class MemoryServiceTest {
                 "https://example.com/image1.jpg"
         );
 
-        List<MemoryModel> allMemories = List.of(memoryModel1);
+        List<MemoryModel> allMemories = List.of(memoryModel23);
 
         // Simuliere, dass alle Memories aus dem Repository abgerufen werden
         when(memoryRepository.findAll()).thenReturn(allMemories);
@@ -429,7 +429,7 @@ class MemoryServiceTest {
     @Test
     void getActiveMemoriesFilterByMatchId_Success() {
         // Given
-        MemoryModel memoryModel1 = new MemoryModel(
+        MemoryModel memoryModel234 = new MemoryModel(
                 "1",
                 "Avatar Erinnerung",
                 101,
@@ -457,8 +457,8 @@ class MemoryServiceTest {
                 "https://example.com/image3.jpg"
         );
 
-        List<MemoryModel> allMemories = List.of(memoryModel1, memoryModel3);
-        List<MemoryModel> expectedMemories = List.of(memoryModel1, memoryModel3);
+        List<MemoryModel> allMemories = List.of(memoryModel234, memoryModel3);
+        List<MemoryModel> expectedMemories = List.of(memoryModel234, memoryModel3);
 
         // Simulate memory repository returning all memories
         when(memoryRepository.findAll()).thenReturn(allMemories);
@@ -474,7 +474,7 @@ class MemoryServiceTest {
     @Test
     void getActiveMemoriesFilterByMatchId_NoActiveMemoriesForMatchId() {
         // Given
-        MemoryModel memoryModel2 = new MemoryModel(
+        MemoryModel memoryModel12 = new MemoryModel(
                 "2",
                 "Cloudinary Erinnerung",
                 102,
@@ -488,7 +488,7 @@ class MemoryServiceTest {
                 "https://example.com/image2.jpg"
         );
 
-        List<MemoryModel> allMemories = List.of(memoryModel2);
+        List<MemoryModel> allMemories = List.of(memoryModel12);
         List<MemoryModel> expectedMemories = List.of();
 
         // Simulate memory repository returning all memories
@@ -505,7 +505,7 @@ class MemoryServiceTest {
     @Test
     void getMemoriesForGithubUser_Success() {
         // Given
-        MemoryModel memoryModel1 = new MemoryModel(
+        MemoryModel memoryModel1234 = new MemoryModel(
                 "1",
                 "Avatar Erinnerung",
                 101,
@@ -533,8 +533,8 @@ class MemoryServiceTest {
                 "https://example.com/image3.jpg"
         );
 
-        List<MemoryModel> allMemories = List.of(memoryModel1, memoryModel3);
-        List<MemoryModel> expectedMemories = List.of(memoryModel1, memoryModel3);
+        List<MemoryModel> allMemories = List.of(memoryModel1234, memoryModel3);
+        List<MemoryModel> expectedMemories = List.of(memoryModel1234, memoryModel3);
 
         // Simulate memory repository returning all memories
         when(memoryRepository.findAll()).thenReturn(allMemories);
@@ -550,11 +550,12 @@ class MemoryServiceTest {
     @Test
     void getMemoriesForGithubUser_NoMemoriesForGithubId() {
         // Given
-        MemoryModel memoryModel2 = new MemoryModel(
+        MemoryModel memoryModel123 = new MemoryModel(
                 "2",
                 "Cloudinary Erinnerung",
                 102,
                 Category.CLOUDINARY_IMAGE,
+
                 "Eine Erinnerung, die mit einem Cloudinary-Bild gespeichert ist",
                 false,
                 "github456",
@@ -564,7 +565,7 @@ class MemoryServiceTest {
                 "https://example.com/image2.jpg"
         );
 
-        List<MemoryModel> allMemories = List.of(memoryModel2);
+        List<MemoryModel> allMemories = List.of(memoryModel123);
         List<MemoryModel> expectedMemories = List.of();
 
         // Simulate memory repository returning all memories
