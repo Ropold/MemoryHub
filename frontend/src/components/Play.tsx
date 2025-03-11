@@ -107,7 +107,7 @@ export default function Play(props: Readonly<PlayProps>) {
             setTimeout(() => {
                 setShowAnimation(false);
                 setIsGameStarted(false);
-            }, 2000);
+            }, 3000);
         }
     }, [matchedCards, cards, hasStarted]);
 
@@ -198,7 +198,6 @@ export default function Play(props: Readonly<PlayProps>) {
         axios
             .post("/api/high-score", highScoreData)
             .then(() => {
-                console.log("Highscore erfolgreich gespeichert:", highScoreData);
                 setShowNameInput(false); // Eingabefeld nach dem Speichern ausblenden
             })
             .catch((error) => {
@@ -262,21 +261,22 @@ export default function Play(props: Readonly<PlayProps>) {
 
             {showControls && (
                 <div className="game-controls">
-                    <label htmlFor="matchIdFilter">Game-Deck wählen:</label>
+                    <label htmlFor="matchIdFilter">Select Game-Deck:</label>
                     <select
                         id="matchIdFilter"
                         value={selectedMatchId ?? ""}
                         onChange={(e) => setSelectedMatchId(Number(e.target.value))}
                     >
-                        <option value="">Bitte wählen</option>
-                        {[...new Set(props.activeMemories.map(m => m.matchId))].map(matchId => (
+                        <option value="">Please choose</option>
+                        {[...new Set(props.activeMemories.map(m => m.matchId))].sort((a, b) => a - b).map(matchId => (
                             <option key={matchId} value={matchId}>
                                 {matchId}
                             </option>
                         ))}
+
                     </select>
 
-                    <label htmlFor="cardCount">Anzahl der Karten:</label>
+                    <label htmlFor="cardCount">Number of cards:</label>
                     <select
                         id="cardCount"
                         value={cardCount}
@@ -292,7 +292,7 @@ export default function Play(props: Readonly<PlayProps>) {
             {/* Spielername Eingabefeld, wenn ein neuer Highscore erreicht wurde */}
             {isNewHighScore && showNameInput && (
                 <div className="high-score-input">
-                    <label htmlFor="playerName">Glückwunsch! Du hast einen Platz in der Highscore-Liste ergattert. Trage deinen Namen ein:</label>
+                    <label htmlFor="playerName">Congratulations! You secured a spot on the high score list. Enter your name:</label>
                     <input
                         className="playerName"
                         type="text"
@@ -338,7 +338,7 @@ export default function Play(props: Readonly<PlayProps>) {
             {/* Win-Animation */}
             {showAnimation && (
                 <div className="win-animation">
-                    <p>Du hast das Memory-Spiel in {time.toFixed(1)} Sekunden geschafft!</p>
+                    <p>You completed the memory game in {time.toFixed(1)} seconds!</p>
                 </div>
             )}
 
