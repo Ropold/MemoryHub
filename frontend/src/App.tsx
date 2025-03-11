@@ -41,7 +41,6 @@ export default function App() {
         setIsEditing(false);  // Der Zustand wird auf false gesetzt
     }
 
-
     const location = useLocation();
 
     const toggleSearchBar = () => {
