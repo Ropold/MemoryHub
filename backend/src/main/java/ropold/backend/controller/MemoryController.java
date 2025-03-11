@@ -32,7 +32,6 @@ public class MemoryController {
         return memoryService.getActiveMemoriesFilterByMatchId(numberOfMatchId);
     }
 
-
     @GetMapping("/favorites")
     public List<MemoryModel> getUserFavorites(@AuthenticationPrincipal OAuth2User authentication) {
         List<String> favoriteMemoryIds = appUserService.getUserFavorites(authentication.getName());

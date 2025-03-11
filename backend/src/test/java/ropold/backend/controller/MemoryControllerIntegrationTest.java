@@ -204,6 +204,36 @@ class MemoryControllerIntegrationTest {
     }
 
     @Test
+    void getActiveMemoriesFilterByMatchId_shouldReturnFilteredMemories() throws Exception {
+        // Beispiel für eine 'matchId' (z.B. 101)
+        int matchId = 101;
+
+        // Sicherstellen, dass nur Erinnerungen mit dieser 'matchId' aktiv sind
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/memory-hub/active/match-id/{numberOfMatchId}", matchId)
+                        .with(oidcLogin().idToken(i -> i.claim("sub", "user"))))
+                .andExpect(status().isOk())
+                .andExpect(content().json("""
+            [
+              {
+                 "id": "1",
+                 "name": "Avatar Erinnerung",
+                 "matchId": 101,
+                 "category": "GITHUB_AVATAR",
+                 "description": "Eine Erinnerung, die mit einem GitHub-Avatar verknüpft ist",
+                 "isActive": true,
+                 "appUserGithubId": "user",
+                 "appUserUsername": "user1",
+                 "appUserAvatarUrl": "https://avatars.example.com/user1.png",
+                 "appUserGithubUrl": "https://github.com/user1",
+                 "imageUrl": "https://example.com/image1.jpg"
+              }
+            ]
+            """));
+    }
+
+
+
+    @Test
     void getActiveMemories_shouldReturnActiveMemories() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/memory-hub/active")
                         .with(oidcLogin().idToken(i -> i.claim("sub", "user")))
