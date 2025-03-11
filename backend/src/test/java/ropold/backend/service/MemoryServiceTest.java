@@ -339,7 +339,7 @@ class MemoryServiceTest {
     @Test
     void getMemoriesByMatchId_Success() {
         // Given
-        MemoryModel memoryModel1 = new MemoryModel(
+        MemoryModel memoryModel874 = new MemoryModel(
                 "1",
                 "Avatar Erinnerung 1",
                 101,
@@ -353,7 +353,7 @@ class MemoryServiceTest {
                 "https://example.com/image1.jpg"
         );
 
-        MemoryModel memoryModel2 = new MemoryModel(
+        MemoryModel memoryModel789 = new MemoryModel(
                 "2",
                 "Cloudinary Erinnerung 2",
                 102,
@@ -381,7 +381,7 @@ class MemoryServiceTest {
                 "https://example.com/image3.jpg"
         );
 
-        List<MemoryModel> allMemories = List.of(memoryModel1, memoryModel2, memoryModel3);
+        List<MemoryModel> allMemories = List.of(memoryModel874, memoryModel789, memoryModel3);
 
         // Simuliere, dass alle Memories aus dem Repository abgerufen werden
         when(memoryRepository.findAll()).thenReturn(allMemories);
@@ -390,7 +390,7 @@ class MemoryServiceTest {
         List<MemoryModel> memoriesByMatchId = memoryService.getMemoriesByMatchId(101);
 
         // Then
-        List<MemoryModel> expectedMemories = List.of(memoryModel1, memoryModel3);
+        List<MemoryModel> expectedMemories = List.of(memoryModel874, memoryModel3);
         assertEquals(expectedMemories, memoriesByMatchId);
         verify(memoryRepository, times(1)).findAll(); // Verifizieren, dass alle Erinnerungen abgerufen wurden
     }
@@ -398,7 +398,7 @@ class MemoryServiceTest {
     @Test
     void getMemoriesByMatchId_EmptyResult() {
         // Given
-        MemoryModel memoryModel1 = new MemoryModel(
+        MemoryModel memoryModel23 = new MemoryModel(
                 "1",
                 "Avatar Erinnerung 1",
                 101,
@@ -412,7 +412,7 @@ class MemoryServiceTest {
                 "https://example.com/image1.jpg"
         );
 
-        List<MemoryModel> allMemories = List.of(memoryModel1);
+        List<MemoryModel> allMemories = List.of(memoryModel23);
 
         // Simuliere, dass alle Memories aus dem Repository abgerufen werden
         when(memoryRepository.findAll()).thenReturn(allMemories);
@@ -425,6 +425,161 @@ class MemoryServiceTest {
         assertEquals(expectedMemories, memoriesByMatchId);
         verify(memoryRepository, times(1)).findAll(); // Verifizieren, dass alle Erinnerungen abgerufen wurden
     }
+
+    @Test
+    void getActiveMemoriesFilterByMatchId_Success() {
+        // Given
+        MemoryModel memoryModel234 = new MemoryModel(
+                "1",
+                "Avatar Erinnerung",
+                101,
+                Category.GITHUB_AVATAR,
+                "Eine Erinnerung, die mit einem GitHub-Avatar verknüpft ist",
+                true,
+                "github123",
+                "user1",
+                "https://avatars.example.com/user1.png",
+                "https://github.com/user1",
+                "https://example.com/image1.jpg"
+        );
+
+        MemoryModel memoryModel3 = new MemoryModel(
+                "3",
+                "GitHub Avatar Erinnerung 3",
+                101,
+                Category.GITHUB_AVATAR,
+                "Eine weitere Erinnerung mit einem GitHub-Avatar",
+                true,
+                "github789",
+                "user3",
+                "https://avatars.example.com/user3.png",
+                "https://github.com/user3",
+                "https://example.com/image3.jpg"
+        );
+
+        List<MemoryModel> allMemories = List.of(memoryModel234, memoryModel3);
+        List<MemoryModel> expectedMemories = List.of(memoryModel234, memoryModel3);
+
+        // Simulate memory repository returning all memories
+        when(memoryRepository.findAll()).thenReturn(allMemories);
+
+        // When
+        List<MemoryModel> memoriesByMatchId = memoryService.getActiveMemoriesFilterByMatchId(101);
+
+        // Then
+        assertEquals(expectedMemories, memoriesByMatchId);
+        verify(memoryRepository, times(1)).findAll(); // Verify all memories were fetched
+    }
+
+    @Test
+    void getActiveMemoriesFilterByMatchId_NoActiveMemoriesForMatchId() {
+        // Given
+        MemoryModel memoryModel12 = new MemoryModel(
+                "2",
+                "Cloudinary Erinnerung",
+                102,
+                Category.CLOUDINARY_IMAGE,
+                "Eine Erinnerung, die mit einem Cloudinary-Bild gespeichert ist",
+                false,
+                "github456",
+                "user2",
+                "https://avatars.example.com/user2.png",
+                "https://github.com/user2",
+                "https://example.com/image2.jpg"
+        );
+
+        List<MemoryModel> allMemories = List.of(memoryModel12);
+        List<MemoryModel> expectedMemories = List.of();
+
+        // Simulate memory repository returning all memories
+        when(memoryRepository.findAll()).thenReturn(allMemories);
+
+        // When
+        List<MemoryModel> memoriesByMatchId = memoryService.getActiveMemoriesFilterByMatchId(101);
+
+        // Then
+        assertEquals(expectedMemories, memoriesByMatchId); // No active memories should be returned
+        verify(memoryRepository, times(1)).findAll(); // Verify all memories were fetched
+    }
+
+    @Test
+    void getMemoriesForGithubUser_Success() {
+        // Given
+        MemoryModel memoryModel1234 = new MemoryModel(
+                "1",
+                "Avatar Erinnerung",
+                101,
+                Category.GITHUB_AVATAR,
+                "Eine Erinnerung, die mit einem GitHub-Avatar verknüpft ist",
+                true,
+                "github123",
+                "user1",
+                "https://avatars.example.com/user1.png",
+                "https://github.com/user1",
+                "https://example.com/image1.jpg"
+        );
+
+        MemoryModel memoryModel3 = new MemoryModel(
+                "3",
+                "GitHub Avatar Erinnerung 3",
+                101,
+                Category.GITHUB_AVATAR,
+                "Eine weitere Erinnerung mit einem GitHub-Avatar",
+                true,
+                "github123",
+                "user3",
+                "https://avatars.example.com/user3.png",
+                "https://github.com/user3",
+                "https://example.com/image3.jpg"
+        );
+
+        List<MemoryModel> allMemories = List.of(memoryModel1234, memoryModel3);
+        List<MemoryModel> expectedMemories = List.of(memoryModel1234, memoryModel3);
+
+        // Simulate memory repository returning all memories
+        when(memoryRepository.findAll()).thenReturn(allMemories);
+
+        // When
+        List<MemoryModel> memoriesByGithubId = memoryService.getMemoriesForGithubUser("github123");
+
+        // Then
+        assertEquals(expectedMemories, memoriesByGithubId); // Memories related to github123 should be returned
+        verify(memoryRepository, times(1)).findAll(); // Verify all memories were fetched
+    }
+
+    @Test
+    void getMemoriesForGithubUser_NoMemoriesForGithubId() {
+        // Given
+        MemoryModel memoryModel123 = new MemoryModel(
+                "2",
+                "Cloudinary Erinnerung",
+                102,
+                Category.CLOUDINARY_IMAGE,
+
+                "Eine Erinnerung, die mit einem Cloudinary-Bild gespeichert ist",
+                false,
+                "github456",
+                "user2",
+                "https://avatars.example.com/user2.png",
+                "https://github.com/user2",
+                "https://example.com/image2.jpg"
+        );
+
+        List<MemoryModel> allMemories = List.of(memoryModel123);
+        List<MemoryModel> expectedMemories = List.of();
+
+        // Simulate memory repository returning all memories
+        when(memoryRepository.findAll()).thenReturn(allMemories);
+
+        // When
+        List<MemoryModel> memoriesByGithubId = memoryService.getMemoriesForGithubUser("github123");
+
+        // Then
+        assertEquals(expectedMemories, memoriesByGithubId); // No memories for the given githubId should be returned
+        verify(memoryRepository, times(1)).findAll(); // Verify all memories were fetched
+    }
+
+
 
 }
 

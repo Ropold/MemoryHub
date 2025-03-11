@@ -32,6 +32,7 @@ class UserIntegrationTest {
     @Autowired
     AppUserRepository appUserRepository;
 
+
     @BeforeEach
     void setup() {
         appUserRepository.deleteAll();
