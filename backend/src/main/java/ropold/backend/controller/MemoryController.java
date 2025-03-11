@@ -27,6 +27,12 @@ public class MemoryController {
     private final CloudinaryService cloudinaryService;
     private final AppUserService appUserService;
 
+    @GetMapping("active/match-id/{numberOfMatchId}")
+    public List<MemoryModel> getActiveMemoriesFilterByMatchId(@PathVariable int numberOfMatchId) {
+        return memoryService.getActiveMemoriesFilterByMatchId(numberOfMatchId);
+    }
+
+
     @GetMapping("/favorites")
     public List<MemoryModel> getUserFavorites(@AuthenticationPrincipal OAuth2User authentication) {
         List<String> favoriteMemoryIds = appUserService.getUserFavorites(authentication.getName());
@@ -35,7 +41,7 @@ public class MemoryController {
 
     @PostMapping("/favorites/{memoryId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public void addMemoryToFavorites(@PathVariable String memoryId , @AuthenticationPrincipal OAuth2User authentication) {
+    public void addMemoryToFavorites(@PathVariable String memoryId, @AuthenticationPrincipal OAuth2User authentication) {
         String authenticatedUserId = authentication.getName();
         appUserService.addMemoryToFavorites(authenticatedUserId, memoryId);
     }
@@ -114,7 +120,7 @@ public class MemoryController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/avatar")
-    public MemoryModel addMemoryAvatar (@RequestBody MemoryModelDto memoryModelDto) {
+    public MemoryModel addMemoryAvatar(@RequestBody MemoryModelDto memoryModelDto) {
         return memoryService.addMemoryAvatar(
                 new MemoryModel(
                         null,
@@ -160,7 +166,7 @@ public class MemoryController {
         String authenticatedUserId = authentication.getName();
         MemoryModel existingMemory = memoryService.getMemoryById(id);
 
-        if(!authenticatedUserId.equals(existingMemory.appUserGithubId())) {
+        if (!authenticatedUserId.equals(existingMemory.appUserGithubId())) {
             throw new AccessDeniedException("You are not allowed to update memories for other users");
         }
 

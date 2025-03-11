@@ -150,5 +150,16 @@ public class MemoryService {
                 .toList();
     }
 
+    public List<MemoryModel> getActiveMemoriesFilterByMatchId(int numberOfMatchId) {
+        return memoryRepository.findAll().stream()
+                .filter(memory -> memory.isActive() && memory.matchId() == numberOfMatchId)
+                .toList();
+    }
+
+    public List<MemoryModel> getMemoriesForGithubUser(String githubId) {
+        return memoryRepository.findAll().stream()
+                .filter(memory -> githubId.equals(memory.appUserGithubId()))
+                .toList();
+    }
 
 }
