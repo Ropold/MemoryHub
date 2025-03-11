@@ -204,6 +204,15 @@ class MemoryControllerIntegrationTest {
     }
 
     @Test
+    void getActiveMatchIds_shouldReturnListOfIntWithMatchIds() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/memory-hub/active/match-ids")
+                        .with(oidcLogin().idToken(i -> i.claim("sub", "user")))
+                )
+                .andExpect(status().isOk())
+                .andExpect(content().json("[101]"));
+    }
+
+    @Test
     void getActiveMemoriesFilterByMatchId_shouldReturnFilteredMemories() throws Exception {
         // Beispiel für eine 'matchId' (z.B. 101)
         int matchId = 101;

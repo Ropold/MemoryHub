@@ -579,7 +579,74 @@ class MemoryServiceTest {
         verify(memoryRepository, times(1)).findAll(); // Verify all memories were fetched
     }
 
+    @Test
+    void getActiveMemoriesMatchIds_Success() {
+        // Given
+        List<Integer> expectedMatchIds = List.of(101); // Erwartete sortierte matchId-Liste
+        when(memoryRepository.findAll()).thenReturn(memories);
 
+        // When
+        List<Integer> actualMatchIds = memoryService.getActiveMemoriesMatchIds();
+
+        // Then
+        assertEquals(expectedMatchIds, actualMatchIds); // Verifizieren, dass die zurückgegebene Liste korrekt ist
+    }
+
+    @Test
+    void getActiveMemoriesMatchIds_MultipleMatches() {
+        // Given
+        MemoryModel avatarMemory = new MemoryModel(
+                "1",
+                "Avatar Erinnerung",
+                101,
+                Category.GITHUB_AVATAR,
+                "Eine Erinnerung, die mit einem GitHub-Avatar verknüpft ist",
+                true,
+                "github123",
+                "user1",
+                "https://avatars.example.com/user1.png",
+                "https://github.com/user1",
+                "https://example.com/image1.jpg"
+        );
+
+        MemoryModel cloudinaryMemory = new MemoryModel(
+                "2",
+                "Cloudinary Erinnerung",
+                102,
+                Category.CLOUDINARY_IMAGE,
+                "Eine Erinnerung, die mit einem Cloudinary-Bild gespeichert ist",
+                false,
+                "github456",
+                "user2",
+                "https://avatars.example.com/user2.png",
+                "https://github.com/user2",
+                "https://example.com/image2.jpg"
+        );
+
+        MemoryModel additionalMemory = new MemoryModel(
+                "3",
+                "Neue Erinnerung",
+                103,
+                Category.GITHUB_AVATAR,
+                "Eine weitere Erinnerung",
+                true,
+                "github789",
+                "user3",
+                "https://avatars.example.com/user3.png",
+                "https://github.com/user3",
+                "https://example.com/image3.jpg"
+        );
+
+        // Speichern der Erinnerungen
+        when(memoryRepository.findAll()).thenReturn(List.of(avatarMemory, cloudinaryMemory, additionalMemory));
+
+        // When
+        List<Integer> actualMatchIds = memoryService.getActiveMemoriesMatchIds();
+
+        // Then
+        List<Integer> expectedMatchIds = List.of(101, 103);  // Erwartete Liste mit matchIds der aktiven Erinnerungen
+        assertEquals(expectedMatchIds, actualMatchIds);  // Verifizieren, dass die Liste korrekt ist
+    }
 
 }
 

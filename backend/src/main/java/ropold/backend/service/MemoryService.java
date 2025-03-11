@@ -162,4 +162,13 @@ public class MemoryService {
                 .toList();
     }
 
+    public List<Integer> getActiveMemoriesMatchIds() {
+        return memoryRepository.findAll().stream()  // Alle MemoryModel-Objekte laden
+                .filter(MemoryModel::isActive)  // Nur aktive Einträge filtern
+                .map(MemoryModel::matchId)  // matchId extrahieren
+                .distinct()  // Duplikate entfernen
+                .sorted()  // Sortieren
+                .toList();  // Mit Stream.toList() die Liste zurückgeben
+    }
+
 }
