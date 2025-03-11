@@ -42,7 +42,6 @@ export default function Play(props: Readonly<PlayProps>) {
     const [showPopup, setShowPopup] = useState(false);
     const [popupMessage, setPopupMessage] = useState("");
 
-
     const handleSaveHighScore = () => {
         if (playerName.trim().length < 3) {
             setPopupMessage("Dein Name muss mindestens 3 Zeichen lang sein!");
