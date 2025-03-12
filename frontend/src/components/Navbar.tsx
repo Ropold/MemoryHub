@@ -87,7 +87,7 @@ export default function Navbar(props: Readonly<NavbarProps>) {
                     <button className="button-group-button" onClick={() => navigate(`/favorites`)}>Favorites</button>
                     <button className="button-group-button" onClick={() => navigate("/add")}>Add Memory</button>
                     <button className="button-group-button" onClick={() => {props.resetEditingState(); navigate("/my-memories")}}>My Memories</button>
-                    <button className="button-group-button" onClick={() => navigate("/profile")}>Profile</button>
+                    <button id="button-profile" onClick={() => navigate("/profile")}>Profile</button>
                     <button className="button-group-button" onClick={logoutFromGithub}>Logout</button>
                 </>
             ) : (

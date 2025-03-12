@@ -80,7 +80,6 @@ tbody tr:last-child td {
     align-items: center;
     gap: 10px;
     padding: 20px;
-    background-color: #f8f9fa;
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     width: 300px;
@@ -102,6 +101,13 @@ tbody tr:last-child td {
     overflow: hidden;  /* Verhindert Überlauf */
     text-overflow: ellipsis; /* Gibt an, dass Text bei Überlauf abgeschnitten wird */
 }
+
+@media (prefers-color-scheme: dark) {
+    .playerName {
+        color: #fff; /* Weißer Text im Dark Mode */
+        background-color: #333; /* Dunkler Hintergrund im Dark Mode */
+        border: 1px solid #555; /* Etwas dunklerer Rand im Dark Mode */
+    }}
 
 
 

@@ -302,7 +302,7 @@ export default function Play(props: Readonly<PlayProps>) {
                         value={selectedMatchId ?? ""}
                         onChange={(e) => setSelectedMatchId(Number(e.target.value))}
                     >
-                        <option value="">Please choose</option>
+                        <option value="">Please choose a deck</option>
                         {activeMatchIds.sort((a, b) => a - b).map(matchId => (
                             <option key={matchId} value={matchId}>
                                 {matchId}
@@ -310,15 +310,15 @@ export default function Play(props: Readonly<PlayProps>) {
                         ))}
                     </select>
 
-                    <label htmlFor="cardCount">Number of cards:</label>
+                    <label htmlFor="cardCount">Select Number of cards:</label>
                     <select
                         id="cardCount"
                         value={cardCount}
                         onChange={(e) => setCardCount(Number(e.target.value))}
                     >
-                        <option value={10}>10 Karten</option>
-                        <option value={20}>20 Karten</option>
-                        <option value={32}>32 Karten</option>
+                        <option value={10}>10 Cards</option>
+                        <option value={20}>20 Cards</option>
+                        <option value={32}>32 Cards</option>
                     </select>
                 </div>
             )}
