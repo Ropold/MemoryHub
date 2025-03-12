@@ -6,7 +6,6 @@ import axios from "axios";
 
 
 type PlayProps = {
-    activeMemories: MemoryModel[];
     highScores10: HighScoreModel[];
     highScores20: HighScoreModel[];
     highScores32: HighScoreModel[];
@@ -41,16 +40,53 @@ export default function Play(props: Readonly<PlayProps>) {
     const [showNameInput, setShowNameInput] = useState<boolean>(false);
     const [showPopup, setShowPopup] = useState(false);
     const [popupMessage, setPopupMessage] = useState("");
+    const [activeMatchIds, setActiveMatchIds] = useState<number[]>([]);
+    const [activeMemories, setActiveMemories] = useState<MemoryModel[]>([]); // Daten für das ausgewählte matchId
 
     const handleSaveHighScore = () => {
         if (playerName.trim().length < 3) {
-            setPopupMessage("Dein Name muss mindestens 3 Zeichen lang sein!");
+            setPopupMessage("Your name must be at least 3 characters long!");
             setShowPopup(true);
             return;
         }
         setShowNameInput(false);
         postHighScore();
     };
+
+    const getActiveMemoriesMatchIds = () => {
+        axios
+            .get("api/memory-hub/active/match-ids")
+            .then((response) => {
+                const matchIds = response.data;
+                setActiveMatchIds(matchIds);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }
+
+    useEffect(() => {
+        getActiveMemoriesMatchIds();
+    }, []);
+
+    const getActiveMemoriesByMatchId = (matchId: number) => {
+        axios
+            .get(`api/memory-hub/active/match-id/${matchId}`)
+            .then((response) => {
+                setActiveMemories(response.data); // Speichert die abgerufenen Erinnerungen
+            })
+            .catch((error) => {
+                console.error("Error retrieving memories:", error);
+            });
+    };
+
+// useEffect, um die Erinnerungen zu laden, wenn die `selectedMatchId` geändert wird
+    useEffect(() => {
+        if (selectedMatchId !== null) {
+            getActiveMemoriesByMatchId(selectedMatchId);
+        }
+    }, [selectedMatchId]);
+
 
     // Timer starten, wenn das Spiel beginnt
     useEffect(() => {
@@ -77,7 +113,7 @@ export default function Play(props: Readonly<PlayProps>) {
     // Vorschau der Karten (neu laden, wenn MatchId oder Anzahl sich ändert)
     useEffect(() => {
         if (selectedMatchId !== null) {
-            let filteredCards = props.activeMemories.filter(memory => memory.matchId === selectedMatchId);
+            let filteredCards = activeMemories.filter(memory => memory.matchId === selectedMatchId);
 
             // Zufällig mischen, bevor die Vorschau angezeigt wird
             filteredCards = shuffleArray(filteredCards);
@@ -97,7 +133,7 @@ export default function Play(props: Readonly<PlayProps>) {
             setShowAnimation(false); // Win-Animation zurücksetzen
             setHasStarted(false); // Spielstatus zurücksetzen
         }
-    }, [selectedMatchId, cardCount, props.activeMemories]);
+    }, [selectedMatchId, cardCount, activeMemories]);
 
     // Win-Animation auslösen
     useEffect(() => {
@@ -116,7 +152,7 @@ export default function Play(props: Readonly<PlayProps>) {
 
         setHasStarted(true);
 
-        let filteredCards = props.activeMemories.filter(memory => memory.matchId === selectedMatchId);
+        let filteredCards = activeMemories.filter(memory => memory.matchId === selectedMatchId);
 
         // Karten vorher mischen, damit nicht immer dieselben zuerst genommen werden
         filteredCards = shuffleArray(filteredCards);
@@ -135,7 +171,7 @@ export default function Play(props: Readonly<PlayProps>) {
         setCards([...allCards]);
         setFlippedCards([]);
         setMatchedCards([]);
-    }, [selectedMatchId, cardCount, isGameStarted, props.activeMemories]);
+    }, [selectedMatchId, cardCount, isGameStarted, activeMemories]);
 
     // Karte umdrehen
     const flipCard = (uniqueId: string) => {
@@ -200,7 +236,7 @@ export default function Play(props: Readonly<PlayProps>) {
                 setShowNameInput(false); // Eingabefeld nach dem Speichern ausblenden
             })
             .catch((error) => {
-                console.error("Fehler beim Speichern des Highscores:", error);
+                console.error("Error saving the high score:", error);
             });
     };
 
@@ -267,12 +303,11 @@ export default function Play(props: Readonly<PlayProps>) {
                         onChange={(e) => setSelectedMatchId(Number(e.target.value))}
                     >
                         <option value="">Please choose</option>
-                        {[...new Set(props.activeMemories.map(m => m.matchId))].sort((a, b) => a - b).map(matchId => (
+                        {activeMatchIds.sort((a, b) => a - b).map(matchId => (
                             <option key={matchId} value={matchId}>
                                 {matchId}
                             </option>
                         ))}
-
                     </select>
 
                     <label htmlFor="cardCount">Number of cards:</label>
