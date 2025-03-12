@@ -1,7 +1,7 @@
 import { UserDetails } from "./model/UserDetailsModel.ts";
 import "./styles/Profile.css";
-import {HighScoreModel} from "./model/HighScoreModel.ts";
-import {useEffect, useState} from "react";
+import { HighScoreModel } from "./model/HighScoreModel.ts";
+import { useEffect, useState } from "react";
 
 type ProfileProps = {
     user: string;
@@ -25,9 +25,17 @@ const formatDate = (date: string) => {
     return new Date(date).toLocaleDateString('de-DE', options);
 };
 
+// Funktion zur Berechnung der Ränge
+const calculateRanks = (scores: HighScoreModel[], userId: string) => {
+    const sortedScores = [...scores].sort((a, b) => a.scoreTime - b.scoreTime);
+    return sortedScores
+        .map((score, index) => ({ id: score.id, rank: index + 1 }))
+        .filter((ranked) => scores.find((s) => s.id === ranked.id)?.appUserGithubId === userId);
+};
+
 export default function Profile(props: Readonly<ProfileProps>) {
     const [userHighScores, setUserHighScores] = useState<HighScoreModel[]>([]);
-    const [sortedHighScores, setSortedHighScores] = useState<HighScoreModel[]>([]);
+    const [userRanks, setUserRanks] = useState<{ [key: string]: number }>({});
 
     useEffect(() => {
         props.getHighScoresFor10Cards();
@@ -37,23 +45,27 @@ export default function Profile(props: Readonly<ProfileProps>) {
 
     useEffect(() => {
         if (props.userDetails) {
-            // Kombiniere alle Highscores
-            const allHighScores = [
+            // Alle Highscores des Users filtern
+            const filteredHighScores = [
                 ...props.highScores10,
                 ...props.highScores20,
                 ...props.highScores32,
-            ];
-
-            // Sortiere nach der besten Zeit
-            const sorted = allHighScores.sort((a, b) => a.scoreTime - b.scoreTime);
-            setSortedHighScores(sorted); // Speichern in State
-
-            // Filtere die Highscores des aktuellen Nutzers
-            const filteredHighScores = sorted.filter(
-                (score) => score.appUserGithubId === props.user
-            );
+            ].filter((score) => score.appUserGithubId === props.user);
 
             setUserHighScores(filteredHighScores);
+
+            // Ränge für jede Kartenanzahl berechnen
+            const ranks10 = calculateRanks(props.highScores10, props.user);
+            const ranks20 = calculateRanks(props.highScores20, props.user);
+            const ranks32 = calculateRanks(props.highScores32, props.user);
+
+            // In ein Objekt speichern (id -> rank)
+            const rankMap: { [key: string]: number } = {};
+            [...ranks10, ...ranks20, ...ranks32].forEach((rank) => {
+                rankMap[rank.id] = rank.rank;
+            });
+
+            setUserRanks(rankMap);
         }
     }, [props.highScores10, props.highScores20, props.highScores32, props.userDetails]);
 
@@ -76,23 +88,16 @@ export default function Profile(props: Readonly<ProfileProps>) {
                             </tr>
                             </thead>
                             <tbody>
-                            {userHighScores.map((highScore) => {
-                                // Bestimme den Rang in der globalen Highscore-Liste
-                                const globalRank = sortedHighScores.findIndex(
-                                    (score) => score.id === highScore.id
-                                ) + 1; // Index ist 0-basiert, daher +1
-
-                                return (
-                                    <tr key={highScore.id}>
-                                        <td>{globalRank}</td> {/* Korrekte Platzierung */}
-                                        <td>{highScore.numberOfCards} Cards</td>
-                                        <td>{highScore.playerName}</td>
-                                        <td>{formatDate(highScore.date)}</td>
-                                        <td>{highScore.matchId}</td>
-                                        <td>{highScore.scoreTime}s</td>
-                                    </tr>
-                                );
-                            })}
+                            {userHighScores.map((highScore) => (
+                                <tr key={highScore.id}>
+                                    <td>{userRanks[highScore.id] ?? "-"}</td>
+                                    <td>{highScore.numberOfCards} Cards</td>
+                                    <td>{highScore.playerName}</td>
+                                    <td>{formatDate(highScore.date)}</td>
+                                    <td>{highScore.matchId}</td>
+                                    <td>{highScore.scoreTime}s</td>
+                                </tr>
+                            ))}
                             </tbody>
                         </table>
                     </div>
