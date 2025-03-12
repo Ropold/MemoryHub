@@ -7,7 +7,6 @@ type NavbarProps = {
     user: string
     getUser: () => void
     getActiveMemories: () => void
-    getAllMemories: () => void
     toggleSearchBar: () => void
     showSearch: boolean
     resetCurrentPage: () => void
@@ -51,7 +50,6 @@ export default function Navbar(props: Readonly<NavbarProps>) {
                 className="clickable-header"
                 onClick={() => {
                     props.getActiveMemories();
-                    props.getAllMemories();
                     props.resetCurrentPage();
                     navigate("/list-of-all-cards");
                 }}

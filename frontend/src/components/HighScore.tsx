@@ -1,10 +1,14 @@
 import { HighScoreModel } from "./model/HighScoreModel.ts";
 import "./styles/HighScore.css";
+import {useEffect} from "react";
 
 type HighScoreProps = {
     highScores10: HighScoreModel[];
     highScores20: HighScoreModel[];
     highScores32: HighScoreModel[];
+    getHighScoresFor10Cards: () => void;
+    getHighScoresFor20Cards: () => void;
+    getHighScoresFor32Cards: () => void;
 }
 
 const formatDate = (date: string) => {
@@ -19,6 +23,13 @@ const formatDate = (date: string) => {
 };
 
 export default function HighScore(props: Readonly<HighScoreProps>) {
+
+    useEffect(() => {
+        props.getHighScoresFor10Cards()
+        props.getHighScoresFor20Cards()
+        props.getHighScoresFor32Cards()
+    }, []);
+
     return (
         <div className="high-score">
             {/* High Scores Table Container */}

@@ -1,11 +1,25 @@
 import { UserDetails } from "./model/UserDetailsModel.ts";
 import "./styles/Profile.css";
+import {HighScoreModel} from "./model/HighScoreModel.ts";
+import {useEffect} from "react";
 
 type ProfileProps = {
     userDetails: UserDetails | null;
+    highScores10: HighScoreModel[];
+    highScores20: HighScoreModel[];
+    highScores32: HighScoreModel[];
+    getHighScoresFor10Cards: () => void;
+    getHighScoresFor20Cards: () => void;
+    getHighScoresFor32Cards: () => void;
 };
 
 export default function Profile(props: Readonly<ProfileProps>) {
+
+    useEffect(() => {
+        props.getHighScoresFor10Cards()
+        props.getHighScoresFor20Cards()
+        props.getHighScoresFor32Cards()
+    }, []);
 
     return (
         <div className="profile-container">

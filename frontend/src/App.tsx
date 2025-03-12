@@ -161,11 +161,6 @@ export default function App() {
 
     useEffect(() => {
         getUser();
-        //getActiveMemories();
-        getAllMemories();
-        getHighScoresFor10Cards();
-        getHighScoresFor20Cards();
-        getHighScoresFor32Cards();
     }, []);
 
     useEffect(() => {
@@ -181,20 +176,20 @@ export default function App() {
 
   return (
     <>
-      <Navbar user={user} getUser={getUser} getActiveMemories={getActiveMemories} getAllMemories={getAllMemories} toggleSearchBar={toggleSearchBar} showSearch={showSearch} resetCurrentPage={resetCurrentPage} resetEditingState={resetEditingState} getHighScoresFor10Cards={getHighScoresFor10Cards} getHighScoresFor20Cards={getHighScoresFor20Cards} getHighScoresFor32Cards={getHighScoresFor32Cards}/>
+      <Navbar user={user} getUser={getUser} getActiveMemories={getActiveMemories} toggleSearchBar={toggleSearchBar} showSearch={showSearch} resetCurrentPage={resetCurrentPage} resetEditingState={resetEditingState} getHighScoresFor10Cards={getHighScoresFor10Cards} getHighScoresFor20Cards={getHighScoresFor20Cards} getHighScoresFor32Cards={getHighScoresFor32Cards}/>
       <Routes>
         <Route path="*" element={<NotFound />} />
         <Route path="/" element={<Welcome />} />
         <Route path="/list-of-all-cards" element={<ListOfAllCards activeMemories={activeMemories} toggleFavorite={toggleFavorite} favorites={favorites} user={user} showSearch={showSearch} currentPage={currentPage} paginate={setCurrentPage}/>} />
         <Route path="/play" element={<Play highScores10={highScores10} highScores20={highScores20} highScores32={highScores32} user={user}/>} />
         <Route path="/memory/:id" element={<Details allMemories={allMemories} favorites={favorites} user={user} toggleFavorite={toggleFavorite}/>} />
-        <Route path="/high-score" element={<HighScore highScores10={highScores10} highScores20={highScores20} highScores32={highScores32}/>} />
+        <Route path="/high-score" element={<HighScore highScores10={highScores10} highScores20={highScores20} highScores32={highScores32} getHighScoresFor10Cards={getHighScoresFor10Cards} getHighScoresFor20Cards={getHighScoresFor20Cards} getHighScoresFor32Cards={getHighScoresFor32Cards}/>} />
 
         <Route element={<ProtectedRoute user={user} />}>
             <Route path="/favorites" element={<Favorites favorites={favorites} user={user} toggleFavorite={toggleFavorite}/>} />
-            <Route path="/my-memories" element={<MyMemories userDetails={userDetails} user={user} favorites={favorites} toggleFavorite={toggleFavorite} allMemories={allMemories} setAllMemories={setAllMemories} isEditing={isEditing} setIsEditing={setIsEditing}/>} />
+            <Route path="/my-memories" element={<MyMemories userDetails={userDetails} user={user} favorites={favorites} toggleFavorite={toggleFavorite} allMemories={allMemories} setAllMemories={setAllMemories} isEditing={isEditing} setIsEditing={setIsEditing} getAllMemories={getAllMemories}/>} />
             <Route path="/add" element={<AddMemoryCard userDetails={userDetails} handleSubmit={handleNewMemorySubmit} />} />
-            <Route path="/profile" element={<Profile userDetails={userDetails} />} />
+            <Route path="/profile" element={<Profile userDetails={userDetails} highScores10={highScores10} highScores20={highScores20} highScores32={highScores32} getHighScoresFor10Cards={getHighScoresFor10Cards} getHighScoresFor20Cards={getHighScoresFor20Cards} getHighScoresFor32Cards={getHighScoresFor32Cards}/>} />
         </Route>
       </Routes>
       <Footer />

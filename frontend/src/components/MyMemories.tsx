@@ -18,6 +18,7 @@ type MyMemoriesProps = {
     setAllMemories: React.Dispatch<React.SetStateAction<MemoryModel[]>>;
     isEditing: boolean;
     setIsEditing: (value: boolean) => void;
+    getAllMemories: () => void;
 };
 
 export default function MyMemories(props: Readonly<MyMemoriesProps>) {
@@ -28,6 +29,11 @@ export default function MyMemories(props: Readonly<MyMemoriesProps>) {
     const [imageUrl, setImageUrl] = useState<string | null>(null);
     const [showPopup, setShowPopup] = useState(false);
     const [memoryToDelete, setMemoryToDelete] = useState<string | null>(null);
+
+    useEffect(() => {
+        props.getAllMemories();
+    }, []);
+
 
     // Filtere die Erinnerungen, die zum Benutzer gehören
     useEffect(() => {
