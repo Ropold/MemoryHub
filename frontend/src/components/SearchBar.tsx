@@ -22,7 +22,8 @@ const SearchBar: React.FC<SearchBarProps> = ({
                                                  setSelectedMatchId,
                                                  memories,
                                              }) => {
-    const matchIds = Array.from(new Set(memories.map((memory) => memory.matchId.toString())));
+    const matchIds = Array.from(new Set(memories.map((memory) => memory.matchId.toString()))).sort();
+
 
     const handleReset = () => {
         setSearchQuery("");
