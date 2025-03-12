@@ -61,6 +61,47 @@ tbody tr:last-child td {
     border-bottom: 2px solid #ff9e00; /* Dickerer Abschluss für die letzte Zeile */
 }
 
+/* Light Mode Hover-Effekt */
+tbody tr:hover {
+    background-color: #f1f1f1; /* Hellerer Hover-Effekt im Light Mode */
+}
+
+
+/* Dark Mode Anpassungen */
+@media (prefers-color-scheme: dark) {
+    .high-score-table {
+        background-color: #333; /* Dunkler Hintergrund für die Tabelle */
+        color: #fff; /* Weißer Text für die gesamte Tabelle */
+    }
+
+    .high-score-table h3 {
+        color: #fff;
+        border: 4px solid #66b3ff; /* Behalte die blaue Randfarbe für den Header */
+    }
+
+    th {
+        background-color: #ff9e00; /* Behalte das orange für die Kopfzeilen */
+        color: #fff; /* Weißer Text für die Kopfzeilen */
+    }
+
+    td {
+        color: #ccc; /* Helle Farbe für Text in den Zellen */
+    }
+
+    tbody tr td {
+        border-bottom: 1px solid #555; /* Dunklerer Rand für Tabellenzeilen im Dark Mode */
+    }
+
+    tbody tr:last-child td {
+        border-bottom: 2px solid #555; /* Dickerer Rand für die letzte Zeile */
+    }
+
+    /* Hover-Effekt für Dark Mode */
+    tbody tr:hover {
+        background-color: #444; /* Dunklerer Hover-Effekt */
+    }
+}
+
 
 @media (max-width: 768px) {
     .high-score-item-container {
