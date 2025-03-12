@@ -68,10 +68,10 @@ export default function Profile(props: Readonly<ProfileProps>) {
                             <thead>
                             <tr>
                                 <th>Rank</th>
-                                <th>Player</th>
                                 <th>Number of Cards</th>
-                                <th>Game-Deck</th>
+                                <th>My HighScore Names</th>
                                 <th>Date</th>
+                                <th>Game-Deck</th>
                                 <th>Time</th>
                             </tr>
                             </thead>
@@ -85,10 +85,10 @@ export default function Profile(props: Readonly<ProfileProps>) {
                                 return (
                                     <tr key={highScore.id}>
                                         <td>{globalRank}</td> {/* Korrekte Platzierung */}
-                                        <td>{highScore.playerName}</td>
                                         <td>{highScore.numberOfCards} Cards</td>
-                                        <td>{highScore.matchId}</td>
+                                        <td>{highScore.playerName}</td>
                                         <td>{formatDate(highScore.date)}</td>
+                                        <td>{highScore.matchId}</td>
                                         <td>{highScore.scoreTime}s</td>
                                     </tr>
                                 );

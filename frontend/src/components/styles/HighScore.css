@@ -1,14 +1,14 @@
 .high-score {
     font-family: Arial, sans-serif;
-    max-width: 1000px;
     margin: 0 auto;
     text-align: center;
 }
 
-.high-score-item-container {
+.high-score-item-container-compressed {
+    display: flex;
     gap: 20px;
     margin-bottom: 40px;
-    width: 100%; /* Stellt sicher, dass die Container die gesamte Breite des Containers nutzen */
+    width: 100%;
 }
 
 .high-score-table {
@@ -21,6 +21,27 @@
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     margin-bottom: 20px; /* Fügt Abstand zwischen den Tabellen hinzu */
 }
+
+.high-score-table-compressed{
+    transition: transform 0.3s ease-in-out;
+}
+
+/* Hover-Effekt nur für komprimierte Tabellen */
+.high-score-table-compressed:hover {
+    transform: scale(1.03);
+    cursor: pointer; /* Zeigt den Hand-Cursor an */
+}
+
+
+.high-score-table-compressed h3 {
+    font-size: 1.3rem;
+    color: #444;
+    margin-bottom: 15px;
+    border: 4px solid #66b3ff;
+    border-radius: 10px;
+}
+
+
 
 .high-score-table h3 {
     font-size: 1.3rem;
