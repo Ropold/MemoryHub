@@ -189,7 +189,7 @@ export default function App() {
             <Route path="/favorites" element={<Favorites favorites={favorites} user={user} toggleFavorite={toggleFavorite}/>} />
             <Route path="/my-memories" element={<MyMemories userDetails={userDetails} user={user} favorites={favorites} toggleFavorite={toggleFavorite} allMemories={allMemories} setAllMemories={setAllMemories} isEditing={isEditing} setIsEditing={setIsEditing} getAllMemories={getAllMemories}/>} />
             <Route path="/add" element={<AddMemoryCard userDetails={userDetails} handleSubmit={handleNewMemorySubmit} />} />
-            <Route path="/profile" element={<Profile userDetails={userDetails} highScores10={highScores10} highScores20={highScores20} highScores32={highScores32} getHighScoresFor10Cards={getHighScoresFor10Cards} getHighScoresFor20Cards={getHighScoresFor20Cards} getHighScoresFor32Cards={getHighScoresFor32Cards}/>} />
+            <Route path="/profile" element={<Profile user={user} userDetails={userDetails} highScores10={highScores10} highScores20={highScores20} highScores32={highScores32} getHighScoresFor10Cards={getHighScoresFor10Cards} getHighScoresFor20Cards={getHighScoresFor20Cards} getHighScoresFor32Cards={getHighScoresFor32Cards}/>} />
         </Route>
       </Routes>
       <Footer />
