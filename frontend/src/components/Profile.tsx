@@ -14,14 +14,25 @@ type ProfileProps = {
     getHighScoresFor32Cards: () => void;
 };
 
-export default function Profile(props: Readonly<ProfileProps>) {
+const formatDate = (date: string) => {
+    const options: Intl.DateTimeFormatOptions = {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+    };
+    return new Date(date).toLocaleDateString('de-DE', options);
+};
 
+export default function Profile(props: Readonly<ProfileProps>) {
     const [userHighScores, setUserHighScores] = useState<HighScoreModel[]>([]);
+    const [sortedHighScores, setSortedHighScores] = useState<HighScoreModel[]>([]);
 
     useEffect(() => {
-        props.getHighScoresFor10Cards()
-        props.getHighScoresFor20Cards()
-        props.getHighScoresFor32Cards()
+        props.getHighScoresFor10Cards();
+        props.getHighScoresFor20Cards();
+        props.getHighScoresFor32Cards();
     }, []);
 
     useEffect(() => {
@@ -33,18 +44,64 @@ export default function Profile(props: Readonly<ProfileProps>) {
                 ...props.highScores32,
             ];
 
-            // Filtere nur die Highscores des aktuellen Nutzers
-            const filteredHighScores = allHighScores.filter(
+            // Sortiere nach der besten Zeit
+            const sorted = allHighScores.sort((a, b) => a.scoreTime - b.scoreTime);
+            setSortedHighScores(sorted); // Speichern in State
+
+            // Filtere die Highscores des aktuellen Nutzers
+            const filteredHighScores = sorted.filter(
                 (score) => score.appUserGithubId === props.user
             );
 
-            // Setze die gefilterten Highscores in den State
             setUserHighScores(filteredHighScores);
         }
     }, [props.highScores10, props.highScores20, props.highScores32, props.userDetails]);
 
     return (
         <div className="profile-container">
+            {/* Highscore-Tabelle */}
+            <div className="high-score-table">
+                <h3>Highscores by {props.userDetails?.login}</h3>
+                {userHighScores.length > 0 ? (
+                    <div>
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Player</th>
+                                <th>Number of Cards</th>
+                                <th>Game-Deck</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {userHighScores.map((highScore) => {
+                                // Bestimme den Rang in der globalen Highscore-Liste
+                                const globalRank = sortedHighScores.findIndex(
+                                    (score) => score.id === highScore.id
+                                ) + 1; // Index ist 0-basiert, daher +1
+
+                                return (
+                                    <tr key={highScore.id}>
+                                        <td>{globalRank}</td> {/* Korrekte Platzierung */}
+                                        <td>{highScore.playerName}</td>
+                                        <td>{highScore.numberOfCards} Cards</td>
+                                        <td>{highScore.matchId}</td>
+                                        <td>{formatDate(highScore.date)}</td>
+                                        <td>{highScore.scoreTime}s</td>
+                                    </tr>
+                                );
+                            })}
+                            </tbody>
+                        </table>
+                    </div>
+                ) : (
+                    <p>No high scores available for this user.</p>
+                )}
+            </div>
+
+            {/* GitHub-Profil */}
             <h2>GitHub Profile</h2>
             {props.userDetails ? (
                 <div>
@@ -55,7 +112,12 @@ export default function Profile(props: Readonly<ProfileProps>) {
                     <p>Followers: {props.userDetails.followers}</p>
                     <p>Following: {props.userDetails.following}</p>
                     <p>Public Repositories: {props.userDetails.public_repos}</p>
-                    <p>GitHub Profile: <a href={props.userDetails.html_url} target="_blank" rel="noopener noreferrer">Visit Profile</a></p>
+                    <p>
+                        GitHub Profile:{" "}
+                        <a href={props.userDetails.html_url} target="_blank" rel="noopener noreferrer">
+                            Visit Profile
+                        </a>
+                    </p>
                     <img src={props.userDetails.avatar_url} alt={`${props.userDetails.login}'s avatar`} />
                     <p>Account Created: {new Date(props.userDetails.created_at).toLocaleDateString()}</p>
                     <p>Last Updated: {new Date(props.userDetails.updated_at).toLocaleDateString()}</p>
