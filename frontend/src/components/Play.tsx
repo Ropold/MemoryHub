@@ -43,6 +43,15 @@ export default function Play(props: Readonly<PlayProps>) {
     const [activeMatchIds, setActiveMatchIds] = useState<number[]>([]);
     const [activeMemories, setActiveMemories] = useState<MemoryModel[]>([]); // Daten für das ausgewählte matchId
 
+    const getMissingCardsMessage = (): string | null => {
+        // Überprüfen, ob genügend Karten vorhanden sind
+        if (activeMemories.length < cardCount) {
+            const missingCards = cardCount - activeMemories.length;
+            return `There must be added ${missingCards} more Memory-Card${missingCards > 1 ? 's' : ''} to play with ${cardCount} cards in this game-deck.`;
+        }
+        return null; // Wenn genügend Karten vorhanden sind
+    };
+
     const handleSaveHighScore = () => {
         if (playerName.trim().length < 3) {
             setPopupMessage("Your name must be at least 3 characters long!");
@@ -258,8 +267,8 @@ export default function Play(props: Readonly<PlayProps>) {
                         setIsGameStarted(true);
                         setShowControls(false);
                     }}
-                    disabled={isGameStarted || selectedMatchId === null}
-                    id={selectedMatchId ? "play-button-enabled" : "play-button-disabled"}
+                    disabled={isGameStarted || selectedMatchId === null || activeMemories.length < cardCount}
+                    id={selectedMatchId && activeMemories.length >= cardCount ? "play-button-enabled" : "play-button-disabled"}
                 >
                     Start Game
                 </button>
@@ -294,6 +303,8 @@ export default function Play(props: Readonly<PlayProps>) {
                 <div className="timer">⏱️ Time: {time.toFixed(1)} sec</div>
             </div>
 
+
+
             {showControls && (
                 <div className="game-controls">
                     <label htmlFor="matchIdFilter">Select Game-Deck:</label>
@@ -322,6 +333,14 @@ export default function Play(props: Readonly<PlayProps>) {
                     </select>
                 </div>
             )}
+
+            {/* Anzeige der fehlenden Karten */}
+            {selectedMatchId !== null && getMissingCardsMessage() && (
+                <div className="missing-cards-message">
+                    {getMissingCardsMessage()}
+                </div>
+            )}
+
 
             {/* Spielername Eingabefeld, wenn ein neuer Highscore erreicht wurde */}
             {isNewHighScore && showNameInput && (

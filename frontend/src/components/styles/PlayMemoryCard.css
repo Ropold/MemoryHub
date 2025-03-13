@@ -97,3 +97,16 @@
         opacity: 1;
     }
 }
+
+.missing-cards-message {
+    background-color: #ff9999;
+    border: 1px solid #f5c6cb; /* Leichte Randfarbe */
+    padding: 10px 20px; /* Etwas Abstand für besseren Look */
+    border-radius: 5px; /* Abgerundete Ecken */
+    font-size: 16px; /* Angenehme Schriftgröße */
+    font-weight: bold; /* Text hervorheben */
+    text-align: center; /* Text zentrieren */
+    width: 50%; /* Breite auf 50% des Elternelements setzen */
+    margin: 0 auto 15px; /* Zentrieren des Elements */
+}
+
