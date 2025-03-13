@@ -27,10 +27,16 @@ public class MemoryController {
     private final CloudinaryService cloudinaryService;
     private final AppUserService appUserService;
 
-    @GetMapping("active/match-id/{numberOfMatchId}")
+    @GetMapping("/active/match-id/{numberOfMatchId}")
     public List<MemoryModel> getActiveMemoriesFilterByMatchId(@PathVariable int numberOfMatchId) {
         return memoryService.getActiveMemoriesFilterByMatchId(numberOfMatchId);
     }
+
+    @GetMapping("/active/match-ids")
+    public List<Integer> getActiveMemoriesMatchIds() {
+        return memoryService.getActiveMemoriesMatchIds();
+    }
+
 
     @GetMapping("/favorites")
     public List<MemoryModel> getUserFavorites(@AuthenticationPrincipal OAuth2User authentication) {

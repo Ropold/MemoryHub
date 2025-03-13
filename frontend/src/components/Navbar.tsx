@@ -2,12 +2,14 @@ import axios from "axios";
 import {useNavigate} from "react-router-dom";
 import "./styles/Navbar.css";
 import headerLogo from "../assets/MemoryHub-logo-single.jpg";
+import {UserDetails} from "./model/UserDetailsModel.ts";
 
 type NavbarProps = {
+    userDetails: UserDetails | null;
+    getUserDetails: () => void;
     user: string
     getUser: () => void
     getActiveMemories: () => void
-    getAllMemories: () => void
     toggleSearchBar: () => void
     showSearch: boolean
     resetCurrentPage: () => void
@@ -30,6 +32,7 @@ export default function Navbar(props: Readonly<NavbarProps>) {
             .post("/api/users/logout")
             .then(() => {
                 props.getUser();
+                props.getUserDetails();
                 navigate("/");
             })
             .catch((error) => {
@@ -51,7 +54,6 @@ export default function Navbar(props: Readonly<NavbarProps>) {
                 className="clickable-header"
                 onClick={() => {
                     props.getActiveMemories();
-                    props.getAllMemories();
                     props.resetCurrentPage();
                     navigate("/list-of-all-cards");
                 }}
@@ -89,7 +91,7 @@ export default function Navbar(props: Readonly<NavbarProps>) {
                     <button className="button-group-button" onClick={() => navigate(`/favorites`)}>Favorites</button>
                     <button className="button-group-button" onClick={() => navigate("/add")}>Add Memory</button>
                     <button className="button-group-button" onClick={() => {props.resetEditingState(); navigate("/my-memories")}}>My Memories</button>
-                    <button className="button-group-button" onClick={() => navigate("/profile")}>Profile</button>
+                    <button id="button-profile" onClick={() => navigate("/profile")}>Profile</button>
                     <button className="button-group-button" onClick={logoutFromGithub}>Logout</button>
                 </>
             ) : (

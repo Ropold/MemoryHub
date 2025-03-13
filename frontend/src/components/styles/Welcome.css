@@ -20,3 +20,8 @@
     box-shadow: 1px 4px 20px rgba(0, 0, 0, 0.8); /* Leichter Schatten bei Hover */
     cursor: pointer;
 }
+
+.welcome-user{
+    width: 50%;
+    margin: 0 auto 15px;
+}

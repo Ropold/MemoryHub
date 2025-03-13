@@ -19,7 +19,7 @@ export default function AddMemoryCard(props: Readonly<MemoryCardProps>) {
     const [description, setDescription] = useState<string>("");
     const [image, setImage] = useState<File | null>(null);
     const [imageUrl, setImageUrl] = useState<string>(""); // Setzt den Image-URL State
-    const [matchId, setMatchId] = useState<number>(1); // Defaultwert als Zahl (1)
+    const [matchId, setMatchId] = useState<number>(0); // Defaultwert als Zahl (1)
     const [errorMessages, setErrorMessages] = useState<string[]>([]);
     const [showPopup, setShowPopup] = useState(false);
 
@@ -36,6 +36,12 @@ export default function AddMemoryCard(props: Readonly<MemoryCardProps>) {
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
+        if (matchId === 0) {
+            setErrorMessages(["Please choose a valid Match ID!"]); // Fehlermeldung hinzufügen
+            setShowPopup(true); // Popup anzeigen
+            return; // Verhindert das Absenden des Formulars
+        }
 
         const memoryData = {
             name,
@@ -142,7 +148,7 @@ export default function AddMemoryCard(props: Readonly<MemoryCardProps>) {
                 </label>
 
                 <label>
-                    Bildquelle:
+                    Image Source:
                     <select
                         className="input-small"
                         value={category}
@@ -164,13 +170,14 @@ export default function AddMemoryCard(props: Readonly<MemoryCardProps>) {
                 </label>
 
                 <label>
-                    Game Deck ID:
+                    Game Deck:
                     <select
                         className="input-small"
                         value={matchId}
                         onChange={(e) => setMatchId(Number(e.target.value))}
                         required
                     >
+                        <option value={0}>Please select a Game-Deck Number</option> {/* Pflichtfeld als Platzhalter */}
                         {[...Array(20).keys()].map((n) => n + 1).map((n) => (
                             <option key={n} value={n}>
                                 {n}
@@ -178,7 +185,6 @@ export default function AddMemoryCard(props: Readonly<MemoryCardProps>) {
                         ))}
                     </select>
                 </label>
-
 
                 <label>
                     Image:
