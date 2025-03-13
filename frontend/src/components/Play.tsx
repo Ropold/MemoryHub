@@ -46,13 +46,18 @@ export default function Play(props: Readonly<PlayProps>) {
 
 
     const getMissingCardsMessage = (): string | null => {
+        // Berechne die benötigte Kartenanzahl
+        const requiredCardCount = cardCount; // Hier bleibt die Kartenanzahl wie sie ist (10, 20 oder 32)
+
         // Überprüfen, ob genügend Karten vorhanden sind
-        if (activeMemories.length < cardCount) {
-            const missingCards = cardCount - activeMemories.length;
-            return `There must be added ${missingCards} more Memory-Card${missingCards > 1 ? 's' : ''} to play with ${cardCount} cards in this game-deck.`;
+        if (activeMemories.length < requiredCardCount / 2) {
+            const missingCards = (requiredCardCount / 2) - activeMemories.length;
+            return `There must be added ${missingCards} more Memory-Card${missingCards > 1 ? 's' : ''} in this game-deck to play with "${requiredCardCount} cards".`;
         }
+
         return null; // Wenn genügend Karten vorhanden sind
     };
+
 
 
     const handleSaveHighScore = () => {
@@ -276,8 +281,8 @@ export default function Play(props: Readonly<PlayProps>) {
                         setIsNewHighScore(false);
                         setShowNameInput(false);
                     }}
-                    disabled={isGameStarted || selectedMatchId === null || activeMemories.length < cardCount}
-                    id={selectedMatchId && activeMemories.length >= cardCount ? "play-button-enabled" : "play-button-disabled"}
+                    disabled={isGameStarted || selectedMatchId === null || activeMemories.length < cardCount/2}
+                    id={selectedMatchId && activeMemories.length >= cardCount/2 ? "play-button-enabled" : "play-button-disabled"}
                 >
                     Start Game
                 </button>
