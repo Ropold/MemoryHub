@@ -176,10 +176,10 @@ export default function App() {
 
   return (
     <>
-      <Navbar user={user} getUser={getUser} getActiveMemories={getActiveMemories} toggleSearchBar={toggleSearchBar} showSearch={showSearch} resetCurrentPage={resetCurrentPage} resetEditingState={resetEditingState} getHighScoresFor10Cards={getHighScoresFor10Cards} getHighScoresFor20Cards={getHighScoresFor20Cards} getHighScoresFor32Cards={getHighScoresFor32Cards}/>
+      <Navbar userDetails={userDetails} getUserDetails={getUserDetails} user={user} getUser={getUser} getActiveMemories={getActiveMemories} toggleSearchBar={toggleSearchBar} showSearch={showSearch} resetCurrentPage={resetCurrentPage} resetEditingState={resetEditingState} getHighScoresFor10Cards={getHighScoresFor10Cards} getHighScoresFor20Cards={getHighScoresFor20Cards} getHighScoresFor32Cards={getHighScoresFor32Cards}/>
       <Routes>
         <Route path="*" element={<NotFound />} />
-        <Route path="/" element={<Welcome />} />
+        <Route path="/" element={<Welcome userDetails={userDetails}/>} />
         <Route path="/list-of-all-cards" element={<ListOfAllCards activeMemories={activeMemories} toggleFavorite={toggleFavorite} favorites={favorites} user={user} showSearch={showSearch} currentPage={currentPage} paginate={setCurrentPage}/>} />
         <Route path="/play" element={<Play highScores10={highScores10} highScores20={highScores20} highScores32={highScores32} user={user}/>} />
         <Route path="/memory/:id" element={<Details allMemories={allMemories} favorites={favorites} user={user} toggleFavorite={toggleFavorite}/>} />

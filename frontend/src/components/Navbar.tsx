@@ -2,8 +2,11 @@ import axios from "axios";
 import {useNavigate} from "react-router-dom";
 import "./styles/Navbar.css";
 import headerLogo from "../assets/MemoryHub-logo-single.jpg";
+import {UserDetails} from "./model/UserDetailsModel.ts";
 
 type NavbarProps = {
+    userDetails: UserDetails | null;
+    getUserDetails: () => void;
     user: string
     getUser: () => void
     getActiveMemories: () => void
@@ -29,6 +32,7 @@ export default function Navbar(props: Readonly<NavbarProps>) {
             .post("/api/users/logout")
             .then(() => {
                 props.getUser();
+                props.getUserDetails();
                 navigate("/");
             })
             .catch((error) => {

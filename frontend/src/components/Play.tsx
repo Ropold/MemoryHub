@@ -58,7 +58,7 @@ export default function Play(props: Readonly<PlayProps>) {
     useEffect(() => {
         const timeoutId = setTimeout(() => {
             setDelayedMessage(getMissingCardsMessage());
-        }, 1000);
+        }, 2000);
 
         return () => clearTimeout(timeoutId); // Cleanup, falls sich cardCount oder activeMemories ändert
     }, [cardCount, activeMemories]);
