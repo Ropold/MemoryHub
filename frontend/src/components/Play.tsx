@@ -41,7 +41,10 @@ export default function Play(props: Readonly<PlayProps>) {
     const [showPopup, setShowPopup] = useState(false);
     const [popupMessage, setPopupMessage] = useState("");
     const [activeMatchIds, setActiveMatchIds] = useState<number[]>([]);
-    const [activeMemories, setActiveMemories] = useState<MemoryModel[]>([]); // Daten für das ausgewählte matchId
+    const [activeMemories, setActiveMemories] = useState<MemoryModel[]>([]);
+    const [isLoadingMemories, setIsLoadingMemories] = useState(false);
+    const [delayedMessage, setDelayedMessage] = useState<string | null>(null);
+
 
     const getMissingCardsMessage = (): string | null => {
         // Überprüfen, ob genügend Karten vorhanden sind
@@ -51,6 +54,14 @@ export default function Play(props: Readonly<PlayProps>) {
         }
         return null; // Wenn genügend Karten vorhanden sind
     };
+
+    useEffect(() => {
+        const timeoutId = setTimeout(() => {
+            setDelayedMessage(getMissingCardsMessage());
+        }, 1000);
+
+        return () => clearTimeout(timeoutId); // Cleanup, falls sich cardCount oder activeMemories ändert
+    }, [cardCount, activeMemories]);
 
     const handleSaveHighScore = () => {
         if (playerName.trim().length < 3) {
@@ -79,6 +90,7 @@ export default function Play(props: Readonly<PlayProps>) {
     }, []);
 
     const getActiveMemoriesByMatchId = (matchId: number) => {
+        setIsLoadingMemories(true);
         axios
             .get(`api/memory-hub/active/match-id/${matchId}`)
             .then((response) => {
@@ -86,6 +98,9 @@ export default function Play(props: Readonly<PlayProps>) {
             })
             .catch((error) => {
                 console.error("Error retrieving memories:", error);
+            })
+            .finally(() => {
+                setIsLoadingMemories(false); // Ladezustand deaktivieren, wenn Request abgeschlossen ist
             });
     };
 
@@ -266,6 +281,8 @@ export default function Play(props: Readonly<PlayProps>) {
                     onClick={() => {
                         setIsGameStarted(true);
                         setShowControls(false);
+                        setIsNewHighScore(false);
+                        setShowNameInput(false);
                     }}
                     disabled={isGameStarted || selectedMatchId === null || activeMemories.length < cardCount}
                     id={selectedMatchId && activeMemories.length >= cardCount ? "play-button-enabled" : "play-button-disabled"}
@@ -335,9 +352,9 @@ export default function Play(props: Readonly<PlayProps>) {
             )}
 
             {/* Anzeige der fehlenden Karten */}
-            {selectedMatchId !== null && getMissingCardsMessage() && (
+            {selectedMatchId !== null && !isLoadingMemories && delayedMessage && (
                 <div className="missing-cards-message">
-                    {getMissingCardsMessage()}
+                    {delayedMessage}
                 </div>
             )}
 
