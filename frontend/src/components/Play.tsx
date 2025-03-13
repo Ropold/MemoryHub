@@ -43,7 +43,6 @@ export default function Play(props: Readonly<PlayProps>) {
     const [activeMatchIds, setActiveMatchIds] = useState<number[]>([]);
     const [activeMemories, setActiveMemories] = useState<MemoryModel[]>([]);
     const [isLoadingMemories, setIsLoadingMemories] = useState(false);
-    const [delayedMessage, setDelayedMessage] = useState<string | null>(null);
 
 
     const getMissingCardsMessage = (): string | null => {
@@ -55,13 +54,6 @@ export default function Play(props: Readonly<PlayProps>) {
         return null; // Wenn genügend Karten vorhanden sind
     };
 
-    useEffect(() => {
-        const timeoutId = setTimeout(() => {
-            setDelayedMessage(getMissingCardsMessage());
-        }, 2000);
-
-        return () => clearTimeout(timeoutId); // Cleanup, falls sich cardCount oder activeMemories ändert
-    }, [cardCount, activeMemories]);
 
     const handleSaveHighScore = () => {
         if (playerName.trim().length < 3) {
@@ -110,6 +102,7 @@ export default function Play(props: Readonly<PlayProps>) {
             getActiveMemoriesByMatchId(selectedMatchId);
         }
     }, [selectedMatchId]);
+
 
 
     // Timer starten, wenn das Spiel beginnt
@@ -272,7 +265,6 @@ export default function Play(props: Readonly<PlayProps>) {
     }, [matchedCards, cards]);
 
 
-
     return (
         <div>
             <div className="space-between">
@@ -321,7 +313,6 @@ export default function Play(props: Readonly<PlayProps>) {
             </div>
 
 
-
             {showControls && (
                 <div className="game-controls">
                     <label htmlFor="matchIdFilter">Select Game-Deck:</label>
@@ -352,9 +343,9 @@ export default function Play(props: Readonly<PlayProps>) {
             )}
 
             {/* Anzeige der fehlenden Karten */}
-            {selectedMatchId !== null && !isLoadingMemories && delayedMessage && (
+            {selectedMatchId !== null && !isLoadingMemories && (
                 <div className="missing-cards-message">
-                    {delayedMessage}
+                    {getMissingCardsMessage()}
                 </div>
             )}
 
