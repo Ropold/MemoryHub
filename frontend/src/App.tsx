@@ -181,7 +181,7 @@ export default function App() {
         <Route path="*" element={<NotFound />} />
         <Route path="/" element={<Welcome userDetails={userDetails}/>} />
         <Route path="/list-of-all-cards" element={<ListOfAllCards activeMemories={activeMemories} toggleFavorite={toggleFavorite} favorites={favorites} user={user} showSearch={showSearch} currentPage={currentPage} paginate={setCurrentPage}/>} />
-        <Route path="/play" element={<Play highScores10={highScores10} highScores20={highScores20} highScores32={highScores32} user={user}/>} />
+        <Route path="/play" element={<Play highScores10={highScores10} highScores20={highScores20} highScores32={highScores32} user={user} getHighScoresFor10Cards={getHighScoresFor10Cards} getHighScoresFor20Cards={getHighScoresFor20Cards} getHighScoresFor32Cards={getHighScoresFor32Cards}/>} />
         <Route path="/memory/:id" element={<Details allMemories={allMemories} favorites={favorites} user={user} toggleFavorite={toggleFavorite}/>} />
         <Route path="/high-score" element={<HighScore highScores10={highScores10} highScores20={highScores20} highScores32={highScores32} getHighScoresFor10Cards={getHighScoresFor10Cards} getHighScoresFor20Cards={getHighScoresFor20Cards} getHighScoresFor32Cards={getHighScoresFor32Cards}/>} />
 

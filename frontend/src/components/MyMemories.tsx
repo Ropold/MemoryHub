@@ -222,17 +222,17 @@ export default function MyMemories(props: Readonly<MyMemoriesProps>) {
                         </label>
 
                         <label>
-                            MatchId:
+                            Game-Deck-ID:
                             <select
                                 className="input-small"
                                 value={editedMemory?.matchId ?? ""} // Setze den Wert aus editedMemory
                                 onChange={handleMatchIdChange} // Event-Handler für matchId
                             >
-                                <option value="">Select Match ID</option> {/* Standardwert */}
+                                <option value="">Select Game-Deck-ID</option> {/* Standardwert */}
                                 {/* Dynamische Erstellung der Optionen für MatchId von 1 bis 20 */}
                                 {Array.from({ length: 20 }, (_, index) => (
                                     <option key={index + 1} value={index + 1}>
-                                        Game {index + 1}
+                                        Deck {index + 1}
                                     </option>
                                 ))}
                             </select>

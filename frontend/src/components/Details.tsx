@@ -35,7 +35,7 @@ export default function Details(props: Readonly<DetailsProps>) {
         <div className="memory-details">
             <h2>{memory.name}</h2>
             <p><strong>Category:</strong> {memory.category}</p>
-            <p><strong>MatchId:</strong> {memory.matchId}</p>
+            <p><strong>Game-Deck-ID:</strong> {memory.matchId}</p>
             <p><strong>Description:</strong> {memory.description || "No description available"}</p>
 
 
