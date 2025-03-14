@@ -10,6 +10,9 @@ type PlayProps = {
     highScores20: HighScoreModel[];
     highScores32: HighScoreModel[];
     user: string;
+    getHighScoresFor10Cards: () => void;
+    getHighScoresFor20Cards: () => void;
+    getHighScoresFor32Cards: () => void;
 };
 
 // Fisher-Yates-Shuffle-Funktion für wirklich zufälliges Mischen
@@ -44,6 +47,11 @@ export default function Play(props: Readonly<PlayProps>) {
     const [activeMemories, setActiveMemories] = useState<MemoryModel[]>([]);
     const [isLoadingMemories, setIsLoadingMemories] = useState(false);
 
+    useEffect(() => {
+        props.getHighScoresFor10Cards();
+        props.getHighScoresFor20Cards();
+        props.getHighScoresFor32Cards();
+    }, []);
 
     const getMissingCardsMessage = (): string | null => {
         // Berechne die benötigte Kartenanzahl
@@ -52,12 +60,11 @@ export default function Play(props: Readonly<PlayProps>) {
         // Überprüfen, ob genügend Karten vorhanden sind
         if (activeMemories.length < requiredCardCount / 2) {
             const missingCards = (requiredCardCount / 2) - activeMemories.length;
-            return `There must be added ${missingCards} more Memory-Card${missingCards > 1 ? 's' : ''} in this game-deck to play with "${requiredCardCount} cards".`;
+            return `There must be added ${missingCards} more Memory-Card${missingCards > 1 ? 's' : ''} in this Game-Deck to play with "${requiredCardCount} cards".`;
         }
 
         return null; // Wenn genügend Karten vorhanden sind
     };
-
 
 
     const handleSaveHighScore = () => {
@@ -326,10 +333,10 @@ export default function Play(props: Readonly<PlayProps>) {
                         value={selectedMatchId ?? ""}
                         onChange={(e) => setSelectedMatchId(Number(e.target.value))}
                     >
-                        <option value="">Please choose a deck</option>
+                        <option value="">Please choose a Deck</option>
                         {activeMatchIds.sort((a, b) => a - b).map(matchId => (
                             <option key={matchId} value={matchId}>
-                                {matchId}
+                                Deck {matchId}
                             </option>
                         ))}
                     </select>

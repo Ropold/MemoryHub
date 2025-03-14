@@ -66,6 +66,7 @@ export default function Navbar(props: Readonly<NavbarProps>) {
             <button
                 onClick={() => {
                     props.toggleSearchBar();
+                    props.getActiveMemories();
                     navigate("/list-of-all-cards");
                 }}
                 className={props.showSearch ? "toggle-search-on" : "button-group-button"}
