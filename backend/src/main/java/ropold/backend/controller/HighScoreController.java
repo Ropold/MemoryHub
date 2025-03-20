@@ -25,6 +25,7 @@ public class HighScoreController {
     public HighScoreModel addHighScore(@RequestBody HighScoreModel highScoreModel) {
         return highScoreService.addHighScore(highScoreModel);
     }
+    //@valid fehlt ggf. noch
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")

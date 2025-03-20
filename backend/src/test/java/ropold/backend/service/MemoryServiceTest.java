@@ -65,7 +65,7 @@ class MemoryServiceTest {
         List<MemoryModel> expected = memoryService.getActiveMemories();
 
         // Then
-        assertEquals(expected, activeMemories);
+            assertEquals(expected, activeMemories);
     }
 
     @Test
