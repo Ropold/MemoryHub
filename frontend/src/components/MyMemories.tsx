@@ -29,6 +29,7 @@ export default function MyMemories(props: Readonly<MyMemoriesProps>) {
     const [imageUrl, setImageUrl] = useState<string | null>(null);
     const [showPopup, setShowPopup] = useState(false);
     const [memoryToDelete, setMemoryToDelete] = useState<string | null>(null);
+    const [imageChanged, setImageChanged] = useState(false);
 
     useEffect(() => {
         props.getAllMemories();
@@ -112,7 +113,7 @@ export default function MyMemories(props: Readonly<MyMemoriesProps>) {
             // Multipart-Request für andere Kategorien
             const data = new FormData();
 
-            if (image) {
+            if (imageChanged && image) {
                 data.append("image", image);
                 setEditedMemory(prev => prev ? { ...prev, imageUrl: "temp-image" } : null);
             }
@@ -137,6 +138,7 @@ export default function MyMemories(props: Readonly<MyMemoriesProps>) {
     const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
             setImage(e.target.files[0]);
+            setImageChanged(true);
         }
     };
 
